@@ -1,0 +1,1117 @@
+MADDE 1 – (1) Bu Yönetmeliğin amacı; sondajla maden çıkarılan işlerin yapıldığı işyerleri ile yeraltı ve yerüstü maden işlerinin yapıldığı
+işyerlerinde çalışanların sağlık ve güvenliğinin korunması için uyulması gerekli asgari şartları belirlemektir.
+Kapsam
+MADDE 2 – (1) Bu Yönetmelik; 20/6/2012 tarihli ve 6331 sayılı İş Sağlığı ve Güvenliği Kanunu kapsamına giren maden işyerlerini kapsar.
+Dayanak
+MADDE 3 – (1) Bu Yönetmelik,
+a) 6331 sayılı İş Sağlığı ve Güvenliği Kanununun 30 uncu maddesine dayanılarak,
+b) 3/12/1992 tarihli ve 92/104/EEC sayılı Avrupa Birliği Direktifi ile 3/11/1992 tarihli ve sayılı 92/91/EEC Avrupa Birliği Direktifine paralel
+olarak,
+hazırlanmıştır.
+Tanımlar
+MADDE 4 – (1) Bu Yönetmelikte geçen;
+a) Ateşleme: Kazı işlerinde deliklere doldurulmuş olan patlayıcı maddelerin patlatılmasını,
+b) Ateşleyici: Patlayıcı madde kulanılması koşularını yerine getirmek üzere, yeterlik belgesine sahip kişiyi,
+c) Ayak: Maden içerisinde iki galeri arasında cephe halinde üretim yapılan yeri,
+ç) Baca: Maden içerisinden sürülen galeriyi,
+d) Baraj: Yeraltında yangın, su, zararlı gaz ve diğer tehlikeleri önleyici enge leri,
+e) Bür: Yerüstüyle bağlantısı olmayan kuyuyu,
+f) Cep: Galeri, varagel ve vinç dip ve başlarıyla ara katlarında ve ızgaralarda görevli çalışanların ve ateşleme görevlilerinin korunmaları amacıyla
+serbestçe sığınabilecekleri biçimde yapılan yuvaları,
+g) Çatlak: Ana kütleden ayrılmış, her an düşebilecek parçaları,
+ğ) Çatlak sökümü: Bir kademenin kazı işlerinin devamı sırasında ana kitleden ayrılmış, düşebilecek durumdaki parçaların temizlenmesini,
+h) Freno: Varagel üzerinde taşımayı sağlayan sistemi,
+ı) Grizu: Metanın havayla karışımını,
+i) Kademe: Açık işletmelerde belirli aralık, kot ve eğimlerle meydana getirilen basamak şeklindeki çalışma yerlerini,
+j) Kanun: 6331 sayılı İş Sağlığı ve Güvenliği Kanununu,
+k) Lağım: Taş içerisinde sürülen galeriyi,
+l) Nefeslik: Ocak havasının giriş ve çıkış yolunu,
+m) Ocak: Kuyuları ve giriş çıkış yolarıyla yeraltındaki bütün kazıları, bu kazılardan çıkan pasanın çıkartıldığı yatımlı ve düz galerileri, diğer yoları
+ve üretim yerlerini, çıkarma, taşıma, havalandırma tesislerini, yeraltında kulanılan enerjinin sağlanmasında ve iletilmesinde kulanılan sabit tesisleri, açık
+işletmelerde giriş çıkış yoları ile tüm maden kazıları, bu kazılardan çıkan pasanın döküldüğü döküm sahalarını,
+n) Röset: Kuyu ve başaşağıların dip ve başlarının katlardaki yatay yolarla olan bağlantı yerlerini,
+o) Sıkılama: Lağım deliklerine patlayıcı madde konulduktan sonra kalan boşluğun gerektiği biçimde doldurulmasını,
+ö) Sondajla maden çıkarma işlerinin yapıldığı işyerleri: Madenlerin sondaj kuyuları açılarak çıkarılması, arama amacıyla sondaj yapılması, çıkarılan
+madenlerin işlenmesi hariç satışa hazırlanması işlerini,
+p) Şev: Kademe, alın ve yüzlerindeki eğimi,
+r) Topuk: İşletmelerde güvenlik için bırakılan maden kısımlarını,
+s) Varagel: Dolu araba aşağıya inerken boş arabanın yukarıya çıkmasını sağlayan ve karşılıklı ağırlık esasına göre, eğimli düzey üzerinde fren ve
+halat kulanılarak yapılan taşıma yerini,
+ş) Yeraltı ve yerüstü maden işlerinin yapıldığı işyerleri: Madenlerin yeraltı veya yerüstünden çıkarılması, madenlerin çıkarma amacıyla
+araştırılması, çıkarılan madenlerin işlenmesi hariç, satışa hazırlanması işlerini,
+ifade eder.
+İşverenin genel yükümlülükleri
+İKİNCİ BÖLÜM
+İşverenlerin ve Çalışanların Yükümlülükleri
+MADDE 5 – (1) İşveren aşağıdaki hususları yerine getirmekle yükümlüdür:
+a) Çalışanların sağlık ve güvenliklerini sağlamak amacıyla;
+1) İşyerleri, çalışanların sağlık ve güvenliklerini tehlikeye atmayacak şekilde tasarlanır, inşa edilir, teçhiz edilir, hizmete alınır, işletilir ve bakımı
+yapılır.
+2) İşyerinde yapılacak her türlü çalışma, yetkili kişinin nezaretinde ve sorumluluğu altında yapılır.
+3) Özel riski bulunan işler yalnızca bu işlerle ilgili özel eğitim alan ehil kişiler tarafından ve talimatlara uygun olarak yapılır.
+4) Tüm güvenlik talimatları çalışanların anlayacağı şekilde hazırlanır.
+5) 18/6/2013 tarihli ve 28681 sayılı Resmî Gazete’de yayımlanan İşyerlerinde Acil Durumlar Hakkında Yönetmeliğe uygun olarak yeterli ilk
+yardım donanımı sağlanır ve (Değişik ibare:RG-24/3/2016-29663) en geç 6 ayda bir
+(2) İşveren,
+olmak üzere düzenli olarak gerekli tatbikatlar yapılır.
+a) Kanunun 4, 10, 14 ve 16 ncı maddelerinde belirtilen hükümler doğrultusunda sağlık ve güvenlik dokümanı hazırlanmasını ve günce lenmesini
+sağlar.
+b) Sağlık ve güvenlik dokümanında öze likle aşağıdaki hususların yer almasını sağlar:
+1) Çalışanların işyerinde maruz kalabilecekleri psikososyal riskler dahil olmak üzere risklerin belirlenmesi ve değerlendirilmesi.
+2) Bu Yönetmelik hükümlerini yerine getirmek için alınacak uygun tedbirler ile bu Yönetmelik kapsamında hazırlanması gereken yönergelerin ve
+planların hazırlanması.
+3) Çalışma yerlerinin ve ekipmanın güvenli şekilde düzenlenmesi, kulanılması ve bakımının yapılması.
+c) Sağlık ve güvenlik dokümanının işyerinde çalışmaya başlanılmadan önce hazırlanmasını ve önemli değişiklikler veya ilave yapıldığında ya da
+işyerinde meydana gelen iş kazası; çalışan, işyeri ya da iş ekipmanını zarara uğratma potansiyeli olduğu halde zarara uğratmayan olaylardan sonra
+gözden geçirilmesini ve ihtiyaç halinde revize edilmesini sağlar.
+(3) İşveren, Kanunun 14 üncü maddesi uyarınca gerekli kayıt ve bildirimleri yapar.
+(4) Bir işyerinde birden çok işverene ait çalışanların bulunması durumunda, her işveren kendi kontrolü altındaki işlerden sorumludur. Ancak
+işyerinin tamamından sorumlu olan işveren, çalışanların sağlık ve güvenliğinin korunması ile ilgili tedbirlerin uygulanmasını koordine eder. Kendisine ait
+sağlık ve güvenlik dokümanında koordinasyonun amacını ve bu koordinasyonu sağlamak için alınacak tedbirler ile uygulanacak yöntemleri belirler. Bu
+koordinasyon her bir işverenin Kanunda belirtilen sorumluluğunu etkilemez.
+Çalışanların yükümlülükleri
+MADDE 6 – (1) Çalışanlar, iş sağlığı ve güvenliği bakımından, ilgili mevzuatın öngördüğü esaslara ve işverenin bunlara uygun olarak vereceği
+emir ve talimata uymak zorundadırlar.
+Patlama, yangın ve zararlı ortam havasından korunma
+MADDE 7 – (1) İşveren, patlama ve yangın çıkmasını ve bunların olumsuz etkilerini önlemek üzere, patlayıcı ve sağlığa zararlı ortam havasının
+oluşmasını önlemek, yapılan işlemlerin doğası gereği patlayıcı ortam oluşmasının önlenmesi mümkün değilse patlayıcı ortamın tutuşmasını önlemek,
+patlama ve yangın başlangıçlarını tespit etmek, yayılmasını önlemek ve mücadele etmek için yapılan işe uygun tedbirler alır.
+Kaçış ve kurtarma araçları
+MADDE 8 – (1) İşveren, bir tehlike anında çalışanların çalışma yerlerini en kısa zamanda ve güvenli bir şekilde terk edebilmeleri için uygun
+kaçış ve kurtarma araçlarını sağlar ve kulanıma hazır bulundurur.
+İletişim, uyarı ve alarm sistemleri
+MADDE 9 – (1) İşveren, işyerinin bütününde gerekli haberleşme ve iletişim sistemini kurar.
+(2) İşveren, ihtiyaç halinde yardım, kaçış ve kurtarma işlemlerinin derhal uygulamaya konulabilmesi için gerekli uyarı ve diğer iletişim sistemlerini
+hazır bulundurur.
+Çalışanların bilgilendirilmesi
+MADDE 10 – (1) Kanunun 16 ncı maddesi hükümleri saklı kalmak kaydı ile çalışanlar veya temsilcileri, işyerinde sağlık ve güvenlikle ilgili
+alınması gereken tüm tedbirler ve bu Yönetmeliğin, öze likle 5, 6, 7 ve 8 inci maddelerinin uygulanması hakkında bilgilendirilir.
+(2) Bu bilgiler çalışanlar tarafından erişilebilir ve anlaşılır şekilde olur.
+Sağlık gözetimi
+MADDE 11 – (1) Kanunun 15 inci maddesi hükümleri saklı kalmak kaydı ile çalışanların;
+a) Yapmakta oldukları işlerde maruz kaldıkları sağlık ve güvenlik risklerine uygun olarak sağlık gözetimine tabi tutulmaları sağlanır.
+b) İşe girişlerinde ve işin devamı süresince periyodik olarak sağlık gözetimleri yapılır.
+Çalışanların görüşlerinin alınması ve katılımlarının sağlanması
+MADDE 12 – (1) İşveren, bu Yönetmelikte belirtilen konularda Kanunun 18 inci maddesine uygun olarak çalışanların veya temsilcilerinin
+görüşlerini alır ve katılımlarını sağlar.
+Asgari sağlık ve güvenlik gerekleri
+MADDE 13 – (1) İşveren, eklerde belirtilen hususların işyerinin, yapılan işin, şartların veya özel bir riskin gerektirdiği tüm durumlarda
+uygulanmasını sağlar.
+(2) İşveren;
+a) Yeraltı ve yerüstü maden işleri ile sondajla maden çıkarma işlerinin yapıldığı işyerlerinde ek-1’de,
+b) Yerüstü maden işlerinin yapıldığı işyerleri ek-2’de,
+c) Yeraltı maden işlerinin yapıldığı işyerleri ek-3’te,
+ç) Sondajla maden çıkarılan işyerlerinde ek-4’te
+belirtilen sağlık ve güvenlikle ilgili gereklere uymak zorundadır.
+Yürürlükten kaldırılan yönetmelikler
+ÜÇÜNCÜ BÖLÜM
+Çeşitli ve Son Hükümler
+MADDE 14 – (1) 11/3/1997 tarihli ve 22930 sayılı Resmî Gazete’de yayımlanan Grizulu Ocaklarda Elektrik Enerjisi Kulanılması Hakkında
+Yönetmelik, 13/4/1997 tarihli ve 22963 sayılı Resmî Gazete’de yayımlanan Deniz, Göl veya Nehir Altında Bulunan Madenlerdeki Çalışmalar Hakkında
+Yönetmelik, 28/5/1997 tarihli ve 23002 sayılı Resmî Gazete’de yayımlanan Yeraltı Maden İşletmelerinde Elektrikli Lokomotiflerin Kulanılması
+Hakkında Yönetmelik, 21/2/2004 tarihli ve 25380 sayılı Resmî Gazete’de yayımlanan Yeraltı ve Yerüstü Maden İşletmelerinde Sağlık ve Güvenlik
+Şartları Yönetmeliği ile 22/2/2004 tarihli ve 25381 sayılı Resmî Gazete’de yayımlanan Sondajla Maden Çıkarılan İşletmelerde Sağlık ve Güvenlik
+Şartları Yönetmeliği  yürürlükten kaldırılmıştır.
+EK MADDE 1 – (Ek:RG-24/9/2014-29129) (1)  (Değişik:RG-10/3/2015-29291) (3)
+(1) İşveren; yeraltı kömür madenlerinde faaliyet alanının herhangi bir yerinde iş sağlığı ve güvenliğini etkileyecek olayın (göçük, gaz ve toz
+patlaması, zehirli veya boğucu gaz intişarı ve benzeri) meydana gelmesi durumunda tüm çalışanların acil durum planında belirtilen kaçış güzergâhlarına
+uygun olarak sağlıklı ve güvenli bir şekilde yer üstüne intikalini sağlamak için;
+a) Faaliyet alanları ile yeryüzüne çıkış ağzı arasında oksijenli ferdi kurtarıcı değişim (Mülga ibare:RG-24/3/2016-29663) (...) istasyonları
+kurmak zorundadır. Bu iki nokta arasında oksijenli ferdi kurtarıcı değişim (Mülga ibare:RG-24/3/2016-29663) (...) istasyonu kurulup
+kurulmayacağına, kurulacaksa hangi mesafeler arasında olacağına aşağıda belirtilen Tablo-1 ve Tablo-2’deki şartlar çerçevesinde tercih edilen oksijenli
+ferdi kurtarıcıların öze likleri dikkate alınarak karar verir. Oksijenli ferdi kurtarıcı değişim (Mülga ibare:RG-24/3/2016-29663) (...) istasyonları
+yeraltında yaşanan göçük, su baskını, patlama, yangın gibi acil durumlardan etkilenmeyecek şekilde teçhiz eder.
+b) Yeraltı kömür madenleri için bu kaçış hız ve sürelerini belirlerken; kaçış yolundaki enge ler, galeri yüksekliği ve eğimi, madenin jeolojik yapısı
+ile kaçış yolunu aynı anda kulanacak kişi sayısı gibi hususları göz önünde bulundurur.
+Tablo-1: Kuyu, Desandre, Galeri ve Taban Yolarında Kaçış Hızları
+Eğim
+(Derece)
+0->10
+10->20
+20->45
+>45 (Kuyu, Bür)
+Tablo-2: Üretim Alanlarında Kaçış Hızları
+Eğim (Derece)
+0->20
+0->20
+0->20
+0->20
+Kuyu, Desandre, Galeri, Taban Yoları
+Çıkışta Kaçış Hızı
+(m/dakika)
+40
+25
+15
+4
+İnişte Kaçış Hızı
+(m/dakika)
+45
+30
+20
+8
+Damar Kalınlığı (m) Üretim Alanlarında
+Çıkışta Kaçış Hızı
+(m/dakika)
+İnişte 
+Kaçış Hızı
+(m/dakika)
+0.50->1.00
+1.00->1.40
+1.40->1.80
+>1.80
+20->45
+>45 (Kelebe, Fere)
+>1.00
+>1.00
+8
+10
+15
+20
+10
+4
+8
+10
+15
+25
+15
+8
+c) Kirli hava akımının bulunduğu nefeslik ve benzeri yolarda çalışanların seçilecek oksijenli ferdi kurtarıcı ile sağlıklı ve güvenli bir şekilde
+yeryüzüne ulaşamayacak mesafede bulunmaları durumunda, seçilecek oksijenli ferdi kurtarıcının öze liği ve nefeslik yolarının şartları dikkate alınarak
+uygun yerlerde değişim istasyonu kurulur.
+ç) (Mülga:RG-24/3/2016-29663)
+d) (Değişik:RG-24/3/2016-29663) İşveren, (a) bendinde belirtilen istasyonlarda bulunacak donanım sayısı ve ekipmanını, acil durumlarda o
+istasyondan yararlanması beklenen çalışan sayısının en az %10 fazlası olacak şekilde belirler.
+e) Bu madde kapsamında alınacak önlemlerin, gerek işletme ruhsatı başvurusunda düzenlenen maden işletme projesinde gerekse de maden
+işletme projelerinin revize edilmesinde projede bulunması ve Enerji ve Tabi Kaynaklar Bakanlığı Maden İşleri Genel Müdürlüğünce onaylanması
+sağlanır.
+Sağlık ve güvenlik dokümanlarının geçerliliği
+GEÇİCİ MADDE 1 – (1) 21/2/2004 tarihli ve 25380 sayılı Resmî Gazete’de yayımlanan Yeraltı ve Yerüstü Maden İşletmelerinde Sağlık ve
+Güvenlik Şartları Yönetmeliği ile 22/2/2004 tarihli ve 25381 sayılı Resmî Gazete’de yayımlanan Sondajla Maden Çıkarılan İşletmelerde Sağlık ve
+Güvenlik Şartları Yönetmeliği hükümleri kapsamında hazırlanan mevcut sağlık ve güvenlik dokümanları bir yıl içerisinde bu Yönetmelik hükümlerine
+uygun hale getirilir.
+Yeraltındaki ana yollar için geçiş hükmü
+GEÇİCİ MADDE 2 – (Ek:RG-10/3/2015-29291)
+(1) Bu Yönetmeliğin yayımı tarihinden önce işletme ruhsatı alan yeraltı maden işyerlerinin insan nakli yapılan galerilerinde; eğimin 18 dereceyi
+geçmesi halinde ana yolara uygun fren sistemi ve koruyucularla donatılmış mekanik vasıtalarla insanların taşınması için gerekli çalışmalar 1/1/2017
+tarihine kadar tamamlanır. Diğer işyerlerinde ise Ek-3’ün 4.1 inci bendi uygulanır.
+Personel takip sistemi ve hayat hattı geçiş hükümleri
+GEÇİCİ MADDE 3 – (Ek:RG-24/3/2016-29663) (2)
+(1) Ek-1’in 1.1.6 ncı bendinde düzenlenen personel takip ve izleme sistemi ile Ek-3’ün 18 inci bendinde düzenlenen hayat hattı, 1/1/2017 tarihinde
+yürürlüğe girer.
+Yer altı madenlerinde bant konveyörlerin kullanımı için geçiş hükmü
+GEÇİCİ MADDE 4 – (Ek:RG-18/11/2017-30244)
+(1) Ek-3’ün 4.8 inci bendi gereğince yer altı maden işyerlerinde kulanılacak taşıma bantları ile ilgili işlemler bu maddenin yayımı tarihinden
+itibaren 3 yıl içerisinde tamamlanır.
+(2) Ek-3’ün 4.8 inci bendinde belirtilen hususların tamamlanmasına dair birinci fıkrada yer alan geçiş süresi içerisinde, yer altı maden işyerlerinde
+malzeme, cevher ve pasa taşımada kulanılan bant konveyörler; antistatik ve alev yürütmez öze likte olmalı, ısınmayı veya tutuşmayı tespit etmek üzere
+sensörler ve ortaya çıkabilecek herhangi bir yangının ilerlemesini durduracak sıklıkta soğutma/söndürme sistemi ile donatılmalıdır.
+Yürürlük
+MADDE 15 – (1) Bu Yönetmelik yayımı tarihinde yürürlüğe girer.
+Yürütme
+MADDE 16 – (1) Bu Yönetmelik hükümlerini Çalışma ve Sosyal Güvenlik Bakanı yürütür.
+Â​Â​Â​Â​Â​Â​Â​Â​Â​Â​Â​Â​Â​Â​Â​Â​Â​Â​Â​Â​Â​__________
+(1) 
+(2) 
+Bu değişiklik yayımı tarihinden 1 yıl sonra yürürlüğe girer.
+Bu değişiklik 1/1/2016 tarihinden geçerli olmak üzere yürürlüğe girer.
+1 
+2
+3
+4 
+Yönetmeliğin Yayımlandığı Resmî Gazete’nin
+Tarihi
+19/9/2013
+24/9/2014
+Sayısı
+28770
+Yönetmelikte Değişiklik Yapan Yönetmeliklerin Yayımlandığı Resmî
+Gazetelerin
+Tarihi
+Sayısı
+29129
+10/3/2015
+24/3/2016  
+18/11/2017
+29291
+29663
+30244
+EK- 1
+SONDAJLA MADEN ÇIKARILAN İŞLERİN YAPILDIĞI İŞYERLERİ İLE YERALTI VE YERÜSTÜ MADEN İŞLERİNİN
+YAPILDIĞI İŞYERLERİNDE UYGULANACAK ASGARİ GENEL HÜKÜMLER
+1. Organizasyon ve gözetim
+1.1. İşyerlerinin organizasyonu
+1.1.1. İşyerleri tehlikelere karşı yeterli koruma sağlanacak şekilde organize edilir. Çalışanların sağlık ve güvenliğini tehlikeye atmamak için
+işyerindeki tehlikeli veya atık maddeler uzaklaştırılır veya kontrol altında tutularak işyerinin her zaman düzenli bir durumda olması sağlanır.
+1.1.2. Çalışma maha leri, çalışanların işlerini kolayca yapabilmeleri için ergonomik esaslara uygun şekilde tasarlanır ve kurulur.
+1.1.3. İşyerleri, muhtemel çevre şartlarına dayanabilecek şekilde tasarlanır, inşa edilir, kurulur, işletilir, kontrol edilir ve bakımı yapılır. İşyerlerinin,
+kulanım amacına uygun yapıda ve sağlamlıkta olması sağlanır.
+1.1.4. Çalışma maha linde çalışanın yalnız çalışması durumunda, uygun gözetim yapılır.
+1.1.5. İşyerinin varsa ocağını da kapsayacak şekilde gerekli haberleşme ve iletişim, uygun yolarla sağlanır.
+1.1.6. İşyerlerinde çalışanlara dair kayıtlar tutulur. Ocağa giriş ve çıkışlar ile çalışanların bulunduğu yerler belirtilerek kayıt altına alınır. (Ek
+cümleler:RG-10/3/2015-29291)(3) Ayrıca, yeraltı maden ocaklarında, yeraltında çalışacakların giriş-çıkışlarının ve bulundukları yerlerin her an doğru
+bir şekilde yerüstünde takip edilebileceği bir sistem kurulur. Bu sistemde kulanılan ekipmanlar, kablolar ve tamamlayıcı unsurların yeraltında yaşanan
+göçük, su baskını, patlama, yangın gibi acil ha lere karşı korumalı olması ve bu ha lerde de çalışabilir durumda olması sağlanır. Sistem tarafından tutulan
+kayıtlar en az bir yıl süreyle saklanır.
+1.1.7. Ocak yönetimince yazılı izin verilmemiş kimseler ocağa giremezler. Yazılı izin almış olanlar ise, ocağa ancak yetkili bir çalışanın eşliğinde
+girebilirler.
+1.1.8.  Bu Yönetmelikte öngörülen kayıtların tutulmasından ve saklanmasından işveren sorumludur.
+1.2. (Değişik:RG-10/3/2015-29291) Her işyerinde işveren tarafından atanmış, çalışmanın devam ettiği sürece görev yapacak, yeterli beceri
+ve uzmanlığa sahip yetkili kişi veya kişiler bulunur.
+1.3. Gözetim ve denetim
+1.3.1. (Değişik:RG-10/3/2015-29291) Yapılan tüm çalışmalarda, çalışanların sağlık ve güvenliğinin korunmasının sağlanması için işverence
+atanan, yeterli beceri ve uzmanlığa sahip yetkili kişi veya kişiler tarafından gerekli gözetim ve denetim yapılır. Sağlık ve güvenlik dokümanında, gerekli
+görülmesi halinde çalışılan yerler gözetim yapan kişi tarafından her vardiyada en az bir defa kontrol edilir. Yetkili kişi olma kriterlerine sahip olmak
+şartıyla yukarıda belirtilen gözetim görevini işverenin kendisi üstlenebilir.
+1.3.2. Tek vardiyayla çalışılan işyerlerinde veya tatil gibi güvenliği riske sokacak kadar ara verilmesinden sonra, çalışanlar ocağa girmeden ve
+herhangi bir faaliyete başlanmadan önce, sorumlu kişiler tarafından ocağın her yeri sağlık ve güvenlik yönünden denetlenir; çalışamaya uygun şartların
+varlığı tespit edilmeden ocağa girilmesine izin verilmez.
+1.4. Her işyerinde kendilerine verilen işi yapabilmek için gerekli beceri, tecrübe ve eğitime sahip yeterli sayıda kalifiye çalışan bulundurulur.
+1.5. Çalışanlara sağlık ve güvenliklerini sağlayabilmeleri için yeterli bilgi, talimat ve eğitim verilir ve bu eğitimler tekrarlanır. İşveren, çalışanlara
+verilen talimatların kendilerinin ve diğer çalışanların sağlık ve güvenliklerini tehlikeye atmalarını önleyecek şekilde kolay anlaşılır olmasını sağlar.
+1.6. Her işyeri için çalışanların sağlık ve güvenliklerinin korunması, patlayıcı maddelerin taşınması, depo edilmesi ve iş ekipmanlarının güvenli bir
+şekilde kulanılması için gerekli kura ları belirleyen yazılı talimatlar hazırlanır. Bu talimatlar, acil durum ekipmanlarının kulanımına ve işyerinde veya
+işyeri yakınındaki herhangi bir acil durumda nasıl hareket edileceğine ilişkin bilgileri de kapsar.
+1.7. Güvenli çalışma yöntemleri: Her işyerinde ya da her işte güvenli çalışma yöntemleri uygulanır. Tesis, tahkim ve onarım işleri yapacak olanlar
+için gerekli güvenlik tedbirleri alınır.
+1.7.1. Ocakların girilmesi yasaklanan kısımları, uyarı levhalarıyla belirtilir. Bu levhalar, tüm çalışanlar tarafından kolayca görülecek ve anlaşılacak
+biçimde hazırlanır ve yerleştirilir.
+1.7.2. Muhtemel istenmeyen bir durumda kolayca fark edilemeyecek veya yardıma gidilemeyecek yerler ile kuyu içinde yapılan tesis, tahkim ve
+onarım işlerinde çalışanlar tek başına çalıştırılamaz.         
+1.8. Sağlık ve güvenlik dokümanı
+1.8.1. Bu Yönetmeliğin 5 inci maddesinin ikinci fıkrasının (b) bendi hükmü saklı kalmak kaydı ile işveren, hem olağan hem de olağanüstü
+durumlarda çalışanların sağlık ve güvenliğini korumak üzere alınması gerekli tüm tedbirlerin sağlık ve güvenlik dokümanında yer almasını sağlar.
+1.8.2. Sağlık ve güvenlik dokümanı düzenli olarak günce leştirilir ve denetim için işyerinde bulundurulur. İşyerindeki çalışmalar sağlık ve güvenlik
+dokümanına uygun olarak yürütülür.
+1.9. Sağlık ve güvenlik dokümanında, gerekli görülmesi halinde, hem tehlikeli işlerin yapılmasında hem de diğer işlerle etkileşmesi sonucu ciddi
+tehlikelere neden olabilecek rutin işlerin yapılmasında bir çalışma izin sistemi uygulanır. Yapılacak işten önce, iş sırasında ve iş bitiminde uyulacak
+şartları ve alınacak tedbirleri belirten çalışma izni, çalışmaya başlanmadan önce yetkili bir kişi tarafından yazılı olarak verilir.
+1.10. İşveren, iş sağlığı ve güvenliği yönetim sistemi dahil olmak üzere çalışanların sağlığını ve güvenliğini korumak için alınan tedbirleri, bu
+Yönetmeliğe uygunluğunu sağlamak için, düzenli aralıklarla gözden geçirir.
+2. Mekanik ve elektrikli ekipman ve tesisatlar
+2.1. Genel
+2.1.1. Mekanik ve elektrikli ekipmanın seçimi, kurulması, uygun yerlere yerleştirilmesi, hizmete alınması, işletilmesi ve bakımında, çalışanların
+sağlık ve güvenliği için, bu Yönetmelik hükümleri ile 3/3/2009 tarihli ve 27158 sayılı Resmî Gazete’de yayımlanan Makina Emniyeti Yönetmeliği
+(2006/42/AT) ile 25/4/2013 tarihli ve 28628 sayılı Resmî Gazete’de yayımlanan İş Ekipmanlarının Kulanımında Sağlık ve Güvenlik Şartları Yönetmeliği
+hükümleri dikkate alınır. Gazların, buharların veya buharlaşabilen sıvıların alev alarak tutuşması sonucu yangın veya patlama riski olan bir ortamda
+kulanılacak iş ekipmanları, bu tür ortamlarda kulanmaya uygun öze likte olmalıdır. İş ekipmanları, gerektiğinde uyumlaştırılmış ulusal standartlara sahip,
+uygun koruma tertibatları ve arıza durumunda ekipmanın güvenli kalmasını sağlayacak sistemler ile donatılır.
+2.1.2. İşyerinde, elektrik şebekesini ve şebekedeki sabit aygıt ve tesislerin yerlerini gösteren, ölçekli, ayrıntılı ve güncel bir plan bulundurulur.
+Yetkisiz kimselerin elektrik aygıtlarını almasının ve kulanmasının yasak olduğunu, yangın anında yapılacak işleri, elektrik devresini kesmekle görevli
+kişilerle haberleşme biçimini ve gerekli diğer bilgileri kapsayan talimatlar hazırlanır ve uygun yerlere asılır.
+2.1.3. Elektrik tesisleri, uygun ölçü, kontrol, gösterge, uyarı ve kumanda aygıtlarıyla donatılır.
+2.1.4. Elektrikli aygıtlar, çevrenin sıcaklığı da hesaba katılarak, önceden tespit edilmiş en yüksek sıcaklıkta çalışabilecek biçimde kurulur ve
+kulanılır.
+2.1.5. Gerektiğinde kulanılmak üzere, uygun yerlere, herhangi bir şebeke kısmının akımını tamamen kesecek devre kesicileri yerleştirilir.
+2.1.6. Yeraltı (Ek ibare:RG-10/3/2015-29291) kömür
+ocaklarında kulanılacak ekipman ve tesisatlar ile bu tip madenlerin grizu gazı ve/veya
+yanıcı tozlar tarafından muhtemel tehlike oluşturabilecek yerüstü tesislerinde kulanılan parçalar 30/12/2006 tarihli ve 26392 4 üncü mükerrer sayılı
+Resmî Gazete’de yayımlanan Muhtemel Patlayıcı Ortamda Kulanılan Teçhizat ve Koruyucu Sistemler ile İlgili Yönetmelik (94/9/AT)’te belirtilen I.
+Grup (Değişik ibare:RG-10/3/2015-29291) Teçhizatın uygun kategorisinde
+olmalıdır.
+2.1.7. Çalışma gerilimi 42 voltun üzerinde ise, elektrik kaçağı yapabilecek elektrikli aygıtlar ve madeni kısımlar, topraklamayla güvenlik altına
+alınır. Ocak içi şebekesine ve buna bağlı devrelere ait topraklama iletkenlerinde kesiklik veya kopukluk bulunmayacak; kablo ekleme kutuları veya
+başlıklarında, güvenli biçimde köprüleme yapılır. Bağlantı yerlerinde boya, oksit ve pas nedeniyle topraklama direncinin yükselmesine izin verilmez.
+2.1.8. Elektrik tesisatıyla ilgili mevzuat, başka bir topraklama sistemine izin vermedikçe, ocak içi şebekesinin herhangi bir noktasındaki
+topraklama, ancak ocak dışındaki bir topraklama tesisiyle birleştirilerek yapılabilir.
+2.1.9. (Ek:RG-10/3/2015-29291)1 (Değişik:RG-18/11/2017-30244) Bant konveyörler ve tahrik grupları ortaya çıkabilecek herhangi bir
+yangını durduracak şekilde donatılmalıdır. Bu konveyörlerin ve tahrik gruplarının soğutma/söndürme sistemleri ile ısınmayı veya tutuşmayı tespit etmek
+üzere kulanılan sensörlerle donatılıp donatılmaması, söz konusu donanımların bulundurulması halinde sayıları ve konumları işyeri öze likleri dikkate
+alınarak sağlık ve güvenlik dokümanında belirtilir.
+2.2. Aşırı güçlere karşı koruma
+2.2.1. Yeraltındaki tesis ve aygıtları, gerilimin aşırı yükselmelerine karşı korumak amacıyla, yerüstünde gerekli yerlere parafudr vb. koruyucular
+yerleştirilir.
+2.2.2. Her şebeke ve devredeki akımın nominal değeri üstüne çıkmasına karşı gerekli otomatik koruma aygıtları (devre kesiciler) kulanılır.
+2.2.3. Devre kesiciler, bağlı oldukları devrelerin akımını güvenlikle ve süratle kesebilecek biçimde seçilmiş olmalıdır. Devre kesiciler, devreyi
+otomatik olarak kestiklerinde, kendi kendilerine tekrar kapanmayacak öze likte olmalı ve dış etkilere karşı korunmalıdır.
+2.3. Deney ve kontrol aletleri, normal kulanışları sırasında tehlike meydana getirmeyecek biçimde yapılmış olmalıdır.
+2.4. Yapılan kontrol ve deneylerde tehlike meydana getirecek biçimde hasara uğramış veya bozulmuş oldukları görülen kablolar, derhal onarıma
+alınır veya sağlamlarıyla değiştirilir. Hasara uğramış veya bozulmuş kablolar, esaslı biçimde onarılıp kontrol edilmedikçe tekrar kulanılamaz.
+2.5. Mekanik iş ekipmanları ve tesisler, sağlam, kusursuz ve kulanım amacına uygun olmalıdır. Elektrikli ekipmanların ve tesislerin gücü ve
+boyutları, kulanım amacına uygun olmalıdır. Mekanik ve elektrikli iş ekipmanları ile tesisat tehlike meydana getirmeyecek şekilde kurulur ve korunur.
+2.6. Tehlike meydana getirebilecek uzaktan kumandalı makinaların üzerine, uyarı levhaları konur ve bunlar, durdurma düzenleriyle donatılır.
+2.7. Her türlü elektrik kulanımı ve elektrik tesisatının işletilmesiyle ilgili olarak, bu Yönetmelik hükümleri yanında ilgili diğer mevzuat hükümleri de
+uygulanır.
+3. Bakım ve onarım
+3.1. Mekanik ve elektrikli ekipmanlar ile tesislerin kontrolü, bakımı ve gerektiğinde testlerinin düzenli bir şekilde yapılmasını sağlayacak uygun
+bakım planı yapılır. Ekipmanların ve tesislerin bütün kısımlarının kontrol, bakım, onarım ve testleri yetkili kişiler tarafından yapılır. Bakım ve onarımdan
+sonra, ekipman ve tesisler kulanıma alınmadan önce kontrol edilir. Yapılan kontrol ve testlerle ilgili kayıt tutulur ve bu kayıtlar uygun şekilde saklanır.
+3.2. Güvenlik ekipmanları ve makinaların koruyucu düzenleri her zaman kulanıma hazır ve çalışır durumda bulundurulur ve düzenli aralıklarla
+kontrol edilir. Bu ekipmanların bakımı yapılan iş dikkate alınarak yapılır.
+4. Kuyuların Kontrolü
+4.1. Sondaj kuyusu açılması işlemleri sırasında kulanılmak üzere püskürme ve yeraltında bulunan zehirli ve patlayıcı gazların yayılması gibi
+risklerden korunmak için uygun kontrol ekipmanı bulundurulur. Bu ekipmanların dağılımında, açılan kuyular ve yürütülen işlemler dikkate alınır.
+4.2. Petrol, doğal gaz, jeotermal ve kaya gazı sondajlarında mutlaka kuyu kontrol donanımları bulundurulması zorunludur. Bu donanımlar her kuyu
+için kurulur ve bu donanımların çalışır durumda olması sağlanır. Gaz ve sıvı püskürme ihtimali bulunan diğer sondaj kuyularında da kurulur ve işletilir.
+4.3. Sondaj kuyusu açılması işlemleri sırasında kulanılmak üzere, püskürme gibi risklerden korunmak için uygun kontrol ekipmanı ve gerektiğinde
+kuyuyu susturmak amacıyla sondaj çamurunu ağırlaştırmak için bant vb. malzemeleri bulundurulur. Bu ekipmanların ve malzemelerin dağılımında,
+açılan kuyular ve yürütülen işlemler dikkate alınır.
+5. Patlama riski, yangın tehlikesi ve zararlı ortam havasına karşı korunma
+5.1. Genel
+5.1.1. Ortam havasında sağlığa zararlı ve/veya patlayıcı maddelerin bulunup bulunmadığının tespit edilmesi ve bu maddelerin konsantrasyonunun
+ölçülmesi için gerekli tedbirler alınır. Sağlık ve güvenlik dokümanında gerekli görülmesi halinde, elektrikli tesisatlar ve içten patlamalı motorların gücünü
+otomatik olarak kesen aygıtlar, belirlenmiş yerlerdeki gaz birikimlerini otomatik ve devamlı olarak ölçen kontrol aygıtları ve otomatik alarm sistemleri
+sağlanır. Otomatik ve mekanik ölçüm sonuçları sağlık ve güvenlik dokümanında öngörüldüğü şekilde kayıt altına alınır ve saklanır.
+5.1.2. Yangın veya patlama tehlikesi bulunan ortamlarda tütün ve tütün ürünlerinin içilmesine izin verilmez. Bu tür ocaklara sigara, pipo, puro,
+kibrit, çakmak vb. madde ve malzemeler sokulmaz. Yangın çıkması veya patlama meydana gelmesine karşı yeterli tedbir alınmadığı sürece, açık alev
+kulanılması ve kıvılcım çıkarabilecek veya tutuşmaya neden olabilecek herhangi bir tutuşturucu kaynakla çalışma yapılması yasaklanır.
+5.2. Patlama risklerinden korunma
+5.2.1. Patlayıcı ortam oluşmasına ve birikmesine karşı gerekli tüm tedbirler alınır.
+5.2.2. Patlama riski bulunan yerlerde, patlayıcı ortamın tutuşmasını önlemek için gerekli tüm tedbirler alınır.
+5.2.3. Alınması gerekli tedbir ve kulanılacak ekipmanı ayrıntılı olarak belirten patlamayı önleme planı hazırlanır.
+5.3. Zararlı ortam havasından korunma
+5.3.1. Zararlı maddelerin ortam havasına karıştığı veya karışabileceği yerlerde;
+a) Zararlı maddelerin çıkışının kaynağında enge lenmesi,
+b) Kaynağından emilmesi veya uzaklaştırılması,
+c) Bu maddelerin ortam havasındaki yoğunluğunun azaltılması,
+gibi tedbirler alınarak çalışanların risk altında olması önlenir. Bu tedbirlerle ilgili uygulanan sistem, çalışanların risk altında olmasını önleyecek
+şekilde ve zararlı maddeleri ortam havasından uzaklaştıracak kapasitede olmalıdır.
+5.3.2. Çalışanların, ortam havasında bulunan tozun zararlı etkilerinden korunması için bu Yönetmelik hükümleri ile beraber Bakanlıkça çıkarılan
+tozla mücadeleyle ilgili mevzuat hükümleri de dikkate alınır.
+5.3.3. 2/7/2013  tarihli ve 28695 sayılı Resmî Gazete’de yayımlanan Kişisel Koruyucu Donanımların İşyerinde Kulanılması Hakkında Yönetmelik
+hükümleri saklı kalmak kaydı ile çalışanların zararlı ortam havasına maruz kalabilecekleri yerlerde yeterli sayıda uygun solunum ve canlandırma
+ekipmanı bulundurulur. Bu yerlerde bu ekipmanı kulanabilecek eğitime sahip yeterli sayıda çalışan bulunur. Bu ekipman uygun yerlerde saklanır ve
+korunur.
+5.3.4. Ortam havasında zehirli gazların bulunduğu veya bulunabileceği yerlerde, alınan tedbirler ve mevcut koruyucu donanımla ilgili detayları
+kapsayan bir koruma planı hazır bulundurulur.
+5.4. Yangından korunma
+5.4.1. Sağlık ve güvenlik dokümanında belirlenmiş olan kaynaklardan yangının başlaması ve yayılmasına karşı işyerlerinin planlanması, kurulması,
+donatılması, işletmeye alınması, işletilmesi ve bakımında gerekli tedbirler alınır. Yangınla hızlı ve etkili mücadele için gerekli tertibat hazırlanır. Yangın
+çıkma ihtimali bulunan yerler yağ, kükürt, kömür tozu vb. kolay yanabilecek maddelerden temizlenir.
+5.4.2. İşyerleri, uygun yangın söndürme ekipmanları ve gereken ha lerde yangın detektörleri ve alarm sistemleri ile donatılır.
+5.4.3. Otomatik olmayan yangın söndürme ekipmanları, kolay ulaşılabilir ve kulanılabilir olmalı ve gerektiğinde zarar görme ihtimaline karşı
+korunmalıdır.
+5.4.4. Bu Yönetmeliğin 5, 6, 7 ve 8 inci maddelerinde belirtilen hükümler gereğince, yangından korunma, yangın başlangıcını ve yayılmasını tespit
+ve yangınla mücadele konusunda alınacak tedbirlerle ilgili detayları kapsayan yangından korunma planı çalışılan yerlerde bulundurulur.
+5.4.5. Yangınla mücadele ekipmanları, 11/9/2013  tarihli ve 28762 sayılı Resmî Gazete’de yayımlanan Sağlık ve Güvenlik İşaretleri Yönetmeliği
+hükümlerine uygun şekilde işaretlenir. Bu işaretler uygun yerlere konur ve kalıcı olur.
+5.4.6. (Değişik:RG-10/3/2015-29291) Kendiliğinden yanmaya elverişli madenlerde, bekleme barajları dahil olmak üzere gerekli tedbirler alınır.
+Yangın veya sızdırmazlık bekleme barajları üretimi biten panoların ya da herhangi bir yangın riskine karşı asgari olarak her üretim panosunun alt taban
+ve üst taban yolarında kurulur, bunlar dışında kurulacak bölgeler sağlık ve güvenlik dokümanında belirlenir. Ocağın ana hava giriş ve çıkışında bir
+yangın tehlikesine karşı, ocağın giriş ve çıkışını tamamen kapatabilecek miktarda malzeme bulundurulur. Üretimi biten eski imalat ve panolardaki kalıcı
+bekleme barajları hava sızdırmaz, basınca dayanıklı ve tahrip olmayacak şekilde kurulur ve ocak gazları yönünden sürekli kontrol altında bulundurulur. 
+Bu barajlar, baraj arkalarında oluşabilecek gaz basıncı ve su baskınına karşı dayanımı hesaplanarak kurularak sağlık ve güvenlik dokümanında belirtilir.
+Barajların arkasında bulunan oksijen, metan, karbonmonoksit, hidrojensülfür vb. ocak gazları ile sıcaklık ölçümleri 10 günde bir, değişiklik tespit edilmesi
+halinde sürekli yapılır ve kayıt altına alınır. Barajların açılmasında gerekli güvenlik tedbirleri alınır. Bu barajlar hazırlanacak olan yeraltı çalışma
+planlarında gösterilir.
+6. Patlayıcı maddeler ve ateşleyiciler
+6.1. Patlayıcı maddelerin ve (Değişik ibare:RG-24/3/2016-29663) ateşleyici malzemelerin
+(Değişik ibare:RG-24/3/2016-29663) ateşleyiciler
+depolanması, taşınması ve kulanılması, sadece
+tarafından yapılır. Bu işler, çalışanlar için risk oluşturmayacak şekilde organize edilir ve yürütülür.
+6.2. (Değişik:RG-24/3/2016-29663) İşletmelerin yapısına uygun nitelikte patlayıcı maddeler ve kapsüler kulanılır. Patlayıcı maddeleri
+ateşleyicilerden başkasının almasına ve ateşlemesine izin verilmez.
+6.3. Yeraltındaki patlayıcı madde depoları, bir patlama halinde, çalışanların çalıştığı yerlere, yolara ve ana havalandırma yoluna zarar
+vermeyecek ve çalışanlar için tehlike oluşturmayacak uzaklıkta, çatlak ve göçük yapmayacak, olabildiğince su sızdırmayacak, alt ve üst kattaki
+çalışmalara zarar vermeyecek ve çalışmalardan zarar görmeyecek bir yerde olmalıdır. Patlayıcı madde depolarının yakınında çalışma yapılırken, 
+yangın ve patlamaya neden olunmaması için sağlık ve güvenlik tedbirleri alınır ve hiçbir tutuşturucu kaynakla çalışma yapılmaz. 50 kilogramdan az
+patlayıcı madde bulunan depolara ana yoldan 90 derecelik bir, daha çok patlayıcı madde bulunan depolara 90 derecelik iki dirsek oluşturan yola
+girilmeli ve patlayıcı madde deponun son kısmına konulmalıdır. Bir patlama olasılığına karşı, patlayıcı madde depolarının karşısına, dirseklerden en az üç
+metre derinlikte hız kesici cepler yapılmalıdır. Yeraltı deposunda, sıcaklığın 8 dereceden aşağı ve 30 dereceden yukarı olmaması sağlanır. Patlayıcı
+madde dağıtımı, depo çıkışındaki özel bir cepte yapılır ve buralarda statik elektrik boşalmasına karşı gereken tedbirler alınır.
+6.4. Patlayıcı maddeler özel sandıklar içinde taşınır ve bu sandıkların içine başka bir madde konulamaz. Kapsülerle diğer patlayıcı maddeler aynı
+kap içinde bir arada bulundurulamaz ve taşınamaz.
+6.5. Ateşleyici, manyeto ve sandıkların anahtarlarını kendi üzerinde bulundurur. Ateşleyicinin vücudundaki statik elektriğin boşaltılması için
+gerekli tedbirler alınır. Bir kişinin taşıyabileceği patlayıcı madde miktarı 10 kilogramı geçemez.
+6.6. Patlayıcı madde depolarında, patlayıcı madde ve bu maddelerin tüketim kaydı tutulur.
+6.7. Patlayıcı madde lağım deliği iyice temizlendikten ve gerekli ha lerde yastık maddesi yerleştirildikten sonra doldurulur ve sıkılandıktan sonra
+ateşlenir. Sıkılama maddesinin boyu 40 santimetreye kadar olan kartuşlar için 35 santimetredir. Fazla her kartuş için, kartuş boyunun yarısı kadar,
+sıkılama maddesi eklenir. Patlayıcı maddenin boyu, delik derinliğinin yarısını geçemez. Artan boşluk, sıkılama maddesiyle doldurulur. Sorumlu kişiler,
+sıkılama madde ve gereçlerini ateşleme yerinin yakınında bulundururlar. Lağım deliklerinin doldurulması ve sıkılanması, bizzat ateşleyici veya onun
+gözetim ve sorumluluğu altında bu konuda deneyimli usta veya çalışan tarafından yapılır. Kartuşlar lağım deliklerine şekilerinin bozulmamasına özen
+gösterilerek zorlanmadan sokulur. Sıkılama iletken olmayan özel çubuklarla yapılır. Fitiler ve kapsüler özel kapsül pensesiyle sıkıştırılır. Kapsüler
+kartuşlara ateşleme yapılacağı sırada yerleştirilir ve lağım delikleri ancak ateşlenecekleri zaman doldurulur.
+6.8. Kapsül te lerinin uçlarının temizlenmesi, birbirlerine ve ateşleme te lerine bağlanması ve ateşlenmesi işini bizzat ateşleyici yapar. Lağım
+atılacak yeri en son ateşleyici terk eder. Beşten çok lağımın aynı zamanda ateşlenmesi seri halinde elektrikle yapılır. Yanıcı ve parlayıcı gazlar bulunan
+tozların yanması ve patlaması tehlikesi olan ocaklarda, fitile ateşleme yapılamaz.
+6.9. Elektrikli kapsüle ateşleme yapılan yerlerde lağım deliklerine teknik amonyum nitratın doldurulmasında kulanılan pnömatik ve mekanik
+araçlar uygun biçimde topraklanır. Doldurulacak lağım sayısı, elektrikli ateşleme aracının patlatabileceği kapsül sayısının yarısını geçemez.
+Ateşlemeden önce, bütün bağlantılar gözden geçirilir ve özel ölçüm aygıtları ile devre kontrolü yapılır.
+6.10. Gerekli çevre güvenliği alınmadan ateşleme yapılmaz.
+6.11. Lağım atıldıktan sonra, elektrikli ateşlemede en az 5 dakika, fitil veya benzeri ateşlemede 1 saat geçmeden ve yetkili kimseler tarafından
+dikkatle muayene edilip tehlike kalmadığı bildirilmedikçe ateşleme alanına kimsenin girmesine izin verilmez. Lağım deliğinde patlamamış patlayıcı
+maddenin kaldığı veya bundan kuşkulanıldığı takdirde, ortamın güvenliği sağlanıncaya kadar ateşleme alanına kimse giremez. Patlamamış patlayıcı
+madde artıkları, bir sorumlu kişinin gözetiminde, mümkünse o lağımı delen çalışan tarafından, patlamamış lağım deliğinin en az 30 santimetre yakınında,
+ona paralel başka bir delik delinip doldurularak ateşlenir. Delinme, doldurulma, ateşleme ve pasanın kaldırılması sırasında, çalışma alanında,
+görevlilerden başkasının bulunması yasaktır. Patlamamış kartuş ve kapsüler bulunması ihtimaline karşı, pasalar e le kaldırılır ve kartuş ve kapsüler
+aranır; bulunamadığı takdirde, bu pasanın doldurulduğu araba, katarlara bağlanmaz. Bu arabaların üzerine tehlike işareti konur; güvenlik tedbirleri
+altında tek olarak ocak dışına çıkarılır; dikkatle boşaltılır ve bulunacak patlayıcı maddeler ambara teslim edilir. Ateşleyici, lağım deliğinde kalan
+patlamamış patlayıcı maddeleri zararsız hale sokamazsa, bacadaki çalışmayı durdurur; kendisinden sonraki vardiya ateşleyicisine durumu bildirerek
+bacayı teslim eder ve sorumlu kişilere gerekli bilgileri bizzat verir.
+6.12. Patlayıcı maddelere ilişkin yönerge: Patlayıcı maddelerin taşınması ve depo edilmesine ilişkin esaslar hususunda, ilgili mevzuat hükümlerinin
+de göz önünde tutulduğu ve aşağıdaki ayrıntıları kapsayan bir yönerge hazırlanır. Bu Yönergede;
+a) Patlayıcı madde depolarının yerini gösterir planlar,
+b) Ateşleyiciler ile patlayıcı madde depolarına girmeye yetkili çalışanların listesi,
+c) Patlayıcıları nem, bozulma ve donmaya karşı korumak için alınacak tedbirler,
+ç) Patlayıcı madde tüketim planı,
+d) Tecrit (ayırma) tedbirleri,
+e) Havalandırma,
+f) Patlama ve yangına karşı alınacak tedbirler,
+g) Yangın halinde gaz ve dumanların boşaltılması,
+ğ) Patlayıcı maddelerin taşınmasına dair kura ları,
+ile ilgili hususlar yer alır.
+7. Kimyasal ve radyoaktif maddeler
+7.1. Kimyasal maddelerin kulanıldığı çalışmalarda çalışanların sağlığı ve güvenliğinin sağlanması için, bu Yönetmelik hükümleri ile 12/8/2013
+tarihli ve 28733 sayılı Resmî Gazete’de yayımlanan Kimyasal Maddelerle Çalışmalarda Sağlık ve Güvenlik Tedbirleri Hakkında Yönetmelik hükümleri
+dikkate alınır.
+7.2. Radyoaktif maden ve minera lerin arama, üretim ve çıkarılmasıyla ilgili çalışmalarda bunların zararlı etkilerini giderici önleyici ya da koruyucu
+tedbirler alınır.
+8. Ulaşım yoları
+8.1. Çalışma yerlerine güvenli bir şekilde ulaşabilmek ve acil bir durumda hızlı ve güvenli bir şekilde bu yerleri terk edebilmek için ulaşım yoları
+sağlanır.
+8.2. Merdivenler, yükleme platform ve rampaları dahil bütün ulaşım yoları, yayalar veya araçlar için kolay, güvenli ve uygun geçişi sağlayacak,
+uygun eğimde ve yakınındaki çalışanları tehlikeye düşürmeyecek şekilde hesaplanır, boyutlandırılır ve yapılır.
+8.3. Yayaların kulandığı ve/veya araçlarla malzeme taşımada kulanılan yolar, kulanıcı sayısına ve işyerinde yapılan işin öze liğine uygun
+boyutlarda olmalıdır.  Madenin üretim yöntemi ve teknik öze likleri göz önünde bulundurularak çalışanların çalışma yerlerine ulaşmaları için gerekli
+teçhizat, donanım ve araç sağlanır. Malzeme taşınan yolarda yayalar için yeterli güvenlik mesafesi bırakılır.
+8.4. Araç trafiğine açık yolar ile kapılar, yaya geçiş yoları, koridorlar ve merdivenler arasında yeterli mesafe bulunur.
+8.5. Çalışanların korunması amacıyla araç yoları ve geçişler açıkça işaretlenir ve yeterli düzeyde aydınlatılır.
+8.6. Çalışma sahasında motorlu taşıtlar ve araç trafiğinin bulunması durumunda, trafik kura larına uygun düzenleme yapılır.
+8.7. Yaya yoları ve taşıma yoları dahil tüm ulaşım yolarında gidiş gelişi zorlaştırıcı enge ler ve malzeme döküntüleri bulunmaması sağlanır.
+9. Taşıma ile ilgili hususlar
+9.1. Kurtarma işleri gibi özel durumlar hariç olmak üzere çalışanlar sadece insan taşımak için imal edilmiş araçlarla taşınır. Bu taşıtlarda gerekli
+hız limitleri belirlenerek bu limitlere uyulması sağlanır ve bu taşıtlar sağlık ve güvenlik açısından uygun durdurma tertibatıyla donatılır.
+9.2. Ocakta kulanılan tüm mobil ekipmanlar görünürlüğü ve hareket yönünün ayırt edilmesini sağlayacak gerekli işaret lambalarıyla donatılır.
+Lokomotiflerin önünde beyaz veya sarı, son arabanın arkasında da kolay görülür kırmızı bir işaret lambası bulundurulur.
+9.3. Konveyörlerin tehlikeli kısımları, öze likle baş ve kuyruk tamburları, uygun ve güvenlikli bir koruyucu altında bulundurulur. Konveyörlerin
+eğimi, konveyörler üzerinde taşınan madde veya malzemenin kayması sonucu tehlike meydana getirebilecek derecedeyse, bu tehlikeyi önleyecek özel
+tedbirler alınır.
+9.4. Konveyörler, makiniste işaret vermek üzere işaretleşme araçlarıyla veya herhangi bir noktada durdurabilecek bir düzenle donatılır. Bu
+araçlar çalışırken bir sorumlunun sürekli gözetimi altında bulundurulur.
+9.5. Uyumlaştırılmış ulusal standartlara ve yapılan işe uygun taşıyıcı halatlar kulanılır. Halatlar ve halat te lerinin uygun testleri yapılır. Halatlar ve
+halat te leri, her kulanım öncesinde kontrol edilir ve periyodik olarak bakımları yapılır.
+10. Açık alandaki çalışmalar
+10.1. İşyerindeki açık çalışma yerleri, yolar ve çalışanların kulandığı diğer açık alanlar yaya ve araç trafiğinin güvenli bir şekilde yapılmasını
+sağlayacak şekilde düzenlenir.
+10.2. Açık çalışma alanları gün ışığının yeterli olmadığı ha lerde uygun şekilde aydınlatılır.
+10.3. Açık alanda yapılan çalışmalarda aşağıdaki düzenlemeler yapılır:
+a) Çalışanlar, olumsuz hava koşularına ve gerekli ha lerde cisim düşmelerine karşı korunur.
+b) Gürültü, gaz, buhar, toz veya güneş gibi dış etkilerin olumsuz sonuçlarından çalışanların korunması sağlanır.
+c) Çalışanlar, herhangi bir tehlike durumunda işyerini hemen terk edebilmeli veya kısa sürede yardım alabilmelidir.
+ç) Çalışanların kaymaları veya düşmeleri önlenir.
+11. Tehlikeli alanlar
+11.1. Tehlikeli alanlar açıkça görülebilir şekilde işaretlenir ve gerekli olduğu durumlarda etrafı enge lerle çevrilir.
+11.2. Yapılan işin öze liği nedeniyle malzeme veya çalışanların düşmesi dahil risk bulunan tehlikeli alanlara, görevli olmayan kişilerin girmesi
+uygun araç ve gereçlerle enge lenir.
+11.3. Merdivenler ve yüksekte çalışma gerektiren yerlerde çalışanların güvenliğini sağlamak üzere gerekli bütün tedbirler alınır.
+11.4. Tehlikeli alanlara girme yetkisi olan kişilerin korunması için uygun tedbirler alınır.    
+11.5. Silo ve kuyu gibi yerlere gerekli güvenlik tedbirleri alınarak girilir. Dik damarlardaki çalışma yerlerinde parça düşmelerine karşı gerekli
+güvenlik tedbirleri alınır. Lağım atılmaları vb. nedenlerle çalışmaların durdurulup çalışanların dışarıya çıkarıldığı ha lerde, kuyu denetlenerek sağlık ve
+güvenlik yönünden yeterli olduğu tespit edilmeden hiç kimsenin kuyuya inmesine izin verilmez.            
+11.6. Ocaklara kesici ve yaralayıcı alet, silah veya alkolü içki sokulamaz.     
+12.Yeraltı ve yüzey suları
+12.1 İşletmelerin yeraltı ve yerüstü çalışmalarında suların meydana getireceği tehlikelere karşı gerekli sağlık ve güvenlik tedbirleri alınır.
+13. Kaçış yoları ve imdat çıkışları
+13.1. Herhangi bir tehlike durumunda, tüm çalışanların işyerini derhal ve güvenli bir şekilde terk edebilmeleri için gerekli tedbirler alınır.
+13.2. Acil çıkış yoları doğrudan dışarıya veya güvenli bir alana veya toplanma noktasına veya tahliye noktasına açılır ve çıkışı önleyecek hiçbir
+engel bulunmaz.
+13.3. Acil çıkış yolarının ve kapılarının sayısı, boyutları ve yerleri yapılan işin niteliğine, işyerinin büyüklüğüne ve çalışanların sayısına uygun
+olması sağlanır.
+13.4. Acil çıkış kapıları dışarıya doğru açılır. Acil çıkış kapıları; acil durumlarda çalışanların hemen ve kolayca açabilecekleri şekilde olur.
+13.5. Acil çıkış kapıları kilitli olmaz. Acil çıkış yoları ve kapıları ile buralara açılan yol ve kapılarda çıkışı zorlaştıracak hiçbir engel bulundurulmaz.
+13.6. Aydınlatılması gereken acil çıkış yoları ve kapılarında elektrik kesilmesi halinde yeterli aydınlatmayı sağlayacak yedek aydınlatma sistemi
+bulunur.
+13.7. Acil çıkış yoları ve kapıları Sağlık ve Güvenlik İşaretleri Yönetmeliğine uygun şekilde işaretlenir.
+14. Arama, kurtarma ve tahliye
+14.1. (Değişik:RG-10/3/2015-29291) İşyerlerinde Acil Durumlar Hakkında Yönetmeliğe uygun olarak, çalışanlar herhangi bir acil durumda
+nasıl davranmaları gerektiği konusunda eğitilirler. Arama, kurtarma ve tahliye konusunda yeterli sayıda destek elemanı görevlendirilir. İşyerlerinde Acil
+Durumlar Hakkında Yönetmeliğin 11 inci maddesinin birinci fıkrası kapsamında görevlendirilen destek elemanı sayısının 10’dan az olduğu ocaklarda en
+az 10 çalışanın konu ile ilgili eğitim alması sağlanır. Çalışan sayısının 10’dan az olduğu durumlarda bu eğitimi her çalışanın alması sağlanır. Bu eğitimler;
+yapılan işin niteliğine uygun olarak ve gerekli teorik ve pratik eğitimleri içerecek şekilde verilir, belgelendirilir ve bu eğitimler her altı ayda bir yenilenir.
+Arama, kurtarma ve tahliye için kulanılacak ekipmanlar, kolayca ulaşılabilecek uygun yerlerde kulanıma hazır durumda bulundurulur ve Sağlık ve
+Güvenlik İşaretleri Yönetmeliğine uygun olarak işaretlenir.
+14.2. Kaçışın zor olduğu, zaman aldığı veya sağlığa zararlı havanın solunabileceği veya oluşabileceği yerlerde, temiz hava sağlayan taşınabilir
+solunum cihazları bulundurulur. Bu cihazlar en kısa sürede ve kolaylıkla ulaşılabilir ve kulanıma hazır şekilde muhafaza edilir.
+14.3. (Değişik:RG-18/11/2017-30244) Yer altı maden işyerlerinde arama, kurtarma ve tahliye ekiplerinin hızlı ve etkili bir şekilde müdahale
+edebilmesi için uygun bir kurtarma istasyonu kurulur. Bu istasyonda bulunacak malzeme ve ekipmanların öze likleri ve sayısı ile bu ekipmanların
+periyodik kontroleri ve kalibrasyon sıklıkları sağlık ve güvenlik dokümanında belirtilir. Ancak, yarıçapı en çok 50 kilometre olan alan içinde bulunan
+maden işyerleri; merkezi bir yerde, ortaklaşa bir kurtarma istasyonu kurabilirler. Bu hüküm, aynı işyerinin çeşitli ocakları için de geçerlidir. İşyerleri, bu
+istasyonun kuruluş ve yönetim giderlerini, çalıştırdıkları çalışanların sayısına göre aralarında paylaşırlar.
+14.4. (Ek:RG-18/11/2017-30244) Yer üstü maden işyerlerinde kurtarma istasyonunun kurulup kurulmayacağı hususu işyeri öze likleri ve acil
+durum tatbikatları dikkate alınarak belirlenir. Bu durum sağlık ve güvenlik dokümanında belirtilir.
+15. Güvenlik tatbikatları: (Değişik cümle:RG-10/3/2015-29291) İşyerlerinde altı ayda bir acil durum planları yenilenir, tatbikatlar en geç altı
+ayda bir yapılır ve bu Yönetmeliğin Ek-1’inin 2.1.6 ncı bendinde belirtilen uygun ekipmanlar vasıtasıyla tatbikatların görüntüsü kaydedilerek gerekli
+tutanaklar düzenlenir. Bu tatbikatların amacı, acil durum ekipmanının kulanılması veya işletilmesi dahil acil durumlarda özel görevi bulunan çalışanların
+eğitim ve becerilerinin kontrol edilmesidir. Görevli çalışanlara, uygun yerlerde, bu ekipmanların doğru bir şekilde kulanılması veya işletilmesi hususunda
+da tatbikat yaptırılır. Tatbikatta kulanılan bütün acil durum ekipmanı test edilir, temizlenir ve yeniden dolumu yapılır veya yenilenir. Kulanılan bütün
+taşınabilir ekipmanlar muhafaza edildikleri yerlerine geri konulur.
+16. İlk yardım
+16.1. İlk yardım ekipmanları, çalışma şartlarının gerektirdiği her yerde bulundurulur ve yapılan işin öze liğine uygun olur. İlk yardım ekipmanları,
+uygun bir şekilde işaretlenir ve kolay ulaşılabilir yerlerde bulundurulur.
+16.2. İşyerinin büyüklüğü, yapılan işin niteliği ve kaza riskine göre işyerinde bir ya da daha fazla ilk yardım odası bulunur. Bu odalarda, kaza
+halinde yapılacak işleri belirten ilk yardım talimatı kolay görülebilecek şekilde asılır. 
+16.3. İlk yardım odaları yeterli ilk yardım malzeme ve ekipmanı ile teçhiz edilir ve sedyeler kolay erişilebilir yerlerde bulundurulur. Bu yerler
+Sağlık ve Güvenlik İşaretleri Yönetmeliğine uygun şekilde işaretlenir.
+16.4. İlkyardım konusunda (Değişik ibare:RG-18/11/2017-30244) 29/7/2015 tarihli ve 29429 sayılı
+Yönetmeliği esaslarına göre destek elemanı görevlendirilir.
+17. Doğal ve suni aydınlatma
+17.1. Çalışanların sağlık ve güvenliği için her işyerinin yeteri kadar aydınlık olması sağlanır.
+Resmî Gazete’de yayımlanan İlkyardım
+17.2. Çalışanların sağlık ve güvenliğinin korunması için işyerlerinin mümkün olduğunca doğal ışık alması sağlanır ve hava şartları göz önünde
+bulundurularak suni aydınlatma ile donatılır.
+17.3. Çalışılan yerlerdeki ve geçitlerdeki aydınlatma tesisatı, çalışanlar için risk oluşturmayacak tipte olur ve uygun şekilde yerleştirilir.
+17.4. Aydınlatma sistemindeki herhangi bir arızanın çalışanlar için risk oluşturabileceği yerlerde acil ve yeterli aydınlatmayı sağlayacak yedek
+aydınlatma sistemi bulunur. Bunun mümkün olmadığı durumlarda, çalışanlara kişisel aydınlatma araçları verilir.
+17.5. Aydınlatma tesisatı; işlemlerin kontrol ve kumanda edildiği alanların, kaçış yolarının, yükleme alanlarının ve tehlikeli alanların, sürekli
+aydınlık olmasını sağlayacak şekilde yapılır. Bu aydınlatma, çalışmaların sürekli olmadığı işyerlerinde, çalışanların bulunduğu sürece yapılır.
+18. Gürültü, titreşim ve toz
+18.1. Çalışanların, gürültü, titreşim ve tozun zararlı etkilerinden korunması için 28/7/2013 tarihli ve 28721 sayılı Resmî Gazete’de yayımlanan
+Çalışanların Gürültü İle İlgili Risklerden Korunmalarına Dair Yönetmelik ile 22/8/2013 tarihli ve 28743 sayılı Resmî Gazete’de yayımlanan Çalışanların
+Titreşimle İlgili Risklerden Korunmalarına Dair Yönetmelik ile beraber Bakanlıkça çıkarılan tozla mücadeleyle ilgili mevzuat hükümleri dikkate alınır.
+19. Hafriyat dökme yerleri ve atık sahaları: Hafriyat dökme yerleri, atık yığınları ve sahaları ile çöktürme havuzları, sağlam ve dayanıklı olmalı,
+çalışanların sağlığını ve güvenliğini tehlikeye düşürmeyecek şekilde tasarlanmalı, inşa edilmeli, işletilmeli ve bakımı yapılmalıdır.
+20. Sıhhi tesisler
+20.1. Soyunma yerleri, elbise dolapları
+20.1.1. Çalışmaları sırasında özel iş elbiseleri giymek durumunda olan çalışanlar için uygun soyunma yerleri sağlanır. Soyunma yerleri kolaylıkla
+ulaşılabilecek yerlerde ve yeterli büyüklükte kurulur ve buralarda oturma yerleri bulunur.
+20.1.2. Soyunma odaları yeterince geniş olur ve burada her çalışan için çalışma saatleri içinde elbiselerini koyabilecekleri kilitli dolaplar bulunur.
+Nemli, tozlu, kirli ve benzeri işlerde veya tehlikeli maddelerle çalışılan yerlerde, iş elbiseleri ile harici elbiselerin ayrı yerlerde saklanabilmesi için, elbise
+dolapları yan yana iki bölmeli olur veya iki ayrı elbise dolabı verilir. Islak iş elbiselerinin kurutulabilmesi için gerekli imkanlar sağlanır.
+20.1.3. Kadınlar ve erkekler için ayrı soyunma yerleri olmalıdır.
+20.1.4. Soyunma yeri gerekmeyen işyerlerinde çalışanların elbiselerini koyabilecekleri uygun bir yer sağlanır.
+20.2. Duşlar ve lavabolar
+20.2.1. Yapılan işin veya sağlıkla ilgili nedenlerin gerektirmesi halinde çalışanlar için uygun duş tesisleri yapılır. Duşlar kadın ve erkek çalışanlar
+için ayrı ayrı olur.
+20.2.2. Duşlar çalışanların rahatça yıkanabilecekleri genişlikte ve uygun hijyenik şartlarda olur. Duşlarda sıcak ve soğuk akan su bulunur.
+20.2.3. Duş tesisi gerektirmeyen işlerde, çalışma yerlerinin ve soyunma odalarının yakınında, gerekiyorsa akar sıcak suyu da bulunan lavabolar
+bulunur. Lavabolar erkek ve kadın çalışanlar için ayrı ayrı olur.
+20.3. Çalışma yerlerine, dinlenme odalarına, soyunma yerlerine, duş ve yıkanma yerlerine yakın yerlerde yeterli sayıda tuvalet ve lavabo bulunur.
+Tuvalet ve lavabolar erkek ve kadın çalışanlar için ayrı ayrı olur. Yeraltı ocaklarının, bu bölümde sözü edilen sıhhi tesisleri yerüstünde bulunabilir.
+21. Yerüstü yardımcı tesislerine ilişkin özel hükümler
+21.1. İşyerleri, muhtemel çevre şartlarına dayanabilecek şekilde tasarlanır, inşa edilir, kurulur, işletilir, kontrol edilir ve bakımı yapılır. İşyerleri,
+kulanım amacına uygun yapıda ve sağlamlıkta olur.
+21.2. Zeminler, duvarlar, tavanlar ve çatılar
+21.2.1. İşyerlerinde, taban döşeme ve kaplamaları sağlam, kuru ve mümkün olduğu kadar düz ve kaymaz bir şekilde olmalı, tehlikeli eğimler,
+çukurlar ve enge ler bulunmamalıdır. İşyerinde yapılan işin niteliği ve çalışanların yaptıkları iş dikkate alınarak işyeri bölümleri ısıya karşı uygun şekilde
+yalıtılır.
+21.2.2. İşyerlerinde, taban döşeme ve kaplamaları, duvarlar ve tavan, uygun hijyen şartlarını sağlayacak şekilde temizlemeye elverişli
+malzemeden yapılır.
+21.2.3. İşyeri binaları, avlular, geçitler, yolar veya benzeri yerlerde bulunan saydam veya yarı saydam duvarlar ile öze likle camlı bölmeler;
+güvenli malzemeden yapılır, açık bir şekilde işaretlenir veya çarpma ve kırılmaya karşı uygun şekilde korunur.
+21.2.4. Yeterli sağlamlıkta olmayan çatılara çıkılmasına ve buralarda çalışılmasına, güvenli çalışmayı sağlayacak ekipman olmadan izin verilmez.
+21.3. Çalışma yeri boyutları ve hava hacmi ve çalışma yerinde hareket serbestliği
+21.3.1. Çalışma yerinin taban alanı, yüksekliği ve hava hacmi, çalışanların rahat çalışmaları, sağlık ve güvenliklerini riske atmadan işlerini
+yürütebilmeleri için yeterli olmalıdır.
+21.3.2. Çalışanın işini yaptığı yerde rahat hareket edebilmesi ve işini güvenli bir şekilde yapabilmesi için yeterli serbest alan bulunur.
+21.4. Pencereler
+21.4.1. Pencereler, tavan pencereleri ve havalandırma araçları; açılıp kapanması, ayarlanması ve sabitleştirilmesi güvenli olacak şekilde
+tasarlanır ve yapılır. Bunlar, açık olduklarında çalışanlar için herhangi bir tehlike arz etmeyecek şekilde yerleştirilir.
+21.4.2. Pencereler ve tavan pencereleri, risk meydana getirmeyecek şekilde temizlenebilir olmalıdır.
+22.5. Kapılar ve girişler
+22.5.1. Kapılar ve girişlerin yeri, sayısı ve boyutları ile yapıldıkları malzemeler, kulanıldıkları odalara, alanlara, kulanım amaçlarına ve çalışanların
+rahatça girip çıkmalarına uygun olmalıdır.
+22.5.2. Saydam kapıların üzeri kolayca görünür şekilde işaretlenir.
+22.5.3. Her iki yöne açılabilen kapılar saydam malzemeden yapılır veya karşı tarafın görülmesini sağlayan saydam kısımları bulunur.
+22.5.4. Saydam veya yarı saydam kapıların yüzeyleri, çalışanlar için tehlike meydana getirmeyecek şekilde güvenli malzemeden yapılmalı veya
+kırılmalara karşı korunmalıdır.
+22.5.5. Raylı kapılarda raydan çıkmayı ve istenmeyen şekilde devrilmeyi önleyecek güvenlik sistemi bulunur.
+22.5.6. Yukarı doğru açılan kapılarda istenmeyen şekilde aşağı düşmeyi önleyecek güvenlik sistemi bulunur.
+22.5.7. Kaçış yolarında bulunan kapılar uygun şekilde işaretlenir. Bu kapılar yardım almaksızın her zaman ve her durumda içeriden açılabilir
+öze likte olur.
+22.5.8. Araçların geçtiği geçit ve kapılar yayaların geçişi için güvenli değilse bu maha lerde yayalar için ayrı geçiş kapıları bulunur, bu kapılar
+açıkça işaretlenir ve bu kapıların önlerinde hiçbir engel bulundurulmaz.
+22.5.9. Mekanik kapılar çalışanlar için kaza riski taşımayacak şekilde çalışır. Bu kapılarda kolay fark edilebilir ve ulaşılabilir, acil durdurma
+cihazları bulunur ve herhangi bir güç kesilmesinde, otomatik olarak açılır olmaması durumunda, kapıların el ile de açılabilir olması sağlanır.
+22.5.10. Herhangi bir yere girişi enge lemek için zincir veya benzeri araçlar kulanıldığında, bunlar açıkça görülebilir olmalı ve buralara yasaklama
+veya uyarıyı belirten uygun işaretler konulmalıdır.
+22.6. Kapalı işyerlerinin havalandırılması
+22.6.1. Kapalı işyerlerinde çalışma şekline ve çalışanların yaptıkları işe göre, ihtiyaç duyacakları yeterli temiz hava bulunması sağlanır. Cebri
+havalandırma sistemi kulanıldığında sistemin her zaman çalışır durumda olması sağlanır. Havalandırma sisteminin çalışmaması durumunda arızayı
+bildiren uyarı sistemi bulunur.
+22.6.2. Suni havalandırma sistemlerinde hava akımı, çalışanları rahatsız etmeyecek şekilde olur. Çalışma ortamı havasını kirleterek çalışanların
+sağlığına zarar verebilecek artık ve pislikler derhal dışarı atılır.
+22.7. Ortam sıcaklığı
+22.7.1. Çalışılan ortamın sıcaklığı çalışma şekline ve çalışanların harcadıkları güce uygun olmalıdır.
+22.7.2. Dinlenme yerleri, soyunma yerleri, duş ve tuvaletler, bekleme yerleri, yemekhaneler, kantinler ve ilk yardım odaları kulanım amacına
+göre yeterli sıcaklıkta olmalıdır.
+22.7.3. İşyerinin ve yapılan işin öze liğine göre pencereler, çatı aydınlatmaları ve cam kısımlar güneş ışığının olumsuz etkilerini önleyecek şekilde
+olmalıdır.
+22.8. Dinlenme yerleri
+22.8.1. Yapılan işin öze liği nedeniyle çalışanların sağlığı ve güvenliği açısından gerekli ha lerde veya 10 ve daha fazla çalışanın bulunduğu
+işyerlerinde uygun bir dinlenme yeri sağlanır. İş aralarında uygun dinlenme imkanı bulunan büro ve benzeri işlerde ayrıca dinlenme yeri aranmaz.
+22.8.2. Dinlenme yerleri yeteri kadar geniş olmalı ve buralarda çalışanlar için yeterli sayıda arkalıklı oturma yerleri ve masalar bulundurulmalıdır.
+22.8.3. Dinlenme yerlerinde sigara içmeyenleri sigara dumanından korumak üzere gerekli düzenleme yapılır.
+22.8.4. Çalışma süresince, işin gereği olarak düzenli ve sık ara veriliyorsa ve ayrı bir dinlenme yeri yoksa çalışanların sağlığı ve güvenliği
+açısından gerekli olan ha lerde, bu aralarda çalışanların dinlenebileceği uygun yerler sağlanır. Bu yerlerde sigara içmeyenleri sigara dumanından
+korumak üzere gerekli düzenleme yapılır.
+23. Gebe ve emziren kadınlar: Gebe ve emziren kadınlar için 16/8/2013 tarihli ve 28737 sayılı Resmî Gazete’de yayımlanan Gebe veya Emziren
+Kadınların Çalıştırılma Şartlarıyla Emzirme Odaları ve Çocuk Bakım Yurtlarına Dair Yönetmelik hükümleri dikkate alınır.
+24. Enge li çalışanlar: Enge li çalışanların çalıştığı işyerlerinde bu çalışanların durumları dikkate alınarak gerekli düzenleme yapılır. Bu düzenleme
+öze likle enge li çalışanların doğrudan çalıştığı yerler ile kulandıkları kapılar, geçiş yerleri, merdivenler, duşlar, lavabolar ve tuvaletlerde yapılır.
+EK- 2
+YERÜSTÜ MADEN İŞLERİNİN YAPILDIĞI İŞYERLERİNDE UYGULANACAK ASGARİ ÖZEL HÜKÜMLER
+1. İşletme
+1.1. İşyerinde yapılacak çalışmalar sağlık ve güvenlik dokümanında belirtilen toprak kayması veya çökmesi riski ile ilgili hususlar dikkate alınarak
+planlanır. Kazı yüzeyleri ve şevlerin eğimi ve yüksekliği zeminin yapısına ve sağlamlığına ve uygulanan çalışma yöntemlerine uygun olur.
+1.2. Her çalışma öncesinde, çalışma maha linden ve nakliyat yolarından daha üst seviyelerdeki şevlerde ve kazı yüzeylerinde toprak ve kaya
+düşmelerine karşı gerekli kontroler yapılır. Gerekli yerlerde ölçümleme işleri de yapılır.
+1.3. Düz ve meyili yüzeylerdeki çalışmalar, zeminin sağlamlığını ve dengesini bozmayacak şekilde yapılır.
+1.4. Çalışma yapılan her kademeye ait en az bir adet çalışma yolu olur.
+1.5. Kademe ve nakliyat yoları kulanılan araçlara uygun sağlamlıkta olur. Buralar araçların güvenli hareket edebileceği öze likte yapılır ve
+bakımları sağlanır.
+1.6. Döküm sahası, kademe gibi iş makinelerinin düşme tehlikesi olan yerlerde yeterli yükseklikte güvenlik bariyerleri yapılır.
+1.7. Kazı yapılan ve lağım atılan kademe cepheleri, şantiyeler çalışanların geçtiği bunlara yakın yolar, taşıma yoları, kitle ve blok kayması ve
+parça düşmesi olasılığı yönünden sürekli olarak denetlenir. Varsa tehlike giderilmeden bu işle görevlendirilen çalışanlardan başkası buralarda
+çalıştırılmaz.
+1.8. Yıldırım düşmesi tehlikesi varsa; elektrikli kapsüle ateşleme yapılan açık ocaklarda, lağım delikleri gerekli tedbirler alınmadan doldurulmaz.
+Tehlike lağımın doldurulması sırasında meydana gelmişse doldurma işlemi derhal durdurulup, patlamanın olağan etki alanı dışına çıkılır ve tehlike
+geçinceye kadar bu alana kimsenin girmemesi için gerekli tedbirler alınır. Ek-1’de yer alan patlayıcı maddelere ilişkin yönergede bu maddede yer alan
+hususlar da belirtilir.
+1.9. Ateşlemelerden ve donmaları izleyen arazi gevşemesi kar, yağmur vb. doğal olaylardan sonra, yeniden işe başlamalarda, kademe yüzleri ve
+çevresi bu işe ayrılmış deneyimli çalışanlar tarafından yukarıdan başlanıp aşağıya doğru sürdürülmek suretiyle çatlak sökümü yapılarak temizlenir. Bu
+çalışmalar  gerekli iş sağlığı ve güvenliği tedbirleri alınarak yapılır.
+1.10. Kazı ya da lağımlarla oyularak kademe alınlarının askıya alınması (ters ıskarpa) suretiyle çalışılması yasaktır.
+1.11. E le kazı ve yükleme yapılan açık ocaklarda kademe yüksekliği 3 metreyi geçemez. Bu ocaklarda şev açısı ise, jeolojik ve yapısal öze likler
+de dikkate alınarak, sağlam arazide 60 dereceyi, çöküntülü ve ezik arazide, kum, çakıl ve dere tortuları olan yerlerde, kili tabakalarda, ayrışıma uğramış
+kalkerlerde, parçalanmış volkanik taş ve tüflerde 45 dereceyi, kaygan ve sulu yerlerde 30 dereceyi geçemez.               
+1.12. Açık işletmelere ilişkin yönerge: Kazıcı ve doldurucu makinaların çalıştırıldığı veya derin lağım deliklerinin uygulandığı işyerlerinde ilgili
+mevzuat hükümlerinin de göz önünde tutulduğu ve aşağıdaki ayrıntıları kapsayan yönerge hazırlanır. Bu Yönergede;
+a) Kademelere verilecek en çok yükseklik,
+b) Güvenle çalışmaya imkan verecek kademe düzlüğü, genişliği,
+c) Çalışılan yerin öze liğine, jeolojik, tektonik yapısına ve fiziksel öze liğine göre kademelere verilmesi gereken şev derecesi,
+ç) Lağım atılacak yerin öze liğine göre, lağım derinliği, lağım aralıkları ve lağım deliğiyle kademe yüzünün dibi arasındaki uzaklık ve buna göre
+konulması gereken patlayıcı madde miktarı,
+d) Ateşleme sırasında çalışanların ve makinaların güvenlikleri için alınması gereken tedbirler,
+e) Makinaların çalışma koşuları, manevra yerleri, yükleme, taşıma ve boşaltma işlerinde uygulanacak güvenlik tedbirleri,
+f) Patlayıcı madde doldurma, sıkılama ve ateşleme sırasında alınacak güvenlik tedbirleri,
+g) Çalışma yerlerine görevlilerden başkalarının girmesine karşı tedbirler,
+ğ) Patlayıcı maddelerin depolanması, kulanılacakları yere güvenli biçimde taşınmaları ve kulanılmalarına ilişkin tedbirler,
+gibi hususlar yer alır.
+EK- 3
+YERALTI MADEN İŞLERİNİN YAPILDIĞI İŞYERLERİNDE UYGULANACAK 
+ASGARİ ÖZEL HÜKÜMLER
+1. Yeraltı çalışma planları (imalat haritası)
+1.1. Yeraltı çalışmalarını açıkça gösterecek (Değişik ibare:RG-10/3/2015-29291) şeklinde üç boyutlu
+bir yeraltı çalışma planı hazırlanır.
+Yolar, üretim alanları ile çalışmayı ve güvenliği etkileyebileceği beklenen diğer öze likler bu planın üzerinde gösterilir ve bu planlar kolayca ulaşılabilir
+şekilde muhafaza edilir. Planlar sağlık ve güvenlik yönünden gerekli olduğu sürece saklanır. (Ek cümle:RG-10/3/2015-29291) Ayrıca bu plan ölçekli
+olarak elektronik ortamda da üç boyutlu olarak hazırlanır.
+1.2. Yeraltı çalışma planları en geç ayda bir günce leştirilir ve işyerinde bulundurulur.
+1.3. Eski çalışma yerleri, ocak içinde veya çevresinde su bulunması muhtemel tabakalar, faylar ve su kaynakları gibi doğal ve arızi su
+birikintilerinin durumu, genişliği ve derinliğiyle ilgili bütün bilgiler, ayrıntılı olarak imalat haritalarına işlenir.
+2. Tüm yeraltı çalışmalarında, çalışanların kolayca ulaşabileceği, birbirinden bağımsız ve güvenli yapıda en az iki ayrı yoldan yerüstü bağlantısı
+bulunur. Bu yolar arasındaki topuk 30 metreden aşağı olmaz, bu yoların ağızları aynı çatı altında bulundurulmaz.
+3. Yeraltı çalışma yerleri ve yolar
+3.1. Yeraltı çalışmalarının yapıldığı yerler, çalışanların en az riskle çalışabilecekleri ve hareket edebilecekleri şekilde yapılır, işletilir, teçhiz edilir
+ve bakımı sağlanır.
+3.2. Yolar, çalışanların gidecekleri yerleri kolayca bulabilecekleri şekilde işaretlenir.
+3.3. Taşıma e le veya bir mekanik araçla yapıldığı takdirde, yaya yoları galeri tabanından en az 180 santimetre yükseklikte ve araçlarla galerinin
+yan duvarlarından birisi arasında en az 60 santimetre mesafe kalacak şekilde bırakılır.
+3.4. Yaya yolu bırakılmasına imkan yoksa ve taşıma sırasında çalışanların geliş ve gidişine veya çalışmasına izin verilmişse, yoların yan
+duvarlarında, uygun aralıklarla, en az iki kişinin sığabileceği yeterli boyutlarda cepler yapılır. Bu cepler boş ve temiz tutulur ve kolayca görünür hale
+getirilir. Taşımanın bantlarla yapıldığı yo lar bu hükmün dışındadır.
+3.5. Arabaların kancalandığı veya kancalarının çözüldüğü yerlerde doldurma ve boşaltma merkezlerinde gerekli aydınlatma yapılır ve galeri
+kesitleri çalışmaları tehlikeye sokmayacak şekilde boyutlandırılır.
+3.6. Taşıma yolarında,  varage ler ve kuyularda malzeme taşınmasında kulanılan araçların ve öze likle katarların yoldan kaçmalarını önlemek,
+çalışanların bu tehlikeli durumlardan korunmalarını sağlamak üzere, gerekli sağlık ve güvenlik tedbirleri alınır.
+3.7. Yeraltı tesislerinde uygun işaretleşme sistemi kurulur.
+3.8. (Ek:RG-10/3/2015-29291) (Değişik:RG-24/3/2016-29663) Başyukarılarda insan ve malzeme ile cevher ve pasa yoları birbirinden
+ayrılır ve aynada ilerleme yapılırken kapak uygulanır.
+4. Nakliyat
+4.1. Taşıma araçları sürücülerin, kulanıcıların ve civarda bulunan diğer çalışanların sağlık ve güvenliği için uygun şekilde kurulur, çalıştırılır ve
+bakımı yapılır. (Ek cümle:RG-10/3/2015-29291) İnsan naklinin yapıldığı eğimli galerilerde; eğim 18 dereceyi geçemez. Bu durumun sağlanamadığı
+eğimli ana yolarda insanların taşınması uygun fren sistemi ve koruyucularla donatılmış mekanik vasıtalarla yapılır.
+4.2. İnsan taşımasında kulanılan mekanik araçlar uygun şekilde kurulur ve yazılı talimatlar uyarınca kulanılır.
+4.3. Tek çıkarma sistemli kuyularda insan taşınması süresince, malzeme taşınması yasaktır. İki çıkarma sistemli kuyularda kompartımanların
+birinde insan taşınırken diğerinde malzeme taşınabilir.
+4.4. Taşıma yolarındaki hava içinde patlamaya neden olabilecek miktarda kömür tozu bulunan veya metan oranı % 0.3’ü geçen kömür
+ocaklarıyla kükürt tozu bulunan kükürt ocaklarında, elektrikli lokomotifler kulanılmaz.
+4.5. Kömür ve kükürt ocaklarında, benzinli lokomotiflerin ve benzinle çalışan araçların kulanılması yasaktır. Dizel lokomotiflerde egzoz gazlarının
+tehlikesine karşı, uygun sistemler kulanılması zorunludur.
+4.6. Freno ve vinçlerle taşıma yapılırken çalışanların vinç ve varage ler ile taşıma yapılan yolardan yürüyerek iniş çıkışı yasaktır. Vinç ve
+varage lere ancak taşıma durdurulduğu zaman ve saççının izni alınarak girilir. İlgililer, bu durumlarda, önceden, gerekli güvenlik tedbirlerini alırlar.
+4.7. Ocaklarda kulanılacak mekanik taşıt sistemine, sistemin çalışmasına, özel işaretleşme kura larına, arabaların yönetimine ve durdurulmasına,
+arabalara binmesine izin verilen kancacıların uymak zorunda oldukları kura lara, yoldan çıkan ve devrilen arabaların yola konulmasında uygulanacak
+esaslara, asılacak uyarı levhalarına ilişkin aşağıdaki ayrıntıları kapsayan ve ilgili mevzuat hükümlerinin de göz önünde tutulduğu bir yönerge hazırlanır.
+Yönerge ve yönergenin öngördüğü uyarı levhaları uygun yerlere asılır ve tüm ocak personeline öğretilir. Çalışanların görebileceği yerlere asılır. Bu
+Yönergede;
+a) İnsan taşıması sırasında alınacak güvenlik tedbirleri,
+b) Taşıma yapılan yerlerde uyulacak kura lar, görevlendirilen kişiler,
+c) Ele veya mekanik vasıtalarla taşımalar sırasında kulanılacak güzergahlar,
+ç) Bakım ve onarım gibi durumlarda görevlendirilecek kişiler,
+d) Zorunlu ha lerde taşıma vasıtalarının hareketlerinin düzenlenmesi, kancalama ve kanca kesilmesi ve durdurulması için gerekli araç ve gereçler,
+e) Nakliyat sırasında uygun kesit, ebat ve eğimde yolun bulunması ile ilgili hususlar,
+f) Hız ile ilgili hususlar,
+g) Freno ve vinçlerle taşıma yapılırken çalışanların yürüyerek iniş çıkışı ile ilgili gerekli güvenlik tedbirleri,
+ğ) Her kafeste veya kafesin her katında taşınabilecek çalışan sayısı ile kafesler ve halatlarla ilgili güvenlik tedbirleri,
+gibi hususlar yer alır.
+4.8. (Ek:RG-18/11/2017-30244) Yer altı maden işyerlerinde kulanılan bant konveyörler, TS EN 14973 standardına uygun olmalıdır.
+5. Kuyularda taşıma
+5.1. Halatların veya bağlama düzeninin kopması, kayması vb. durumlarda, kafeslerde ani düşmeleri önlemek üzere gerekli tedbirler alınır.
+5.2. Taşıma halatıyla kafes arasındaki bağlayıcı parçaların (koşum düzeni) maruz kalabilecekleri dinamik çarpma ve gerilmeler de hesaba
+katılmış olmak koşuluyla, yapımda uygulanacak güvenlik katsayısı, kafesin taşıyacağı en çok statik yüke nazaran en az 12 olmalıdır. Güvenlik zincirleri
+kulanılması gerektiğinde, zincirler merkez askı çubuğunun kopması olasılığına karşı, kafesin maruz kalacağı çarpmanın olabildiğince hafif olmasını
+sağlayabilecek boyda olmalıdır. Halatların ve karşı ağırlıkla kafes arasındaki bağlayıcı parçaların güvenliğini sağlayacak gerekli tedbirler ayrıca alınır.
+5.3. Taşıyıcı halatla kafes arasındaki koşum düzeni, altı ayda en az bir kez, zincirler, ayırma kancaları ve diğer parçalar sökülmek, parçaların
+kesitleri uygun aletlerle ölçülmek suretiyle aşınma, pas ve çatlak bulunup bulunmadığı yönünden muayene edilir. Muayeneler ve parça değiştirmeleri
+yetkililerin gözetimi altında yapılır. Bütün bağlama düzeni, yapımcı firmanın taahhüt ettiği süre ve esaslar içerisinde kalmak üzere, işletmenin çalışma
+koşularına göre, sorumlu kişiler tarafından belirlenecek bir devreden sonra değiştirilir. Bağlama ve koşum parçalarının tamamının veya bir kısmının
+değiştirilmeleri halinde, hizmete konmadan önce, uygun ve yeterli bir yükleme deneyiyle dayanıklılıkları ölçülür. Muayene ve deneylerin sonuçları rapor
+defterine yazılır.
+6. Doldurma istasyonları ve garajlar
+6.1. Doldurma istasyonu ve lokomotif garajı, taşıma yolarından ayrı olarak, yanmaz maddelerden yapılır. İstasyonlar, yeterli biçimde aydınlatılır
+ve havalandırılır. Buraların açık alevli ışık kaynaklarıyla aydınlatılması yasaktır.
+6.2. Doldurma istasyonlarının hava dönüş yolu, yangın anında zararlı gazların doğrudan ana hava dönüş yoluna gidebileceği biçimde düzenlenir.
+6.3. Akümülatörlü lokomotiflerin akümülatörlerinin ocak içerisinde doldurulmaları ve değiştirilmeleri aşağıda belirtilen koşularda ve doldurma
+istasyonlarında yapılır:
+a) Doldurma odaları ve istasyonları amaca uygun biçimde donatılır.
+b) Buralar iyice havalandırılır ve çıkan hava doğrudan ana hava dönüş yoluna verilir.
+c) Oda ve istasyonlar yanmaz malzemeden yapılır.
+ç) Elektrolitle yapmalara karşı koruma tedbirleri alınır.
+d) Elektrik tesisatı bu gibi yerler için kabul edilir tipten olur.
+e) Aydınlatma armatörlerinin bakımı düzenli olarak yapılır.
+7. Tahkimat
+7.1. Bütün yeraltı işlerinde, taş, toprak, kömür, cevher vb. maddelerin kayma ve düşmelerini önlemek üzere, uygun ve yeterli tahkimat yapılır.
+Tavanlar, yan duvarlar ve tahkimat düzenli olarak muayene edilir. Çalışılan yerin güvenilir şekilde tahkimini, gereğinde derhal onarımını, değiştirilmesini
+veya takviyesini sağlayacak tedbirler alınır.
+7.2. Tahkimat, planlara ve yazılı talimatlara uygun olarak yapılır ve bu talimatlar sorumlu kişilerin rapor defterinde bulundurulur.
+7.3. Galeriler zeminin sağlamlığı ve dayanıklılığı açısından düzenli olarak kontrol edilir ve tahkimatların bakımı düzenli olarak yapılır.
+7.4. Tahkimatın onarımı, değiştirilmesi, ileri alınması ve sökülmesi sırasında gerekli güvenlik tedbirleri alınır.
+7.5. Tavanlarda ve yanlardaki boşluklar doldurulur ve sıkıştırılır. Bir daha kulanılmayacak olan yolarda dolgu ile ilgili gerekli tedbirler alınır.
+7.6. Ocak grizulu veya damar kendi kendine yanmaya elverişli ise ayak arkası, tavan veya yanlarda meydana gelen boşluklar sıkıca doldurulur ve
+diğer sağlık ve güvenlik tedbirleri alınır.
+7.7. Yeraltı maden ocaklarında açık tutulması gereken her yerde tavan kendini taşıyacak kadar sağlam olmadıkça tahkimat yapılması zorunludur.
+Tahkimat yapılması zorunlu olan ocaklarda aşağıdaki ayrıntıları kapsayan ve ilgili mevzuat hükümlerinin de göz önünde tutulduğu bir yönerge hazırlanır
+ve çalışanların görebileceği yerlere asılır. Bu Yönergede;
+a) Ocakta tahkimat gerektiren her kısımda (ayak, tavan vb.) tahkimattan sorumlu çalışanın belirlenmesi,
+b) Tahkimatın yapılması sırasında çevre güvenliğinin alınması,
+c) Çalışma yapılan her ayakta uygun nitelik, miktar ve ebatlarda tahkimat malzemesinin bulunması,
+ç) Çalışılan yerin öze liğine, jeolojik, tektonik yapısına ve fiziksel ve kimyasal öze liğine göre kademelere uygun tahkimat yapılması ile ilgili gerekli
+tedbirler,
+d) Kendiliğinden yanmaya meyili ve grizulu ocaklarda tahkimat yapılması ile ilgili gerekli tedbirler,
+e) Güvenle çalışmaya imkan verecek arın düzlüğü ile ayak baş ve dibi arasındaki hiza genişliği ilgili tedbirler,
+f) Tavan tahkimatının geri kazanılması,
+g) Ayak arkasının düşürülmesi,
+ile ilgili hususlar yer alır.
+8. Havalandırma
+8.1. Çalışma yapılan bütün yeraltı işletmelerinde uygun havalandırma sağlanır. Üretime başlamadan önce, her ocakta, uygun bir havalandırma
+sistemi kurulur. Ocaklarda;
+a) Sağlığa uygun solunabilir hava sağlanması,
+b) Ortamdaki patlama riskinin ve solunabilir toz konsantrasyonunun kontrol altında tutulması,
+c) Kulanılan çalışma yöntemi ve çalışanların fiziki faaliyetleri dikkate alınarak çalışma şartlarına uygun hava öze liklerinin sağlanması ve bu
+durumun sürdürülebilmesi için sürekli havalandırma yapılması,
+zorunludur.
+8.2. 8.1 numaralı maddede belirtilen şartların doğal havalandırma ile sağlanamadığı yerlerde, havalandırma bir veya daha fazla mekanik sistemle
+sağlanır. Havalandırmanın sürekliliğini ve kararlılığını sağlayacak tedbirler alınır. Mekanik havalandırma sistemi kulanılan ocaklarda hava akımı
+mümkünse doğal hava akımı doğrultusunda yönlendirilir. Havalandırma sistemlerinin devre dışı kalmaması için bu sistemler devamlı surette izlenir ve
+istenmeyen devre dışı kalmaları bildirecek otomatik alarm sistemi bulunur.
+8.3. Havalandırma ile ilgili değerler periyodik olarak ölçülür ve ölçüm sonuçları kaydedilir. Havalandırma sisteminin detaylarını kapsayan bir
+havalandırma planı hazırlanır, periyodik olarak günce lenir ve işyerinde hazır bulundurulur. (Ek cümleler:RG-10/3/2015-29291) Ocaktaki hava
+miktarı; temiz hava giriş yolu ve havanın ayrıldığı bütün kolarda dâhil olacak şekilde, hava ölçüm istasyonları kurularak, gerekli ölçümler yapılmak
+suretiyle takip edilir. Bu ölçümler sağlık ve güvenlik dokümanında belirtilen sıklıklara göre yapılır ve havalandırma defterine kaydedilir. Hava hızı her
+halde 0,5 m/s’den az olamaz.
+8.4. İnsan ve malzeme taşımasında kulanılan kuyularda, lağımlarda, ana nefeslik yolarında, eğimli ve düz yolarda, hava hızı, saniyede 8 metreyi
+geçmez.
+8.5. (Değişik:RG-10/3/2015-29291) Havasında % 19’dan az oksijen, % 2’den çok metan, % 0.5’ten çok karbondioksit, 50 ppm (%0.005) den
+çok karbonmonoksit ve diğer tehlikeli gazlar bulunan yerlerde gerekli güvenlik önlemleri alınarak mevcut olan tehlikeyi bertaraf etmek amacıyla önleyici
+faaliyetler ve kurtarma çalışmaları dışında çalışılmaz. 8 saatlik çalışma için müsaade edilen en yüksek hidrojensülfür oranı 20 ppm (% 0,002)’dir.
+8.6. Terk edilen veya yeterince havalandırılamayan yerler çalışanların girmesini önleyecek biçimde kapatılır ve üzerlerine uyarı işareti konulur.
+Çalışmanın bittiği yerlerle terk edilmiş katlar, çalışılan yerlerden ve hava yolarından topuk veya gaz sızdırmaz barajlarla ayrılır. Buna imkân olmadığı
+ha lerde buralardan gelecek kirli hava en kısa yoldan nefesliğe verilerek dışarı atılır. Buralar sorumlu kişilerce her vardiyada denetlenir.
+8.7. Havalandırma sistemi kapı ve perdelerle havayı yönlendirecek şekilde düzenlenir. Kapı ve perdeler nakliyat esnasında havalandırma
+sistemini olumsuz etkilemeyecek şekilde ayarlanır. Ana hava giriş ve çıkış yoları arasında bulunan barajlar, hava köprüleri ve kapılar, bir patlama veya
+yangın halinde kolayca yıkılmayacak sağlamlıkta ve dayanımda yapılır.
+8.8. Ana vantilatör ve aspiratörler birbirinden bağımsız iki ayrı enerji kaynağına bağlanır. Bu enerji kaynaklarından birinin durması halinde diğer
+kaynağın ocak havalandırmasını aksatmayacak en kısa zamanda devreye girmesi sağlanır.
+8.9. Ocağın çeşitli kısımlarında, sıcaklık ve nem oranı düzenli olarak ölçülür. Nem oranı göz önünde bulundurularak hava sıcaklığının sağlığa
+zararlı düzeye yükselmemesi için gerekli tedbirler alınır. Bu düzeye yaklaşıldığında ölçme işlemi her gün gerekli görülecek aralıklarla yapılır ve ölçme
+sonuçları havalandırma defterine yazılır. Söz konusu şartların sağlık için tehlikeli olması halinde çalışma geçici olarak durdurulur.
+8.10. Hava giriş kuyusundan kömür tozu girmesini önlemek üzere yerüstünde gerekli tedbirler alınır. Ayrıca kuyular ve çevreleri belirli aralıklarla
+toz birikintilerinden temizlenir. Tozların havaya karışmasına engel olacak tedbirler alınmadığı takdirde ocak dışında hava giriş kuyusuna 80 metreden
+daha yakın eleme ve ayıklama tesisi kurulmaz.
+8.11. Havalandırma ile ilgili aşağıdaki ayrıntıları kapsayan ve ilgili mevzuat hükümleri doğrultusunda hazırlanan bir yönerge hazırlanır ve
+çalışanların görebileceği yerlere asılır. Bu Yönergede;
+a) Havalandırma sisteminin doğal ya da cebri olarak sağlandığına dair bilgi,
+b) Havalandırma planı hakkında bilgi,
+c) Havalandırmayı etkileyebilecek durumlar,
+ç)  Havalandırmanın yapılmadığı bölgeler,
+d) Hava ölçümlerinin kim tarafından, hangi aralıklarla ve nerelerde yapılacağı,
+e) Yapılacak gaz ölçümleri,
+f) Ölçümler sonrasında alınacak tedbirler,
+ile ilgili hususlar yer alır.
+9. Patlayıcı madde kulanım yasağı
+9.1. Patlayıcı madde;
+a) Emniyet lambası veya metan detektörleriyle yapılan ölçümlerde % 1 veya daha çok metan bulunan kısımlarda,
+b) Grizu bulunması muhtemel yerler, grizu kontrolü yapılamayan eski veya yeni imalat boşlukları veya çatlakları olan yerlerde,
+c) Tıkanmış kömür, bür ve siloların açılmasında,
+ç) Kapatılmış yangın barajlarının açılmasında,
+kulanılmaz.
+10. Grizulu maden ocakları
+10.1. Yeraltı çalışmalarında yanıcı veya patlayıcı ortam oluşması riski meydana getirecek miktarda metan gazı çıkma ihtimalinin olduğu yerler
+grizulu kabul edilir.
+10.2. Bacalar, ani grizu boşalabilecek yönlerde veya grizu bulunabilecek eski çalışma yerlerinde devam ettirildiği takdirde, yapısal öze likler göz
+önünde bulundurularak en az 25 metre boyunda kontrol sondajları yapılması sağlanır. Kontrol sondaj deliklerinde, grizu veya tehlikeli gazların varlığı
+anlaşılırsa, iş durdurulur; çalışanlar söz konusu yeri terk eder; giriş yeri kapatılır, durum yetkililere derhal haber verilerek gerekli çalışmaların yapılması
+sağlanır.
+10.3. Grizulu ocaklarda havalandırma ile ilgili değerler her vardiyada ölçülür, metan gazı ölçümleri bu ölçümlerle beraber yapılır. Havada %
+1’den çok metan gazı tespitinde, bu oran  % 1’in altına düşünceye kadar ölçümler aralıksız sürdürülür. Üretim ünitelerinden dönüş havası içinde ve
+üretim yerlerindeki gazların birikebileceği yerlerde metan gazı seviyesi sürekli olarak izlenir. (Ek cümleler:RG-10/3/2015-29291) Merkezi izleme
+sistemine bağlı sensörler; oksijen, metan, karbonmonoksit, hidrojensülfür, sıcaklık ve hava hızı değerlerini ölçecek şekilde, sayıları ve yerleri sağlık ve
+güvenlik dokümanında belirtilerek yerleştirilir. Ancak, bu sensörler, asgari olarak, ocağın ana hava giriş yolunda, üretim bölgelerinin her birinin temiz
+hava giriş ve hava dönüş yolarında, hazırlık çalışması yapılan bölgelerin hava dönüş yolarında ve ocağın kirli havasının ocak dışına çıktığı nefesliklerde
+bulunur. Sensör ölçümleri; farklı ölçüm metotlarıyla doğrulanır. Bu ölçümler sağlık ve güvenlik dokümanında belirtilen sıklıklara göre yapılır ve
+havalandırma defterine kaydedilir. Merkezi izleme sistemine bağlı sensörler ile bu sisteme bağlı diğer tamamlayıcı unsurların bakım ve onarımı İş
+Ekipmanlarının Kulanımında Sağlık ve Güvenlik Şartları Yönetmeliği hükümlerine uygun olması sağlanır.
+10.4. Bütün grizulu ocakların, havalandırma planında tespit edilen istasyonlarında, en geç 10 günde bir gerekli ölçümler yapılır. Hava akımını
+etkileyecek bir değişikliğin olması durumunda gerekli ölçümler yenilenir. (Ek cümleler:RG-10/3/2015-29291) Ocakta yeterli sayıda kalibre edilmiş
+seyyar gaz ölçüm cihazları bulundurulur, birbirinden ayrı noktalarda çalışan her ekipte en az bir adet cihaz bulunur. Bu cihazlar metan, karbonmonoksit,
+oksijen ve hidrojensülfür gazlarını ölçecek öze likte olur. Bu cihazlarla; sağlık ve güvenlik dokümanında belirtilen sıklıkta ocağın çalışan bulunan
+bölgelerinde, baraj önlerinde, hava istasyonlarında ve su ceplerinde ölçümler yapılarak, bu ölçümler havalandırma defterine kaydedilir. Herhangi bir
+cihazın arızalanması halinde kulanıma hazır yeterli sayıda yedek cihaz bulundurulur.
+10.5. Havalandırma bir veya daha fazla mekanik sistemle sağlanır.
+10.6. Çalışmalar metan gazı çıkışı dikkate alınarak yürütülür. Metan gazından kaynaklanacak riskleri mümkün olduğunca ortadan kaldıracak
+tedbirler alınır.
+10.7. (Değişik:RG-10/3/2015-29291) Tali havalandırma sadece ana havalandırma akışı ile bağlantısı bulunan hazırlık ve kurtarma
+çalışmalarının yapıldığı yerlerde uygulanır. Tali havalandırmada kısa devreyi önleyecek tedbirler alınır. Tali havalandırmada kulanılan vantüpler
+antistatik ve alev yürütmez öze likte olur.
+10.8. Havalandırma esas itibariyle aşağıdan yukarıya doğru yapılır. Eğimi hiçbir kısımda % 10’ u geçmeyen kesitinin herhangi bir noktasında
+grizu toplanmasına imkân bulunmayan ve grizu birikimini önleyecek hava akımı sağlanan galeriler havalandırma bakımından düz sayılır.
+10.9. Hazırlık işleri veya grizu birikimlerini dağıtmak amacıyla yapılan işler dışında, bölmeyle veya borularla havalandırma yapılmaz.
+10.10. Grizu birikintileri, tehlike doğurmayacak biçimde temizlenir.
+10.11. Aynı hava akımı üzerinde bulunan ve aynı anda çalışılan yerlerin sayısı, hava miktarına ve grizu çıkışına göre düzenlenir. Aynı hava
+akımından yararlanan ayaklarda ve damar içindeki düz ve eğimli yolarda metan oranı % 1,5’u, bunların bağlandığı hava dönüş yolarında % 1’i geçmez.
+10.12. (Değişik:RG-10/3/2015-29291)(3)  Grizulu veya yangına elverişli kömür damarlarının bulunduğu ocaklarda, tüm çalışanlar çalışma
+süresince, yanlarında Ek-1 inci maddede yer alan tabloda belirtilen kaçış sürelerini ve TS-EN 13794 sayılı standartta belirtilen kriterleri sağlayacak
+oksijenli ferdi kurtarıcı bulundurur ve gerektiğinde kulanır.
+10.13. Bütün grizulu ocaklarda her biri tek başına ocağın havalandırılmasını sağlayacak güçte, birinin herhangi bir nedenle durması halinde diğeri
+derhal çalışacak durumda iki havalandırma grubu bulunur.
+10.14. Havasında % 2’den çok metan tespit edilen ocaklarda veya ocak kısımlarında, çalışanların kurtarılması ve grizunun temizlenmesi dışında
+çalışma yapılmaz. Temizlik çalışmalarında bulunacak kişilerin konu ile ilgili özel eğitim alması zorunludur. Metan oranının çalışma ortamında sık sık
+değiştiği ha lerde, metan oranına göre ayarlı, ses ve ışık uyarısı yapan metan dedektörü bulundurulur veya bir merkezden izlenebilecek otomatik kontrol
+sistemi kurulur.
+10.15. Genel havasındaki metan oranı % 1,5’i geçen yerlerdeki iletkenlerin ve elektrikli aygıtların gerilimi derhal kesilir ve şartlar düzelmedikçe
+yeniden verilmez. (Ek cümle:RG-10/3/2015-29291) Ancak, I. Grup Teçhizatın M1 kategorisinde olan ekipmanlar bu hükmün dışındadır.
+10.16. Grizulu maden ocaklarında yalnız bu tür ocaklar için uygun olan patlayıcı maddeler ve ateşleyiciler kulanılır.
+10.17. Ateşleyici grizulu ocaklarda lağım deliklerini doldurmadan önce 25 metre yarıçapındaki bir alan içinde ve öze likle tavandaki boşluklar,
+çatlaklar ve oyuklarda grizu ölçümü yapar. Bu ölçmede % 1 veya daha yüksek oranda metan tespit edilirse lağımlar doldurulmaz.
+10.18. Ateşleyici, lağımların doldurulmasından sonra ve ateşlemeden önce ölçümü tekrarlar. Metan oranı % 1’in altındaysa lağımlar ateşlenir,
+üstündeyse % 1’in altına düşünceye kadar ateşleme yapılmaz. Kömür tozu bulunan veya kömür tozu oluşabilecek kömür damarlarının bulunduğu
+ocaklarda, ateşlenecek yerlerde lağım delikleri doldurulmadan önce taş tozu serpmek, sulamak gibi koruyucu tedbirler alınır.
+10.19. Sigara içmek, içmek amacıyla tütün mamuleri ile alev ve kıvılcım çıkarabilecek her türlü maddeyi taşımak ve bulundurmak yasaktır.
+10.20. Alevle kesme, kaynak yapma ve benzeri diğer işlemlere, çalışanların sağlık ve güvenliklerini korumaya yönelik özel tedbirler alınması
+kaydıyla sadece istisnai durumlarda izin verilir.
+10.21. Yerüstünde ocaktan çıkan grizu veya diğer zararlı gazların tehlike oluşturmasını önlemek üzere gerekli güvenlik tedbirleri alınır.
+10.22.(Ek:RG-10/3/2015-29291)1 Havalandırma sistemi acil ha lerde ve ihtiyaç halinde kulanılabilmesi için hava yönünü ters çevirebilecek
+öze likte olur.
+11. Yanıcı toz bulunan maden ocakları
+11.1. Açılan bütün maden damarlarında oluşabilecek tozun, patlamanın yayılmasına neden olmayacağı sağlık ve güvenlik dokümanında
+belirtilmedikçe, kömür madenleri yanıcı toz bulunan maden ocakları olarak kabul edilir.
+11.2. Yanıcı toz bulunan maden ocaklarında toz patlamasına karşı gerekli tedbirler alınır ve yalnız bu tür ocaklar için uygun olan patlayıcı
+maddeler ve ateşleyiciler kulanılır.
+11.3. Yanıcı toz birikimini azaltacak, taş tozu ve benzeri maddelerle yanma öze liğini yok edecek veya su ve benzeri maddelerde tozu bağlayarak
+uzaklaştırılmasını sağlayacak tedbirler alınır. 
+11.4. Zincirleme toz patlamalarına neden olabilecek yanıcı toz ve/veya grizu patlamalarının yayılması patlama barajları yapılarak önlenir.
+Patlamayı durdurucu bu barajların yerleri ocaktaki üretim ve faaliyetlerden kaynaklı değişikliklere göre günce lenir ve  yerleri imalat haritaları ve
+havalandırma planında gösterilir.
+11.5. Kömür ocaklarındaki arabalar, içlerinden kömür tozu dökülmeyecek biçimde olur. Üretim, yükleme, taşıma, aktarma ve boşaltma yapılan
+yerlerde tozun havaya yayılmasını önlemek için pülverize su fisketeleri gibi gerekli tedbirler alınır.
+11.6. Taş tozu serpme işlemi, kömür tozunun yanma ve patlama etkisini yok edecek veya azaltacak oranda ve uygun nitelikteki maddelerle
+yapılır. Taş tozu, bu oranı sürekli olarak koruyacak biçimde ve uygun aralıklarla serpilir. Kulanılacak taş tozu, olabildiğince nem tutmayacak, silis
+içermeyecek, içinde % 1,5’dan çok organik madde bulunmayacak ve sağlığa zararlı etki yapmayacak nitelikte olur. Taş tozu, inceliği ve dağılım öze liği
+bakımından belirli aralıklarla denetlenir. Bozulmuş veya çamurlaşmış taş tozu birikintileri toplanarak ocaktan dışarıya çıkarılır.
+11.7. Yanıcı toz bulunan maden ocaklarında bu bölümün 10.19 ve 10.20 numaralı maddelerde belirtilen hükümler uygulanır.
+12. Gaz kaçağı, göçük veya su baskını
+12.1. (Değişik:RG-10/3/2015-29291) Ani gaz geliri veya göçük veya su baskını ihtimali olan bölgelerde çalışanların korunması ve güvenli bir
+çalışma ortamı sağlanması için yürütülecek faaliyetler sağlık ve güvenlik dokümanında belirtilerek planlanır ve uygulanır.
+12.2. Tehlikeli miktarda su veya akıcı malzeme bulunduran veya eski imalat tabakaları arasında kazılmakta olan kuyularda, çalışanların
+gerektiğinde kuyudan derhal çıkmalarını sağlayacak tedbirler alınır.
+12.3. Tespit edilen riskli bölgelerin yakınında çalışanlar ile bu bölgelerden geçen galerilerdeki çalışanların korunması sağlanır ve risklerin kontrol
+altına alınması için gerekli tedbirler alınır.
+12.4. Ocak ağızları, dış su baskınları ve heyelan gibi doğal afetlerin etkisinden zarar görmeyecek yerlerde seçilir. Afetlerden kaynaklanan
+değişiklikler nedeniyle yeni tehlikelerin ortaya çıkması durumunda, ocaklarda gerekli güvenlik tedbirleri ayrıca alınır.
+12.5. (Değişik:RG-10/3/2015-29291) Çalışılmakta olan yerler yakınında, basınç altında birikmiş tehlikeli ve zararlı gazların veya yeraltı
+suyunun tehlikeye neden olabileceği durumlarda veya eski çalışma yerlerinde su veya gaz birikme ihtimalinde kontrol sondajı yapılır.
+12.5.1. Yeraltı kömür ocaklarında gaz degajı riskinin değerlendirilerek sağlık ve güvenlik dokümanında yer alması esastır. Degaj riskinin
+değerlendirilmesinde asgari olarak aşağıdaki hususlar dikkate alınarak sağlık ve güvenlik dokümanında belirtilir.
+a) Kömür damarlarının gaz içerikleri,
+b) Kömürün desorbsiyon kapasitesi,
+c) Gaz yayılımının (a) ve (b) alt bentlerinde belirtilen hususlar göz önünde bulundurularak bilimsel bir metotla değerlendirilmesi.
+12.5.2. Sağlık ve güvenlik dokümanına göre degaj riskinin olmadığı yerlerde bu durumun sürekliliği gaz ölçümleri ve sürekli gözlemlerle kontrol
+altında tutulur. Degaj riskinin olduğu belirlenen yerlerde ise aşağıdaki önlemlerden en az biri uygulanır.
+a) Gaz drenajı,
+b) 50 m’den az olmamak kaydıyla uygun topuk bırakılması,
+c) Ayrı bir çalışma yöntemi uygulanarak önceden belirlenmiş sağlık ve güvenlik dokümanı çerçevesinde 12.5.3’de belirtilen şartlara uygun
+kontrol sondajları ile ilerlenmesi.
+12.5.3. Yeraltı kömür ocaklarında, 12.5.1’e göre gaz degaj riskinin belirlenemediği durumlarda veya yeraltı suyu ile eski çalışma yerlerinde
+biriken su akışlarının önlenmesi amacıyla; lağım, galeri ve bacalarda ilerleme yönünde 25 metreden az olmayacak şekilde kontrol sondajları yapılır. 25
+metrelik kontrol sondajları, 15 metre topuk bırakılacak şekilde 10 metre ilerleme gerçekleştirildikten sonra her seferinde tekrarlanır. Ancak bu şekilde
+yapılan sondajın kömür damarı veya fayı kesmesi durumunda dört yönlü olacak şekilde ilave sondajlar yapılır. Önceden çalışma yapılmış olan
+bölgelerde ve/veya bu bölgelere 50 metre yaklaşıldığında, arından dört tarafa aynı ölçülerde kontrol sondajları yapılır.
+12.5.4. Yeraltı kömür ocaklarında, taşta açılan galerilerde, kömür damarı veya fay kesilmesi durumlarında, dört yönde olacak şekilde ve sağlık ve
+güvenlik dokümanında belirlenen sayılarda kontrol sondajları yapılır.
+12.5.5. Diğer yeraltı maden işletmelerinde ise muhtemel su ve gaz degajları göz önünde bulundurularak sağlık ve güvenlik dokümanında gerekli
+görülmesi halinde, 12.5.3’te belirtilen şartlara uygun kontrol sondajlarının yapılması sağlanır.
+13. Yangın, tutuşma ve kızışma
+13.1. Kendiliğinden tutuşmanın önlenmesi veya erken fark edilmesi için gerekli tedbirler alınır. (Ek cümleler:RG-10/3/2015-29291) Jeoloji ve
+damar yapısı müsaade ettiği müddetçe, ana yolar ve havalandırma yolarının kömür içerisinden sürülmemesi esastır. Bunun sağlanamadığı ana yolar ve
+havalandırma yolarında kömürün hava ile temasını tamamen kesecek gerekli tedbirler alınır.
+13.2. Zorunlu ihtiyaçtan daha fazla yanıcı madde yeraltına indirilmez.
+13.3. Hidrolik sıvıların (hidrostatik ve/veya hidrokinetik mekanik enerjinin nakli için kulanılan sıvılar) kulanılması gereken durumlarda, yangın
+çıkmasının ve yayılmasının önlenmesi için zor alev alabilen sıvılar kulanılır. Hidrolik sıvılar, yangına dayanıklılık ve hijyen yönünden belirlenmiş kriterlere
+uygun öze likte olur. Yangına dayanıklılık ve hijyen yönünden belirlenmiş kriterlere uygun olmayan hidrolik sıvıların kulanılması durumunda, artan
+yangın ve bu yangının yayılma riskinin önlenmesi için ilave güvenlik tedbirleri alınır.
+14. Çalışanların korunmasına ilişkin ihtiyati tedbirler
+14.1. Çalışanlara gerektiğinde güvenli bir şekilde dışarı çıkabilmeleri için, her zaman kolay ulaşabilecekleri yerlerde bulunacak kişisel solunum
+koruma cihazları verilir. Çalışanlar bu cihazların kulanımı ile ilgili olarak eğitilir. Bu cihazların her zaman çalışır durumda bulunmaları için düzenli
+kontroleri yapılır ve işyerinde muhafaza edilir.
+15. Aydınlatma
+15.1. Çalışanlara uygun kişisel lambalar verilir.
+15.2.İşyerleri, çalışanların sağlık ve güvenliklerinin korunmasına uygun suni aydınlatma tesisatları ile donatılır. Aydınlatma tesisatı, çalışanlar için
+risk oluşturmayacak tipte olur ve uygun şekilde yerleştirilir.
+16. Kurtarma planı
+16.1 Her ocakta arama, kurtarma ve tahliye ile görevli destek elemanlarının yararlanması için be li başlı kapıları, barajları, hava köprülerini, hava
+akımını ayarlayan düzeni ve telefon istasyonları gibi ihtiyaç duyulacak hususların yerlerini gösteren bir plan bulundurulur.
+17. Emniyet topuğu, çözünebilir taş, jips ve tuz yatakları 
+17.1. Suyla dolu olduğu bilinen veya bundan kuşkulanılan arazi tabakaları altındaki ocaklarda, suyun bu ocaklarda herhangi bir tehlike
+oluşturmasını önlemeye ve çalışanların sağlık ve güvenliğini sağlamaya yönelik bir emniyet topuğu bırakılır.
+17.2. İşletmeye elverişli derinlikteki maden damarlarının çözünebilir taş veya jips yatakları altında bulunduğu yerlerde, yeryüzünde sondaj
+yapılmışsa, burası terk edilmeden önce, damarlar veya üzerlerindeki sondaj delikleri, çözünebilir taş ve jips yataklarına önemli miktarda su girmesine
+engel olacak biçimde tıkanır. İşletmeye uygun derinlikteki maden damarları üzerinde bulunan tuz tabakaları, sondaj deliklerinden çözme yöntemiyle
+işletilemez.
+18. (Ek:RG-10/3/2015-29291)(3) Yeraltı madenlerinde, hazırlık faaliyetlerinin yapıldığı alanlar ve üretim panoları gibi yeraltı maden işletmesinin
+bütün bölümlerini kapsayacak şekilde ve çalışanların yerüstüne çıkmalarını kolaylaştıran; yanmaya, kopmaya ve aşınmaya karşı dayanıklı bir hayat hattı
+kurulur (Şekil-1 ve Şekil-2). Bu hatlar acil durum planlarına uygun olarak yerleştirilir.
+Şekil-1: Hayat hattı görünümü
+18.1. Hayat hatlarının acil durumlarda kulanımına ilişkin, çalışanlarda davranış değişikliği sağlayacak şekilde eğitimler verilir.
+18.2. Yeraltı madenlerinde bulunması zorunlu olan sürekli hayat hattı, acil durum planına uygun şekilde çalışanların en kısa sürede madeni terk
+edecekleri şekilde yerleştirilir. (Ek cümle:RG-24/3/2016-29663) Sığınma odası bulunan yeraltı maden işyerlerinde sürekli hayat hattı, acil durum
+planına uygun şekilde çalışanların sığınma odası veya yeryüzüne en kısa ve hızlı sürede ulaşmasını sağlayacak şekilde yerleştirilir.
+18.3. Hayat hattının hiçbir şartta zarar görmemesi sağlanır. Hayat hattının zarar görmesi halinde en kısa sürede eski haline getirilir.
+18.4. (Değişik:RG-24/3/2016-29663) Hayat hattı sehim yapmayacak şekilde çalışanların kaçış hızını enge lemeyecek ve rahatlıkla e le takip
+edebilecekleri yüksekliği sağlayacak uygun aralıklarda bağlantılarla tavana ya da yan duvara monte edilir. Kulanılan ekipmanlar ve galeri kesitinin
+daralması gibi zorunlu ha lerde hattın kesilmemesi için geçici ve lokal bölgelerde yükseklikte değişiklik yapılabilir. Bu zorunlu ha ler, sağlık ve güvenlik
+dokümanında gerekçeleri ile belirtilir.
+18.5. Hayat hattı, konik gösterge ve reflektör levha, yanmaz, yıpranma ve aşınmaya dayanıklı polipropilen (polypropylene) malzemeden imâl
+edilir.
+18.6. Hayat hattı, 7 mm çapında sarı renkli olup tek yönlü konik gösterge ile başlar. Konik göstergeler acil çıkışı gösterecek şekilde 10 metreyi
+geçmeyecek aralıklarla yerleştirilir. Konik göstergelerin tam orta mesafelerinde reflektör levhalar bulunur. Reflektör levhalar; 50 mm x 100 mm
+ölçülerinde, çıkışa doğru yani kaçış yönünde yeşil, aksi istikamette kırmızı renkte yanmaz malzemeden yapılır. Konik göstergenin üstünde altı adet
+reflektör şerit bulunur. Konik gösterge ve reflektör levha bulunduğu yerden düşmeyecek ve kaymayacak şekilde hayat hattının üzerine sabitlenir.
+(Değişik şekil:RG-24/3/2016-29663)
+Şekil-2: Hayat hattının sembolik görünümü
+18.7. Ana hayat hattına eklenecek bağlantı hatları iki konik göstergenin aynı yöne bakacak şekilde arka arkaya konumlandırılması ile gösterilir.
+18.8. Hayat hattının, çalışanların bulunduğu her galeri veya üretim alanı ile kesiştiği noktalara, yanmaz ve dayanıklı küre şeklindeki göstergeler
+yerleştirilir. Bu göstergeler başka çalışanların gelebileceğini de ifade eder.
+18.9. Hayat hattının, oksijenli ferdi kurtarıcı değişim (Mülga ibare:RG-24/3/2016-29663) (...) istasyonlarının bulunduğu güzergâhta yer alması
+esastır. İstasyonların bulunduğu yerler ikişer adet iki konik göstergenin tabanlarının birleştirilip arka arkaya konumlandırılması ile gösterilir. Bu
+istasyonlara bir bağlantı hattı ile ulaşılması gerekirse aynı konik göstergeler bu bağlantı hattı üzerine de konumlandırılır.
+18.10. (Ek:RG-24/3/2016-29663) Sığınma odası bulunan yeraltı maden işyerlerinde hayat hattının sığınma odalarının veya yeryüzüne çıkışın
+bulunduğu güzergâhta yer alması esastır. Sığınma odalarının bulunduğu yerler 50 mm x 200 mm ölçülerinde ve en az 2,5 metre boyunca devam eden
+yanmaz ve dayanıklı spiral bukle ile gösterilir.
+19. (Ek:RG-24/3/2016-29663) Kömür ve türevleri hariç olmak üzere yeraltı maden işyerlerinde, acil durumlarda kulanılmak amacıyla sığınma
+odaları kurulur. Sığınma odalarının teknik öze liklerine dair usul ve esaslar Bakanlıkça altı ay içerisinde çıkarılacak tebliğle belirlenir. Ancak henüz
+hazırlık aşamasında olan ve üretim aşamasına geçmemiş yer altı maden işyerleri, sığınma odalarını üretim aşamasına geçtiklerinde kurar.
+EK- 4
+SONDAJLA MADEN ÇIKARILAN İŞLERİN YAPILDIĞI İŞYERLERİNDE 
+UYGULANACAK  ASGARİ ÖZEL HÜKÜMLER
+Denizler ve Karalarda Yapılacak Çalışmalar İçin Ortak Hükümler
+1. Acil durumlarda uzaktan kumanda
+1.1. Sağlık ve güvenlik dokümanında gerekli görülmesi halinde, acil durumlar için uzaktan kumanda sistemi kurulur. Bu sistem, acil durumlarda
+kulanılmak üzere uygun yerlerde bulunan kumanda yerlerinde ve gerekiyorsa toplanma yerleri ile tahliye istasyonlarında da bulunur.
+1.2. Uzaktan kumanda ekipmanı en az, havalandırma sistemlerine, tutuşmaya neden olabilecek ekipmanın acil olarak kapatma sistemine,
+parlayıcı sıvı ve gaz çıkışını önleyecek sisteme, yangından korunma sistemlerine ve sondaj kuyusu kontrol sistemine kumanda edebilecek kapasiteye
+sahip olacak şekilde olur. Bu kumanda sistemi sondaj kuyularını, tesis ve boru hatlarını izole edecek ve kapatacak sisteme sahip olur.
+2. Genel ve acil durum haberleşme sistemi
+2.1. Sağlık ve güvenlik dokümanında teknik olarak gerekli görülmesi halinde, her işyerinde;
+a) İşyerinin insan bulunan bütün bölümlerine alarm işaretini iletebilecek kapasiteye sahip sesli veya ışıklı sistem,
+b) İşyerinin çoğu zaman çalışan bulunan bütün kısımlarından açıkça işitilebilecek kapasiteye sahip sesli sistem,
+c) Denizlerdeki tesislerde kıyı ve kurtarma servisleri ile sürekli haberleşmeyi sağlayacak sistem,
+bulunur.
+2.2. Bu sistemler acil durumlarda işlevlerini sürdürebilecek kapasiteye sahip olur. Sesli uyarı sistemi, güvenilir olmayan enerji kaynağından
+beslenmeyen haberleşme sistemleri ile desteklenir.
+2.3. Alarm kumandaları uygun yerlerde bulunur.
+2.4. Normal olarak çalışanların bulunmadığı yerlerde, çalışanların kulanabilecekleri uygun haberleşme sistemi bulunur.
+3. Güvenli toplanma yerleri ve isim listesi
+3.1. İşyerlerinde Acil Durumlar Hakkında Yönetmelik uyarınca özel görevi bulunan çalışanların listesi işyerinin uygun yerlerine asılır ve güvenli
+toplanma yerleri belirlenir. Çalışanların güncel isim listesi bulundurulur ve acil durumlarda toplanma yerlerinde çalışanların mevcudiyeti ile ilgili tespit
+yapılır ve toplanma yerlerinde yapılması gereken işler belirlenir.
+3.2. Tahliye ve güvenli toplanma yerlerini, ısıdan, dumandan ve mümkün olduğu kadar patlama etkilerinden korumak için uygun önlemler alınır,
+tahliye yoları ve güvenli toplanma yerlerine ulaşan ve buralardan çıkışı sağlayan kaçış yoları kulanılabilir durumda olur. Alınan bu önlemler, güvenli
+tahliye, kaçış ve kurtarmanın organize edilmesi ve yürütülmesi için geçecek sürede çalışanların güvenliğini sağlayacak şekilde olur.
+3.3. Tahliye yoları ve güvenli toplanma yerleri, çalışma yerlerinden ve diğer tesislerden kolay ulaşılabilir yerlerde olur.
+3.4. Denizlerdeki tesislerde sağlık ve güvenlik dokümanında gerekli görülmesi halinde, tahliye ve güvenli toplanma yerinde, bu bölümde beliritilen
+acil durumlarda ekipmanlara uzaktan kumanda edebilecek sistemler ile kıyı ve acil servislerle haberleşmeyi sağlayacak donanım bulunur.
+Denizlerdeki Tesislerde Uygulanacak Asgari Özel Hükümler
+1. Genel hususlar
+1.1. Bu Yönetmeliğin 5 inci maddesinin ikinci fıkrasının (b) bendi hükmü saklı kalmak kaydı ile bu bölüm kapsamına giren işyerinden sorumlu olan
+işveren aşağıdaki hususların da sağlık ve güvenlik dokümanında yer almasını sağlar;
+a) Çalışanların sağlık ve güvenliği için ciddi sonuçlar doğuracak kazalara neden olabilecek, birbirleriyle bağlantılı olarak yürütülen işler dahil, işyeri
+ile ilgili özel tehlike kaynaklarını belirler.
+b) Yukarıda belirtilen özel tehlike kaynakları ile ilgili riskleri değerlendirilir.
+c) (a) bendinde belirtilen kazaların önlenmesi, yayılmasının sınırlandırılması ve acil durumlarda işyerinin tahliyesinin uygun ve kontrolü bir şekilde
+yapılması için alınmış olan önlemler belirtilir.
+ç) Yönetim sisteminin, hem olağan hem de olağanüstü durumlarda Kanun ile bu Yönetmelik hükümlerine uygun yapılandırıldığı gösterilmelidir.
+1.2. İşveren, bu Yönetmelik kapsamında yapılacak işlerin her aşamasının planlanması ve uygulanmasında sağlık ve güvenlik dokümanında
+belirtilen prosedür ve düzenlemelere uyar.
+1.3. Birden fazla işverenin farklı çalışma yerlerinden sorumlu olması halinde, sağlık ve güvenlik dokümanının hazırlanmasında ve gerekli iş sağlığı
+ve güvenliğini sağlayacak önlemlerin alınmasında işverenler işbirliği yaparlar.
+2. Yangından korunma ve yangınla mücadele
+2.1. Yangından korunma, yangının algılanması ve yangınla ve yangının yayılması ile mücadele konusunda, sağlık ve güvenlik dokümanında
+belirtildiği şekilde gerekli önlemler alınır. Mümkün olduğu durumlarda, riskli alanlar yangın duvarları ile ayrılır.
+2.2. Sağlık ve güvenlik dokümanında riskli olarak belirlenen tüm yerler, uygun yangın algılama ve yangından korunma, yangınla mücadele ve
+alarm sistemleri ile donatılır. Bu sistemler en az aşağıdakileri kapsar:
+a) Yangın algılama sistemleri.
+b) Yangın alarmları.
+c) Yangın için ana su borusu.
+ç) Yangın vanaları ve hortumları.
+d)  Basınçlı su sistemleri ve göstergeleri.
+e) Otomatik sprink sistemleri.
+f) Gazlı söndürme sistemleri.
+g) Köpük sistemleri.
+ğ) Taşınabilir yangın söndürücüler.
+h) İtfaiyeci ekipmanları.
+2.3. Otomatik olmayan yangın söndürme ekipmanları, kolay ulaşılabilir ve kulanılabilir olması sağlanır ve gerektiğinde zarar görme ihtimaline
+karşı korunur.
+2.4. Yangının algılanması, yangınla ve yangının yayılması ile mücadele konusunda alınacak önlemlerle ilgili detayları içeren yangın planı işyerinde
+bulundurulur.
+2.5. Acil durumlarda erişilebilir ve kulanılır kalabilmesi için acil durum sistemleri kazalardan etkilenmeyecek şekilde ayrılır veya kazalara karşı
+korunur. Gerektiğinde bu sistemler yedekli olur.
+2.6. Yangınla mücadele ekipmanları, Sağlık ve Güvenlik İşaretleri Yönetmeliği hükümlerine uygun şekilde işaretlenir. Bu işaretler uygun yerlere
+konulur ve kalıcı olur.
+3. Tahliye ve kaçış
+3.1. Genel acil durum eğitimine ek olarak, çalışanlara sağlık ve güvenlik dokümanında belirlenen işyerinin öze liğine uygun eğitim verilir.
+3.2. Sağlık ve güvenlik dokümanında belirtilen kriterler göz önünde bulundurularak, çalışanlara hayatta kalma teknikleri ile ilgili uygun eğitim
+verilir.
+3.3. Her iş yerinde acil durumlar için uygun ve yeterli tahliye araçları ile denize doğru kaçış imkanları bulunur.
+3.4. İşyerinin tahliyesi ve deniz kurtarma koşularına ilişkin hususlar acil durum planına dahil edilir. Sağlık ve güvenlik dokümanı temel alınarak
+belirlenen bu hususlar yedek deniz araçları ve helikopterler ile bunların yüklenme süreleri ve kapasiteleri ile ilgili kriterleri de içerir. Her bir yükleme için
+gerekli olan süre sağlık ve güvenlik dokümanında belirtilir. Yedek deniz araçları, tahliye ve kurtarma gereklerini karşılayacak şekilde düzenlenir ve
+donatılır.
+3.5. Cankurtaran sandalı, botu, can simidi ve yeleği ile ilgili asgari gerekler aşağıda belirtilmiştir:
+a) Yeterli bir süre hayatta kalmayı sağlayacak uygunlukta ve donanımda olur.
+b) Bütün çalışanlara yetecek sayıda olur.
+c) İşyerine uygun öze likte olur.
+ç) İşlevleri ve kulanılacakları koşular dikkate alınarak uygun malzemeden yapılmış olur ve kulanım için hazır bulundurulur.
+d) Kulanıldıklarında dikkat çekici renklerde olacak ve kurtarma ekibinin dikkatini çekmekte kulanılacak araçlarla donatılır.
+3.6. Acil kulanım için yeterli can kurtarma araç, gereç hazır bulundurulur.
+4. Güvenlik tatbikatları
+4.1. Tatbikatlarda, cankurtaran teknelerinin de operasyon için hazır olduğu teyit edilir.
+5. Barınma
+5.1. Yapılan işin doğası, büyüklüğü ve süresi gerektiriyorsa, işveren çalışanlara uygun barınma imkanları sağlar. Bu barınaklar aşağıdaki
+öze liklere sahip olur.
+a) Sağlık ve güvenlik dokümanında belirtildiği şekilde, patlamaların etkisine, duman ve gaz sızmalarına ve yangın çıkmasına ve yangının
+yayılmasına karşı uygun şekilde korunur.
+b) Uygun havalandırma, ısıtma ve aydınlatma sistemleri ile donatılır.
+c) Her katta, kaçış yolarına açılan birbirinden bağımsız en az iki çıkış yeri bulunur.
+ç) Diğer alanlardan gelebilecek, sağlığa zararlı gürültü, koku ve dumana ve sert hava koşularına karşı korunmalı olur.
+d) Tehlikeli alanlardan uzakta ve çalışma yerlerinden ayrı olur.
+5.2. Bu barınaklarda, işyerinde kalacak çalışanlara yetecek sayıda yatak veya ranza bulundurulur. Yatmak için ayrılan bütün odalar, çalışanların
+giysilerini koyabilecekleri büyüklükte yeterli alana sahip olur. Kadınlar ve erkekler için yatakhaneler ayrı ayrı olur.
+5.3. Barınakların ve buralardaki tüm malzemelerin her zaman uygun hijyenik şartlarda olması sağlanır.
+6. Helikopter operasyonları
+6.1. İşyerlerinde helikopter pisti, en büyük helikopterin en zor şartlarda kolayca inip kalkabileceği ve görevini yerine getirebileceği büyüklükte olur
+ve helikopter operasyonlarının kolay yapılmasına imkan sağlayacak şekilde yerleştirilir. Helikopter pisti, planlanan hizmetlere uygun yapıda tasarlanır ve
+inşa edilir.
+6.2. Helikopterlerin müdahalesini gerektirecek herhangi bir kazada kulanımına ihtiyaç duyulacak malzemeler, helikopterin konacağı alanın
+yakınlarında depolanır.
+6.3. Çalışanların ikamet ettikleri işyerlerinde, helikopter hareketleri esnasında yeterli sayıda, amaca uygun eğitimli destek elemanı helikopter
+pistinde hazır bulunur.
+7. İşyerlerinin denizlerde konuşlandırılması – güvenlik ve sağlamlık
+7.1. Sondajla maden çıkartma işletmelerinin açık denizde konuşlandırılması esnasında, çalışanların sağlık ve güvenliklerini korumak için gerekli
+olan bütün önlemler alınır.
+7.2. İşyerlerinin açık denizde konuşlandırılması ile ilgili çalışmalar, güvenliği ve sağlamlığı sürekli kılacak şekilde yapılır.
+7.3. İşyerlerinin açık denizde konuşlandırılması çalışmaları sırasında kulanılan ekipman ve çalışma yöntemleri, hem normal hem de kritik koşular
+göz önünde bulundurularak, sondajla maden çıkartma işletmelerinde çalışacak çalışanların maruz kalacakları riskleri azaltacak şekilde olur.
+____________
+1Bu değişiklikler 1/9/2015 tarihinde yürürlüğe girer.
+2Bu değişiklik yayımı tarihinden 1 yıl sonra yürürlüğe girer.
+3Bu değişiklik 1/1/2016 tarihinde yürürlüğe girer.

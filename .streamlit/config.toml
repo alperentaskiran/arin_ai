@@ -1,0 +1,6 @@
+[theme]
+primaryColor = "#F97316"              # "Multi-Agent Analizi Başlat" butonu canlı kurumsal turuncu olacak
+backgroundColor = "#F8FAFC"           # Ana arka plan temiz, açık gri/beyaz (Gözü yormayan modern SaaS stili)
+secondaryBackgroundColor = "#FFFFFF"  # Sol menü (Sidebar) ve kartlar saf beyaz
+textColor = "#1E293B"                 # Tüm metinler okunaklı koyu füme
+font = "sans serif"

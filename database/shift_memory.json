@@ -1,0 +1,34 @@
+{
+    "shift_records": [
+        {
+            "timestamp": "2026-07-22 11:13:23",
+            "location": "YERALTI_AYNA",
+            "report_summary": "Vardiya: Gece (00:00 - 08:00) - Zonguldak Havzası 3. Ayna\nTarih: 22 Temmuz 2026\nLokasyon: 3. Batı Galerisi (Kot: -120)\n\nYapılan İşler ve Gözlemler:\nAy...",
+            "ch4_level": 1.4
+        },
+        {
+            "timestamp": "2026-07-22 11:17:58",
+            "location": "GALERI_KOR",
+            "report_summary": "Vardiya: Gündüz - 2. Batı Hazırlık Galerisi\nTarih: 22 Temmuz 2026\nLokasyon: -180 Kotu Kör Galeri Uç Noktası\nSaha Notları: Tali fan sorunsuz çalışıyor....",
+            "ch4_level": 0.8
+        },
+        {
+            "timestamp": "2026-07-22 11:24:03",
+            "location": "GALERI_KOR",
+            "report_summary": "Vardiya: Vardiya 2 - 2. Batı Hazırlık Galerisi\nTarih: 22 Temmuz 2026\nLokasyon: -180 Kotu Kör Galeri Uç Noktası\nSaha Notları: Tali fanda kısa süreli vo...",
+            "ch4_level": 1.4
+        },
+        {
+            "timestamp": "2026-07-22 11:25:34",
+            "location": "GALERI_KOR",
+            "report_summary": "Vardiya: Gece - 2. Batı Hazırlık Galerisi\nTarih: 22 Temmuz 2026\nLokasyon: -180 Kotu Kör Galeri Uç Noktası\nSaha Notları: Tali fan 15 dakika durdu. Kör ...",
+            "ch4_level": 2.1
+        },
+        {
+            "timestamp": "2026-07-22 12:43:41",
+            "location": "ACIK_OCAK_KIRMA",
+            "report_summary": "Vardiya Amiri Alperen Taşkıran rapor ediyor. Bugün KOT-240 üretim panosunda yaptığımız incelemelerde, arın bölgesine yakın tavan bloklarında hafif dök...",
+            "ch4_level": null
+        }
+    ]
+}
