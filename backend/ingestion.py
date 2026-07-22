@@ -2,6 +2,13 @@ import os
 import sys
 import shutil
 import time
+
+# ==========================================
+# CHROMA VE RUST KİLİTLENMELERİNİ ENGELLEYEN AYARLAR
+# ==========================================
+os.environ["ANONYMIZED_TELEMETRY"] = "False"
+os.environ["CHROMA_SERVER_NOFILE"] = "1"
+
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -15,7 +22,14 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_openai import OpenAIEmbeddings
 from langchain_chroma import Chroma
 
-from models import ISGChunkMetadata
+# Modül import yolunu güvenli hale getirme
+try:
+    from backend.models import ISGChunkMetadata
+except ImportError:
+    try:
+        from models import ISGChunkMetadata
+    except ImportError:
+        ISGChunkMetadata = None
 
 
 def safe_remove_dir(dir_path: str):
@@ -26,7 +40,6 @@ def safe_remove_dir(dir_path: str):
             print(f"🧹 Eski veritabanı temizlendi: {os.path.basename(dir_path)}")
         except PermissionError:
             print(f"⚠️ İkaz: '{os.path.basename(dir_path)}' dosyası kilitli! Arka plandaki Python/Streamlit sürecini kapatın.")
-            # Dosya silinemiyorsa üzerine yazmayı denemesi için işlemi aksatmadan devam ettiriyoruz.
         except Exception as e:
             print(f"⚠️ Klasör silinirken hata: {e}")
 
@@ -85,9 +98,10 @@ def veritabani_besle():
     kazalar_path = os.path.join(PROJECT_ROOT, "data", "kazalar")
     jeoloji_path = os.path.join(PROJECT_ROOT, "data", "jeoloji_mta")
 
-    mevzuat_db_path = os.path.join(PROJECT_ROOT, "database", "mevzuat_chroma")
-    kazalar_db_path = os.path.join(PROJECT_ROOT, "database", "kazalar_chroma")
-    jeoloji_db_path = os.path.join(PROJECT_ROOT, "database", "jeoloji_chroma")
+    # RAG Engine ile tam uyumlu klasör yolları
+    mevzuat_db_path = os.path.join(PROJECT_ROOT, "database", "mevzuat")
+    kazalar_db_path = os.path.join(PROJECT_ROOT, "database", "kazalar")
+    jeoloji_db_path = os.path.join(PROJECT_ROOT, "database", "jeoloji")
 
     # 1. MEVZUAT VERİLERİ
     print("\n--- Mevzuat Dokümanları İşleniyor ---")
@@ -99,13 +113,14 @@ def veritabani_besle():
 
         for chunk in mevzuat_chunks:
             source_file = os.path.basename(chunk.metadata.get("source", "Bilinmeyen Dosya"))
-            default_meta = ISGChunkMetadata(
-                kategori="Genel Mevzuat & Teknik Doküman",
-                tehlike_turu="Genel",
-                ilgili_mevzuat=source_file,
-                koruma_tipi="Mevzuat / Standart"
-            )
-            chunk.metadata.update(default_meta.model_dump())
+            if ISGChunkMetadata:
+                default_meta = ISGChunkMetadata(
+                    kategori="Genel Mevzuat & Teknik Doküman",
+                    tehlike_turu="Genel",
+                    ilgili_mevzuat=source_file,
+                    koruma_tipi="Mevzuat / Standart"
+                )
+                chunk.metadata.update(default_meta.model_dump())
 
         Chroma.from_documents(
             documents=mevzuat_chunks,
@@ -124,13 +139,14 @@ def veritabani_besle():
 
         for chunk in kaza_chunks:
             source_file = os.path.basename(chunk.metadata.get("source", "İç Saha Raporu"))
-            default_meta = ISGChunkMetadata(
-                kategori="Kaza / Ramak Kala Raporu",
-                tehlike_turu="Vaka Analizi",
-                ilgili_mevzuat=source_file,
-                koruma_tipi="Saha Önlemi"
-            )
-            chunk.metadata.update(default_meta.model_dump())
+            if ISGChunkMetadata:
+                default_meta = ISGChunkMetadata(
+                    kategori="Kaza / Ramak Kala Raporu",
+                    tehlike_turu="Vaka Analizi",
+                    ilgili_mevzuat=source_file,
+                    koruma_tipi="Saha Önlemi"
+                )
+                chunk.metadata.update(default_meta.model_dump())
 
         Chroma.from_documents(
             documents=kaza_chunks,
@@ -149,13 +165,14 @@ def veritabani_besle():
 
         for chunk in jeoloji_chunks:
             source_file = os.path.basename(chunk.metadata.get("source", "MTA / Jeoloji Dokümanı"))
-            default_meta = ISGChunkMetadata(
-                kategori="MTA / Jeoloji & İşletme Tekniği",
-                tehlike_turu="Jeolojik / Formasyon Riski",
-                ilgili_mevzuat=source_file,
-                koruma_tipi="Mühendislik Tedbiri"
-            )
-            chunk.metadata.update(default_meta.model_dump())
+            if ISGChunkMetadata:
+                default_meta = ISGChunkMetadata(
+                    kategori="MTA / Jeoloji & İşletme Tekniği",
+                    tehlike_turu="Jeolojik / Formasyon Riski",
+                    ilgili_mevzuat=source_file,
+                    koruma_tipi="Mühendislik Tedbiri"
+                )
+                chunk.metadata.update(default_meta.model_dump())
 
         Chroma.from_documents(
             documents=jeoloji_chunks,

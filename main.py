@@ -4,14 +4,27 @@ import io
 import base64
 import json
 import re
+
+# ==========================================
+# CHROMA VE RUST KİLİTLENMELERİNİ ENGELLEYEN AYARLAR
+# ==========================================
+os.environ["ANONYMIZED_TELEMETRY"] = "False"
+os.environ["CHROMA_SERVER_NOFILE"] = "1"
+
 import pandas as pd
 import numpy as np
 import streamlit as st
 
-# Modeller ve İSG Motorları
-from models import ISGChunkMetadata
+# Modeller ve İSG Motorları Güvenli İçe Aktarma
+try:
+    from backend.models import ISGChunkMetadata
+except ImportError:
+    try:
+        from models import ISGChunkMetadata
+    except ImportError:
+        ISGChunkMetadata = None
+
 from isg_engine import ISGRiskEngine
-from backend.ingestion import veritabani_besle
 from backend.rag_engine import RagEngine
 from backend.crew_manager import CrewManager
 from pypdf import PdfReader
@@ -31,8 +44,15 @@ db_kazalar_ok = check_db_validity("database/kazalar")
 db_jeoloji_ok = check_db_validity("database/jeoloji")
 
 if not (db_mevzuat_ok and db_kazalar_ok and db_jeoloji_ok):
-    st.error("⚠️ **Sistem Hatası: Vektör Veritabanları Eksik!**")
-    st.stop()
+    st.warning("⚠️ **Sistem Uyarı: Vektör Veritabanları Hazırlanıyor...**")
+    try:
+        from backend.ingestion import veritabani_besle
+        veritabani_besle()
+        st.success("✅ Veritabanları başarıyla oluşturuldu!")
+        st.rerun()
+    except Exception as e:
+        st.error(f"Veritabanı oluşturma hatası: {e}")
+        st.stop()
 
 # --- GLOBAL DURUM YÖNETİMİ (SESSION STATE) ---
 if "analiz_basladi" not in st.session_state:
