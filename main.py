@@ -13,6 +13,14 @@ os.environ["CHROMA_SERVER_NOFILE"] = "1"
 
 import pandas as pd
 import numpy as np
+
+# NumPy 2.0+ uyumluluk yaması (ChromaDB için)
+if not hasattr(np, "uint"):
+    np.uint = np.uint64
+if not hasattr(np, "int_"):
+    np.int_ = np.int64
+if not hasattr(np, "float_"):
+    np.float_ = np.float64
 import streamlit as st
 
 # Modeller ve İSG Motorları Güvenli İçe Aktarma
