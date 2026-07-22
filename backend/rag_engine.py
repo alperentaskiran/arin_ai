@@ -7,10 +7,17 @@ import os
 import json
 import logging
 from datetime import datetime
+
+# ==========================================
+# CHROMA VE RUST KİLİTLENMELERİNİ ENGELLEYEN AYARLAR
+# (Importlardan önce tanımlanması zorunludur)
+# ==========================================
+os.environ["ANONYMIZED_TELEMETRY"] = "False"
+os.environ["CHROMA_SERVER_NOFILE"] = "1"
+
 from openai import OpenAI
 from langchain_openai import OpenAIEmbeddings
 from langchain_chroma import Chroma
-from langchain_community.tools import DuckDuckGoSearchRun
 
 # Logging Yapılandırması
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
@@ -78,12 +85,13 @@ class RagEngine:
         self.jeoloji_path = os.path.join(BASE_DIR, "database", "jeoloji")
         self.memory_file = os.path.join(BASE_DIR, "database", "shift_memory.json")
 
-        # Canlı Web Arama Aracı Entegrasyonu
+        # Canlı Web Arama Aracı Güvenli Yükleme
+        self.web_search = None
         try:
+            from langchain_community.tools import DuckDuckGoSearchRun
             self.web_search = DuckDuckGoSearchRun()
         except Exception as e:
-            self.web_search = None
-            logger.warning(f"Web arama aracı devre dışı: {e}")
+            logger.warning(f"Web arama aracı pasif hale getirildi: {e}")
 
         # Güvenli Chroma Yükleme Fonksiyonu
         def safe_load_chroma(path):
@@ -91,6 +99,8 @@ class RagEngine:
                 db_file = os.path.join(path, "chroma.sqlite3")
                 if os.path.exists(db_file):
                     return Chroma(persist_directory=path, embedding_function=self.embeddings)
+                else:
+                    logger.warning(f"Veritabanı dosyası bulunamadı: {db_file}")
             except Exception as e:
                 logger.error(f"Chroma yükleme hatası ({path}): {e}")
             return None
@@ -167,7 +177,7 @@ class RagEngine:
         import re
         match = re.search(r'(?:ch4|metan).*?(?:%)\s*(\d+\.?\d*)', report_text.lower())
         if not match:
-             match = re.search(r'(?:%)\s*(\d+\.?\d*).*?(?:ch4|metan)', report_text.lower())
+            match = re.search(r'(?:%)\s*(\d+\.?\d*).*?(?:ch4|metan)', report_text.lower())
         
         if match:
             try:
@@ -207,7 +217,7 @@ class RagEngine:
     # --- ARAMA FONKSİYONLARI ---
     def canli_web_ara(self, sorgu: str) -> str:
         if not self.web_search:
-             return "Canlı arama aracı yapılandırılamadı."
+            return "Canlı arama aracı yapılandırılamadı."
         try:
             logger.info(f"🌐 Canlı Web Taraması Başlatılıyor: '{sorgu}'")
             arama_sorgusu = f"site:mevzuat.gov.tr OR site:resmigazete.gov.tr maden ISG {sorgu}"
@@ -219,7 +229,7 @@ class RagEngine:
 
     def mevzuat_ara(self, sorgu: str, k: int = 8, score_threshold: float = 0.75, use_mmr: bool = True) -> str:
         if not self.db_mevzuat:
-            logger.warning("Mevzuat veritabanı bulunamadı. Canlı aramaya geçiliyor...")
+            logger.warning("Mevzuat veritabanı bulunamadı/yüklenemedi. Canlı aramaya geçiliyor...")
             return self.canli_web_ara(sorgu)
             
         try:

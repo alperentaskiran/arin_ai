@@ -7,18 +7,32 @@ import os
 from dotenv import load_dotenv
 from crewai import Agent, LLM
 from crewai.tools import tool
-from langchain_community.tools import DuckDuckGoSearchRun
-from backend.rag_engine import RagEngine
 
 load_dotenv()
 
 # ==========================================
-# 1. PERFORMANS VE STATİK NESNE BAŞLATMA
+# 1. TEMBEL (LAZY) VE GÜVENLİ NESNE BAŞLATMA
 # ==========================================
-# Motorlar dosya yüklendiğinde bir kez başlatılır.
-# Her tool çağrısında tekrar veritabanı bağlantısı kurulması engellenmiştir.
-rag_engine = RagEngine()
-duckduckgo_tool = DuckDuckGoSearchRun()
+_rag_engine = None
+_duckduckgo_tool = None
+
+def get_rag_engine():
+    global _rag_engine
+    if _rag_engine is None:
+        from backend.rag_engine import RagEngine
+        _rag_engine = RagEngine()
+    return _rag_engine
+
+def get_duckduckgo():
+    global _duckduckgo_tool
+    if _duckduckgo_tool is None:
+        try:
+            from langchain_community.tools import DuckDuckGoSearchRun
+            _duckduckgo_tool = DuckDuckGoSearchRun()
+        except Exception as e:
+            print(f"DuckDuckGo yükleme uyarısı: {e}")
+            _duckduckgo_tool = None
+    return _duckduckgo_tool
 
 
 # ==========================================
@@ -29,14 +43,19 @@ duckduckgo_tool = DuckDuckGoSearchRun()
 def mevzuat_ara_tool(sorgu: str) -> str:
     """Maden İş Sağlığı ve Güvenliği yönetmeliklerinde, 6331 sayılı kanunda ve yasal limitlerde arama yapar. 
     Havalandırma, metan, tahkimat, gaz ölçümü gibi teknik konular için doğrudan ilgili yönetmelik maddelerini getirir."""
-    return rag_engine.mevzuat_ara(sorgu, k=8)
+    engine = get_rag_engine()
+    return engine.mevzuat_ara(sorgu, k=8)
 
 @tool("Canlı İnternet Mevzuat Taraması")
 def canli_web_ara_tool(sorgu: str) -> str:
     """Mevzuat veritabanında bulunamayan veya en güncel Resmî Gazete / Mevzuat kararları için canlı web araması yapar."""
+    search_tool = get_duckduckgo()
+    if not search_tool:
+        return "Canlı web arama aracı şu an aktif değil."
+        
     search_query = f"site:mevzuat.gov.tr OR site:resmigazete.gov.tr maden ISG {sorgu}"
     try:
-        sonuc = duckduckgo_tool.run(search_query)
+        sonuc = search_tool.run(search_query)
         return f"--- CANLI WEB TARAMA SONUÇLARI ---\n{sonuc}" if sonuc else "Canlı aramada ilgili mevzuat maddesi bulunamadı."
     except Exception as e:
         return f"Canlı arama sırasında bir hata oluştu: {e}"
@@ -44,12 +63,14 @@ def canli_web_ara_tool(sorgu: str) -> str:
 @tool("Tarihsel Kaza Analiz Aracı")
 def kaza_ara_tool(sorgu: str) -> str:
     """Geçmiş maden kazalarının bilirkişi raporlarında, kök neden analizlerinde ve kaza geçmişlerinde arama yapar."""
-    return rag_engine.kaza_raporu_ara(sorgu, k=6)
+    engine = get_rag_engine()
+    return engine.kaza_raporu_ara(sorgu, k=6)
 
 @tool("MTA ve Jeoloji Risk Taraması")
 def jeoloji_ara_tool(sorgu: str) -> str:
     """MTA ve Jeoloji veritabanında formasyon yapısı, fay hatları, grizu patlama riski ve tavan kayacı dayanımını arar."""
-    return rag_engine.jeoloji_ara(sorgu, k=6)
+    engine = get_rag_engine()
+    return engine.jeoloji_ara(sorgu, k=6)
 
 
 # ==========================================
@@ -70,7 +91,7 @@ class MiningSefAgents:
                 "Öncelikle yerel mevzuat veritabanını tararsınız. Aradığınız madde yerelde yoksa "
                 "'Canlı İnternet Mevzuat Taraması' aracını kullanarak doğrudan mevzuat.gov.tr üzerinden güncel maddeleri çekersiniz."
             ),
-            tools=[mevzuat_ara_tool, canli_web_ara_tool],  # <-- CANLI ARAMA TOOL'U EKLENDİ
+            tools=[mevzuat_ara_tool, canli_web_ara_tool],
             llm=self.llm,
             verbose=True
         )
@@ -84,7 +105,7 @@ class MiningSefAgents:
                 "bir veri bilimci ve maden mühendisisiniz. Sahadaki her tehlikeye Olasılık ve Şiddet "
                 "değerleri vererek nicel bir risk değerlendirmesi yaparsınız."
             ),
-            tools=[kaza_ara_tool, jeoloji_ara_tool],  # <-- JEOLOJİ TOOL'U DA EKLENEREK DESTEKLENDİ
+            tools=[kaza_ara_tool, jeoloji_ara_tool],
             llm=self.llm,
             verbose=True
         )
@@ -98,7 +119,7 @@ class MiningSefAgents:
                 "Karmaşık teknik raporları, vardiya amirlerinin sahada anında uygulayabileceği net önlemlere dönüştürürsünüz. "
                 "İhtiyaç duymanız halinde tüm veri araçlarına doğrudan erişim yetkiniz vardır."
             ),
-            tools=[mevzuat_ara_tool, kaza_ara_tool, jeoloji_ara_tool], # <-- BAŞ MÜHENDİSE TAM ERİŞİM VERİLDİ
+            tools=[mevzuat_ara_tool, kaza_ara_tool, jeoloji_ara_tool],
             llm=self.llm,
             verbose=True
         )
