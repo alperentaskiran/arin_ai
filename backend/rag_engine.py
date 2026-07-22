@@ -16,6 +16,9 @@ from langchain_community.tools import DuckDuckGoSearchRun
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger("ArinAI_RagEngine")
 
+# --- KÖK DİZİN (ABSOLUTE PATH) AYARLAMASI ---
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
 # --- 1. ADIM: SAHA LOKASYON HİYERARŞİSİ VE RİSK MATRİSİ ---
 LOCATIONS_RISK_MATRIX = {
     "YERALTI_AYNA": {
@@ -69,10 +72,11 @@ class RagEngine:
     def __init__(self):
         self.embeddings = OpenAIEmbeddings(model="text-embedding-3-small")
         
-        self.mevzuat_path = "database/mevzuat"
-        self.kazalar_path = "database/kazalar"
-        self.jeoloji_path = "database/jeoloji"
-        self.memory_file = "database/shift_memory.json" # HAFIZA DOSYASI YOLU
+        # Mutlak Yollar (Absolute Paths)
+        self.mevzuat_path = os.path.join(BASE_DIR, "database", "mevzuat")
+        self.kazalar_path = os.path.join(BASE_DIR, "database", "kazalar")
+        self.jeoloji_path = os.path.join(BASE_DIR, "database", "jeoloji")
+        self.memory_file = os.path.join(BASE_DIR, "database", "shift_memory.json")
 
         # Canlı Web Arama Aracı Entegrasyonu
         try:
@@ -81,28 +85,40 @@ class RagEngine:
             self.web_search = None
             logger.warning(f"Web arama aracı devre dışı: {e}")
 
-        def is_valid_chroma_db(path):
-            db_file = os.path.join(path, "chroma.sqlite3")
-            return os.path.exists(db_file)
+        # Güvenli Chroma Yükleme Fonksiyonu
+        def safe_load_chroma(path):
+            try:
+                db_file = os.path.join(path, "chroma.sqlite3")
+                if os.path.exists(db_file):
+                    return Chroma(persist_directory=path, embedding_function=self.embeddings)
+            except Exception as e:
+                logger.error(f"Chroma yükleme hatası ({path}): {e}")
+            return None
 
-        self.db_mevzuat = Chroma(persist_directory=self.mevzuat_path, embedding_function=self.embeddings) if is_valid_chroma_db(self.mevzuat_path) else None
-        self.db_kazalar = Chroma(persist_directory=self.kazalar_path, embedding_function=self.embeddings) if is_valid_chroma_db(self.kazalar_path) else None
-        self.db_jeoloji = Chroma(persist_directory=self.jeoloji_path, embedding_function=self.embeddings) if is_valid_chroma_db(self.jeoloji_path) else None
+        self.db_mevzuat = safe_load_chroma(self.mevzuat_path)
+        self.db_kazalar = safe_load_chroma(self.kazalar_path)
+        self.db_jeoloji = safe_load_chroma(self.jeoloji_path)
         
-        # Hafıza Dosyasını Başlat (Eğer Yoksa)
+        # Hafıza Dosyasını Başlat
         self._init_memory_file()
 
     # --- HAFIZA (MEMORY) FONKSİYONLARI ---
     def _init_memory_file(self):
         """Vardiya hafızası için JSON dosyası oluşturur."""
-        os.makedirs(os.path.dirname(self.memory_file), exist_ok=True)
-        if not os.path.exists(self.memory_file):
-            with open(self.memory_file, "w", encoding="utf-8") as f:
-                json.dump({"shift_records": []}, f, indent=4)
+        try:
+            os.makedirs(os.path.dirname(self.memory_file), exist_ok=True)
+            if not os.path.exists(self.memory_file):
+                with open(self.memory_file, "w", encoding="utf-8") as f:
+                    json.dump({"shift_records": []}, f, indent=4)
+        except Exception as e:
+            logger.error(f"Hafıza dosyası oluşturma hatası: {e}")
 
     def save_to_memory(self, location_key: str, report_text: str, ch4_level: float = None):
         """Analizi yapılan vardiyayı lokasyon bazlı hafızaya kaydeder."""
         try:
+            if not os.path.exists(self.memory_file):
+                self._init_memory_file()
+
             with open(self.memory_file, "r", encoding="utf-8") as f:
                 data = json.load(f)
             
@@ -112,7 +128,7 @@ class RagEngine:
                 "report_summary": report_text[:150] + "...",
                 "ch4_level": ch4_level
             }
-            data["shift_records"].append(record)
+            data.setdefault("shift_records", []).append(record)
             
             if len(data["shift_records"]) > 50:
                 data["shift_records"] = data["shift_records"][-50:]
@@ -123,12 +139,15 @@ class RagEngine:
             logger.error(f"Hafızaya kaydetme hatası: {e}")
 
     def get_location_history(self, location_key: str, limit: int = 3) -> str:
-        """Belirtilen lokasyonun geçmiş vardiya verilerini getirir (Trend analizi için)."""
+        """Belirtilen lokasyonun geçmiş vardiya verilerini getirir."""
         try:
+            if not os.path.exists(self.memory_file):
+                return "Bu lokasyon için geçmiş vardiya kaydı bulunamadı."
+
             with open(self.memory_file, "r", encoding="utf-8") as f:
                 data = json.load(f)
             
-            history = [r for r in data.get("shift_records", []) if r["location"] == location_key]
+            history = [r for r in data.get("shift_records", []) if r.get("location") == location_key]
             recent_history = history[-limit:]
             
             if not recent_history:
@@ -144,7 +163,7 @@ class RagEngine:
             return "Hafıza okunamadı."
 
     def extract_metrics_from_report(self, report_text: str) -> float:
-        """Rapordan basit kural tabanlı Metan (CH4) oranını çeker (Sadece sayısal)."""
+        """Rapordan basit kural tabanlı Metan (CH4) oranını çeker."""
         import re
         match = re.search(r'(?:ch4|metan).*?(?:%)\s*(\d+\.?\d*)', report_text.lower())
         if not match:
@@ -159,7 +178,6 @@ class RagEngine:
 
     # --- LOKASYON & EKİPMAN TESPİTİ ---
     def detect_location(self, report_text: str) -> tuple:
-        """Vardiya raporundan lokasyonu (dict) ve lokasyon anahtarını (str) döndürür."""
         text_lower = report_text.lower()
         
         if any(k in text_lower for k in ["kör galeri", "uzatma", "dip", "tıkalı"]):
@@ -172,7 +190,6 @@ class RagEngine:
             return LOCATIONS_RISK_MATRIX["YERALTI_AYNA"], "YERALTI_AYNA"
 
     def detect_equipment(self, report_text: str) -> dict:
-        """Vardiya raporunda arızalı/riskli kritik bir makine veya ekipman varsa tespit eder."""
         text_lower = report_text.lower()
         found_equipment = {}
 
@@ -189,7 +206,6 @@ class RagEngine:
             
     # --- ARAMA FONKSİYONLARI ---
     def canli_web_ara(self, sorgu: str) -> str:
-        """Yerel veritabanında bulunamayan konular için canlı internet taraması yaparlar."""
         if not self.web_search:
              return "Canlı arama aracı yapılandırılamadı."
         try:
@@ -202,7 +218,6 @@ class RagEngine:
             return f"Canlı arama hatası: {e}"
 
     def mevzuat_ara(self, sorgu: str, k: int = 8, score_threshold: float = 0.75, use_mmr: bool = True) -> str:
-        """Mevzuat veritabanında arama yapar."""
         if not self.db_mevzuat:
             logger.warning("Mevzuat veritabanı bulunamadı. Canlı aramaya geçiliyor...")
             return self.canli_web_ara(sorgu)
@@ -211,11 +226,7 @@ class RagEngine:
             if use_mmr:
                 retriever = self.db_mevzuat.as_retriever(
                     search_type="mmr",
-                    search_kwargs={
-                        "k": k,
-                        "fetch_k": 30,
-                        "lambda_mult": 0.7
-                    }
+                    search_kwargs={"k": k, "fetch_k": 30, "lambda_mult": 0.7}
                 )
                 docs = retriever.invoke(sorgu)
                 if docs:
@@ -232,10 +243,9 @@ class RagEngine:
             return "\n\n".join(filtrelenmis)
         except Exception as e:
             logger.error(f"Mevzuat aramasında hata: {e}")
-            return f"Mevzuat aramasında hata: {e}"
+            return self.canli_web_ara(sorgu)
 
     def kaza_raporu_ara(self, sorgu: str, k: int = 6) -> str:
-        """Kaza veritabanında arama yapar."""
         if not self.db_kazalar:
             return "Kaza raporları veritabanı bulunamadı."
         try:
@@ -245,7 +255,6 @@ class RagEngine:
             return f"Kaza aramasında hata: {e}"
 
     def jeoloji_ara(self, sorgu: str, k: int = 6) -> str:
-        """MTA/Jeoloji veritabanında arama yapar."""
         if not self.db_jeoloji:
             return "MTA / Jeoloji veritabanı bulunamadı."
         try:
@@ -256,32 +265,23 @@ class RagEngine:
 
     # --- 2. ADIM: ÇOKLU AJAN (CREW SIMULATION), HAFIZA & LOTO ENTEGRASYONU ---
     def saha_raporu_analiz_et(self, vardiya_raporu: str) -> dict:
-        """
-        Saha raporunu lokasyon tespiti + Hafıza (Trend) + Ekipman (LOTO) + Çoklu Ajan çatışması ile analiz eder.
-        """
         api_key = os.environ.get("OPENAI_API_KEY")
         if not api_key:
             return {"error": "⚠️ OPENAI_API_KEY eksik."}
 
-        # 1. Lokasyon & Ekipman Mimarisi Tespiti
         location_info, loc_key = self.detect_location(vardiya_raporu)
         equipment_info = self.detect_equipment(vardiya_raporu)
         ch4_level = self.extract_metrics_from_report(vardiya_raporu)
 
-        # Ekipman Bilgilerini Prompt İçin Düzenle
         eq_text = ""
         if equipment_info:
-            eq_text = "Tespıt Edilen Kritik Ekipmanlar ve LOTO Prosedürleri:\n"
+            eq_text = "Tespit Edilen Kritik Ekipmanlar ve LOTO Prosedürleri:\n"
             for key, info in equipment_info.items():
                 eq_text += f"- {info['name']}:\n  Riskler: {', '.join(info['risks'])}\n  Zorunlu LOTO: {info['loto_protocol']}\n"
 
-        # 2. Geçmiş Vardiya Hafızasını Çek
         shift_history = self.get_location_history(loc_key, limit=3)
-
-        # 3. Anlık Raporu Hafızaya Kaydet (Gelecek analizler için)
         self.save_to_memory(loc_key, vardiya_raporu, ch4_level)
 
-        # 4. 360° RAG Veri Toplama
         mevzuat_bg = self.mevzuat_ara(vardiya_raporu, k=8)
         kaza_bg = self.kaza_raporu_ara(vardiya_raporu, k=6)
         jeoloji_bg = self.jeoloji_ara(vardiya_raporu, k=6)
@@ -290,7 +290,6 @@ class RagEngine:
 
         client = OpenAI(api_key=api_key)
 
-        # Ajan 1: İSG Denetim Ajanı
         prompt_isg = f"""
         Sen tavizsiz bir Maden İSG Başdenetçisisin.
         LOKASYON: {location_info['title']}
@@ -308,7 +307,6 @@ class RagEngine:
         GÖREVİN: Üretimi ve maliyeti tamamen göz ardı et. Varsa EKİPMAN DURUMU'ndaki LOTO (Kilitleme) prosedürünün uygulanıp uygulanmadığını sorgula. Geçmiş trendleri dikkate alarak hayati tehlikeleri, mevzuat ihlallerini ve durdurulması gereken riskleri net, sert ve tavizsiz bir dille raporla.
         """
 
-        # Ajan 2: Üretim ve Operasyon Mühendisi
         prompt_uretim = f"""
         Sen Kıdemli Maden İşletme Mühendisisin.
         LOKASYON: {location_info['title']}
@@ -320,7 +318,6 @@ class RagEngine:
         """
 
         try:
-            # İSG ve Üretim Görüşlerini Üretme
             res_isg = client.chat.completions.create(
                 model="gpt-4o-mini",
                 messages=[{"role": "user", "content": prompt_isg}],
@@ -333,7 +330,6 @@ class RagEngine:
                 temperature=0.3
             ).choices[0].message.content
 
-            # Ajan 3: Başmühendis (Orkestratör & Hakem) Final Sentezi
             prompt_basmuhendis = f"""
             Sen Arın AI Maden İşletme Başmühendisisin (Karar Makamı).
             LOKASYON: {location_info['title']} 
@@ -364,10 +360,9 @@ class RagEngine:
                 temperature=0.2
             ).choices[0].message.content
 
-            # Ekran modülleri için tam obje döndürülüyor
             return {
                 "location": location_info,
-                "equipment": equipment_info, # YENİ EKLENEN EKİPMAN BİLGİSİ
+                "equipment": equipment_info,
                 "history": shift_history,
                 "isg_agent": res_isg,
                 "uretim_agent": res_uretim,
