@@ -4,6 +4,8 @@ import io
 import base64
 import json
 import re
+from datetime import datetime
+import random
 
 # ==========================================
 # CHROMA VE RUST KİLİTLENMELERİNİ ENGELLEYEN AYARLAR
@@ -139,16 +141,18 @@ def create_pdf_from_markdown(markdown_text):
 def form_doldur_llm(vardiya_notu, form_tipi):
     from openai import OpenAI
     client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+    bugun = datetime.now().strftime("%d %m %Y") # Dinamik Tarih
+    
     prompt = f"""
     Sen kıdemli bir Maden İSG Baş Mühendisisin. Aşağıdaki vardiya notunu incele ve resmi bir '{form_tipi}' oluştur.
-    Form No / Tarih (Bugünün tarihini kullan: 22 Temmuz 2026), Tespit Edilen Risk, Yönetmelik Atfı, Proaktif Aksiyonlar ve Sorumlu Birim alanlarını eksiksiz doldur.
+    Form No / Tarih (Bugünün tarihini kullan: {bugun}), Tespit Edilen Risk, Yönetmelik Atfı, Proaktif Aksiyonlar ve Sorumlu Birim alanlarını eksiksiz doldur.
     
-    Vardiya Notu:
+    Vardiya Notu/Verisi:
     {vardiya_notu}
     """
     try:
         response = client.chat.completions.create(
-            model="gpt-4o-mini",
+            model="gpt-4o",
             messages=[{"role": "user", "content": prompt}],
             temperature=0.3
         )
@@ -156,7 +160,6 @@ def form_doldur_llm(vardiya_notu, form_tipi):
     except Exception as e:
         return f"Form oluşturulurken hata: {e}"
 
-# --- GÜNCELLENEN GÖREV SEVK FONKSİYONU ---
 def gorev_sevk_et(girdi_metni, kaynak_belge):
     from openai import OpenAI
     client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
@@ -179,7 +182,7 @@ def gorev_sevk_et(girdi_metni, kaynak_belge):
         aksiyon = veri[1].strip() if len(veri) > 1 else "Aksiyon emri çıkarılamadı"
         termin = veri[2].strip() if len(veri) > 2 else "Derhal"
         
-        yeni_id = f"TASK-2026-00{len(st.session_state.canli_gorevler) + 1}"
+        yeni_id = f"TASK-{datetime.now().year}-{len(st.session_state.canli_gorevler) + 1:03d}"
         st.session_state.canli_gorevler.append({
             "Gorev ID": yeni_id,
             "Kaynak Belge": kaynak_belge,
@@ -192,7 +195,32 @@ def gorev_sevk_et(girdi_metni, kaynak_belge):
     except:
         return False
 
-# Dosya okuma fonksiyonları
+# --- YENİ EKLENEN GÖRSEL İSG ANALİZ MOTORU ---
+def analiz_et_gorsel(file_bytes):
+    from openai import OpenAI
+    client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+    base64_image = base64.b64encode(file_bytes).decode('utf-8')
+    
+    prompt = "Sen bir İSG denetçisisin. Bu maden sahası/ekipman fotoğrafını incele. Olası İSG ihlallerini (baret/maske eksikliği, hatalı tahkimat, açık kablo vb.) tespit et ve ilgili maden mevzuatı maddeleriyle eşleştir. Sadece bulguları ve önerileri yaz."
+    
+    try:
+        response = client.chat.completions.create(
+            model="gpt-4o",
+            messages=[
+                {
+                    "role": "user",
+                    "content": [
+                        {"type": "text", "text": prompt},
+                        {"type": "image_url", "image_url": {"url": f"data:image/jpeg;base64,{base64_image}"}}
+                    ]
+                }
+            ],
+            max_tokens=800
+        )
+        return response.choices[0].message.content
+    except Exception as e:
+        return f"Görsel analiz hatası: {e}"
+
 def extract_text_from_pdf(file_bytes):
     reader = PdfReader(io.BytesIO(file_bytes))
     return "\n".join([page.extract_text() for page in reader.pages if page.extract_text()]).strip()
@@ -271,12 +299,16 @@ with st.sidebar:
     if "analiz_verisi" not in st.session_state: st.session_state.analiz_verisi = ""
     if "son_yuklenen_dosya" not in st.session_state: st.session_state.son_yuklenen_dosya = None
 
-    uploaded_file = st.file_uploader("📂 Rapor veya Ses Dosyası Yükleyin", type=["pdf", "docx", "xlsx", "xls", "txt", "mp3", "wav", "m4a"])
+    # GÜNCELLENMİŞ UPLOADER (Görsel Desteği)
+    uploaded_file = st.file_uploader("📂 Rapor, Ses veya Fotoğraf Yükleyin", type=["pdf", "docx", "xlsx", "xls", "txt", "mp3", "wav", "m4a", "png", "jpg", "jpeg"])
     if uploaded_file is not None and uploaded_file.name != st.session_state.son_yuklenen_dosya:
         try:
             file_bytes = uploaded_file.read()
             if uploaded_file.name.endswith(('.mp3', '.wav', '.m4a')):
                 with st.spinner("🎤 Ses çözülüyor..."): st.session_state.analiz_verisi = extract_text_from_audio(file_bytes, uploaded_file.name)
+            elif uploaded_file.name.endswith(('.png', '.jpg', '.jpeg')):
+                with st.spinner("👁️ Görsel İSG Motoru analiz ediyor..."):
+                    st.session_state.analiz_verisi = analiz_et_gorsel(file_bytes)
             elif uploaded_file.name.endswith('.pdf'): st.session_state.analiz_verisi = extract_text_from_pdf(file_bytes)
             elif uploaded_file.name.endswith(('.docx', '.doc')): st.session_state.analiz_verisi = extract_text_from_docx(file_bytes)
             elif uploaded_file.name.endswith(('.xlsx', '.xls')): st.session_state.analiz_verisi = extract_text_from_excel(file_bytes)
@@ -291,12 +323,12 @@ with st.sidebar:
 
     if not st.session_state.analiz_verisi:
         st.session_state.analiz_verisi = (
-            "Vardiya: Gece (00:00 - 08:00) - Zonguldak Havzası 3. Ayna\nTarih: 22 Temmuz 2026\nLokasyon: 3. Batı Galerisi (Kot: -120)\n\n"
+            f"Vardiya: Gece (00:00 - 08:00) - Zonguldak Havzası 3. Ayna\nTarih: {datetime.now().strftime('%d %m %Y')}\nLokasyon: 3. Batı Galerisi (Kot: -120)\n\n"
             "Yapılan İşler ve Gözlemler:\nAyna ilerlemesi yapıldı. Arın bölgesinde tavan kayacında killi şist yapısı sebebiyle çatlaklar ve kılcal dökülmeler var. "
             "Ahşap tahkimat kamalarında esneme tespit edildi ancak üretime devam edildi. Fan 18 dk durdu, CH4 %1.4 seviyesine çıktı."
         )
 
-    manuel_metin = st.text_area("✍️ Vardiya Defteri Notları:", value=st.session_state.analiz_verisi, height=180)
+    manuel_metin = st.text_area("✍️ Vardiya Defteri / Bulgular:", value=st.session_state.analiz_verisi, height=180)
     st.session_state.analiz_verisi = manuel_metin
 
     if st.button("🚀 MULTI-AGENT ANALİZİ BAŞLAT", type="primary", use_container_width=True):
@@ -311,12 +343,13 @@ with st.sidebar:
 st.title("🛡️ Arın AI Enterprise: Proaktif Maden İSG & Saha Yönetim Platformu")
 st.caption("Aethel Technologies — Multi-Agent RAG, Jeoloji & Operasyonel Karar Destek Mimarisi")
 
-# 4 SEKMELİ MİMARİ
-tab_dashboard, tab_engine, tab_forms, tab_operations = st.tabs([
+# 5 SEKMELİ YENİ MİMARİ
+tab_dashboard, tab_engine, tab_forms, tab_operations, tab_scada = st.tabs([
     "📊 Canlı İSG Analiz Paneli", 
     "🧮 Deterministik Risk & Ölçüm Motoru",
-    "📋 Form Üretim Merkezi", 
-    "📡 Sahadan Canlı Görev Sevk Panosu"
+    "📋 Form & Kök Neden Merkezi", 
+    "📡 Sahadan Canlı Görev Sevk Panosu",
+    "🔴 SCADA & GIS (Sensör ve Harita)"
 ])
 
 # --- TAB 1: CANLI ANALİZ PANELİ ---
@@ -370,7 +403,7 @@ with tab_dashboard:
         if isinstance(res, dict) and "error" in res:
             st.error(res["error"])
         elif isinstance(res, dict):
-            # 1. ADIM: LOKASYON KARTI BİLEŞENİ
+            # 1. ADIM: LOKASYON KARTI
             loc_info = res.get("location", {})
             st.subheader(f"📍 Algılanan Saha Alanı: {loc_info.get('title', 'Belirtilmedi')}")
             
@@ -380,7 +413,7 @@ with tab_dashboard:
             with c_loc2:
                 st.info(f"**Zorunlu Kritik Kontroller:** {', '.join(loc_info.get('critical_checks', []))}")
             
-            # 2. ADIM: EKİPMAN (LOTO) KARTI BİLEŞENİ
+            # 2. ADIM: EKİPMAN (LOTO) KARTI
             equipment_info = res.get("equipment", {})
             if equipment_info:
                 st.markdown("<br>", unsafe_allow_html=True)
@@ -419,7 +452,7 @@ with tab_dashboard:
                 st.subheader("🤖 Başmühendis Final Kararı ve DÖF Planı")
                 st.info(res.get("final_decision", ""))
                 
-                # İNSAN ONAYLI SAHAYA SEVK BUTONU (Human-in-the-Loop)
+                # İNSAN ONAYLI SAHAYA SEVK BUTONU
                 c_btn1, c_btn2 = st.columns(2)
                 with c_btn1:
                     pdf_data = create_pdf_from_markdown(res.get("final_decision", ""))
@@ -544,27 +577,181 @@ with tab_engine:
         except ValueError:
             st.error("Lütfen geçerli sayısal değerler girin.")
 
-# --- TAB 3: FORM ÜRETİM MERKEZİ ---
+    # YENİ: RMR HESAPLAYICI
+    st.markdown("---")
+    st.subheader("4. Jeoteknik RMR (Rock Mass Rating) Hesaplayıcı")
+    st.caption("Bieniawski (1989) parametrelerine göre yeraltı tahkimat önerisi.")
+    
+    r_col1, r_col2, r_col3 = st.columns(3)
+    with r_col1:
+        ucs = st.selectbox("Tek Eksenli Basınç Dayanımı", ["Çok Düşük (<5 MPa) [1p]", "Düşük (5-25 MPa) [2p]", "Orta (25-50 MPa) [4p]", "Yüksek (50-100 MPa) [7p]", "Çok Yüksek (>100 MPa) [12p]"])
+        rqd = st.slider("RQD (Kaya Kalite Göstergesi) %", 0, 100, 75)
+    with r_col2:
+        spacing = st.selectbox("Eklem Aralığı", ["< 60 mm [5p]", "60 - 200 mm [8p]", "200 - 600 mm [10p]", "0.6 - 2.0 m [15p]", "> 2.0 m [20p]"])
+        condition = st.selectbox("Eklem Durumu", ["Çok Zayıf (Yumuşak dolgulu) [0p]", "Zayıf (Sürekli, >5mm açık) [10p]", "Orta (Hafif pürüzlü, <1mm) [20p]", "Çok İyi (Kapalı, sert) [30p]"])
+    with r_col3:
+        water = st.selectbox("Yeraltı Suyu Durumu", ["Akan (Sürekli Su) [0p]", "Damlatan [4p]", "Nemli [10p]", "Tamamen Kuru [15p]"])
+
+    if st.button("RMR Skoru ve Tahkimat Sınıfını Hesapla", type="primary"):
+        def get_point(text):
+            match = re.search(r'\[(\d+)p\]', text)
+            return int(match.group(1)) if match else 0
+        
+        rqd_puan = int(rqd / 5)
+        total_rmr = get_point(ucs) + rqd_puan + get_point(spacing) + get_point(condition) + get_point(water)
+        
+        st.metric("Toplam RMR Skoru", f"{total_rmr} / 100")
+        
+        if total_rmr > 80: st.success("**Sınıf I (Çok İyi Kaya):** Tahkimata gerek yoktur, lokal saplama yeterlidir.")
+        elif total_rmr > 60: st.info("**Sınıf II (İyi Kaya):** Seyrek kaya saplaması (R=2.5m) ve lokal tel kafes.")
+        elif total_rmr > 40: st.warning("**Sınıf III (Orta Kaya):** Sistematik kaya saplaması, 50-100mm püskürtme beton.")
+        elif total_rmr > 20: st.error("**Sınıf IV (Zayıf Kaya):** Yoğun saplama, çelik hasırlı 100-150mm püskürtme beton ve çelik iksa (TH/I).")
+        else: st.error("🚨 **Sınıf V (Çok Zayıf Kaya):** Derhal çelik iksa, ağır püskürtme beton ve tavan aynası sürgüsü zorunludur!")
+
+# --- TAB 3: FORM & KÖK NEDEN MERKEZİ ---
 with tab_forms:
-    st.subheader("📋 Resmi İSG Form ve Tutanak Matrisi")
-    secilen_form = st.selectbox("Form Tipi Seçin:", ["Maden İşletmeleri Ramak Kala Olay Formu", "Tehlike Bildirim Formu", "İş Durdurma Tutanağı"])
-    if st.button(f"✨ {secilen_form} Doldur"):
-        with st.spinner("Form dolduruluyor..."):
-            st.session_state[f"form_cache_{secilen_form}"] = form_doldur_llm(st.session_state.analiz_verisi, secilen_form)
+    st.subheader("📋 Resmi İSG Form ve Analiz Matrisi")
+    secilen_form = st.selectbox("Üretilecek Belge Tipini Seçin:", [
+        "Maden İşletmeleri Ramak Kala Olay Formu", 
+        "Tehlike Bildirim Formu", 
+        "İş Durdurma Tutanağı",
+        "Kök Neden Analizi (5 Neden - 5 Whys)" # YENİ 5 WHYS
+    ])
+    
+    if st.button(f"✨ {secilen_form} Üret"):
+        with st.spinner("AI Belgeyi Hazırlıyor..."):
+            if "Kök Neden" in secilen_form:
+                from openai import OpenAI
+                client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+                prompt = f"Şu olayın/vardiya notunun '5 Neden (5 Whys)' analizini yap. En sonda Kök Nedeni (Root Cause) ve Düzeltici Önleyici Faaliyeti (DÖF) belirt.\n\nOlay: {st.session_state.analiz_verisi}"
+                resp = client.chat.completions.create(model="gpt-4o-mini", messages=[{"role": "user", "content": prompt}])
+                st.session_state[f"form_cache_{secilen_form}"] = resp.choices[0].message.content
+            else:
+                st.session_state[f"form_cache_{secilen_form}"] = form_doldur_llm(st.session_state.analiz_verisi, secilen_form)
             
     cache_key = f"form_cache_{secilen_form}"
     if cache_key in st.session_state:
         st.markdown(st.session_state[cache_key])
         btn1, btn2 = st.columns(2)
         with btn1:
-            st.download_button("📥 Formu PDF İndir", data=create_pdf_from_markdown(st.session_state[cache_key]), file_name="ISG_Form.pdf", mime="application/pdf", use_container_width=True)
+            st.download_button("📥 Belgeyi PDF İndir", data=create_pdf_from_markdown(st.session_state[cache_key]), file_name=f"{secilen_form.replace(' ', '_')}.pdf", mime="application/pdf", use_container_width=True)
         with btn2:
-            if st.button("📡 SAHAYA SEVK ET", type="primary", use_container_width=True):
-                if gorev_sevk_et(st.session_state[cache_key], secilen_form + " Formu"):
+            if st.button("📡 SAHAYA SEVK ET (DÖF)", type="primary", use_container_width=True):
+                if gorev_sevk_et(st.session_state[cache_key], secilen_form):
                     st.success("📢 Görev Canlı Takip Panosuna eklendi!")
 
 # --- TAB 4: SAHADAN CANLI GÖREV SEVK PANOSU ---
 with tab_operations:
+    st.subheader("🔄 Vardiya Teslim (Handover) Zekası")
+    if st.button("Geçmiş 24 Saati Özetle ve Açık Riskleri Raporla", type="secondary"):
+        with st.spinner("Hafızadaki vardiyalar birleştiriliyor..."):
+            from openai import OpenAI
+            client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+            
+            ornek_gecmis = "Gece vardiyası: 3. batı galerisinde su geliri arttı. Gündüz vardiyası: Aynı bölgede fan arızalandı, %1.2 CH4 ölçüldü, onarım beklemede."
+            prompt = f"Aşağıdaki geçmiş 24 saatlik maden notlarını incele. Yeni gelen amir için 'DEVREDİLEN AÇIK RİSKLER' adında 3 maddelik acil bir brifing hazırla.\n\nVeri: {ornek_gecmis}"
+            
+            resp = client.chat.completions.create(model="gpt-4o-mini", messages=[{"role": "user", "content": prompt}])
+            st.warning("⚠️ **Yeni Vardiya Amirinin Dikkatine (Açık Riskler):**")
+            st.markdown(resp.choices[0].message.content)
+
+    st.write("---")
     st.subheader("📡 Canlı Operasyonel Görev Takip Panosu")
     if st.session_state.canli_gorevler:
         st.dataframe(pd.DataFrame(st.session_state.canli_gorevler), use_container_width=True, hide_index=True)
+
+# --- TAB 5: SCADA & GIS (LIVE SENSORS & MAP) ---
+with tab_scada:
+    st.header("🔴 Anlık Sensör Verileri & İnteraktif Saha Haritası")
+    st.caption("Mock-up canlı veri akışı ve kat planı.")
+    
+    # 1. IoT Sensör Verileri
+    sc1, sc2, sc3, sc4 = st.columns(4)
+    ch4_val = round(random.uniform(0.1, 1.8), 2)
+    co_val = random.randint(10, 45)
+    temp_val = round(random.uniform(25.0, 32.0), 1)
+    air_val = round(random.uniform(0.5, 2.0), 2)
+    
+    with sc1:
+        st.metric("Metan (CH4)", f"%{ch4_val}", delta="Kritik!" if ch4_val >= 1.5 else "Normal", delta_color="inverse")
+    with sc2:
+        st.metric("Karbonmonoksit (CO)", f"{co_val} ppm", delta="Uyarı" if co_val > 30 else "İyi", delta_color="inverse")
+    with sc3:
+        st.metric("Ortam Sıcaklığı", f"{temp_val} °C", "Normal")
+    with sc4:
+        st.metric("Hava Hızı", f"{air_val} m/s", "-0.1 m/s (Düşüş)")
+        
+    if ch4_val >= 1.5:
+        st.error("🚨 SİSTEM UYARISI: CH4 Seviyesi Kritik Eşiği (%1.5) aştı! Lütfen galeriyi derhal boşaltın ve havalandırma fanlarını tam kapasiteye alın.")
+    
+    if st.button("🔄 Sensörleri Yenile"):
+        st.rerun()
+
+    st.write("---")
+    
+    # 2. İnteraktif GIS / Floor Plan (Plotly & Folium)
+    st.subheader("🗺️ Maden GIS ve Risk Haritası")
+    
+    # Kullanıcıya Açık Ocak veya Yeraltı seçimi sunuyoruz
+    harita_tipi = st.radio("Harita Modunu Seçin:", ["⛏️ Yeraltı Kat Planı (Galeri Krokisi)", "🛰️ Açık Ocak / Yerüstü (Uydu GIS)"], horizontal=True)
+    
+    if harita_tipi == "⛏️ Yeraltı Kat Planı (Galeri Krokisi)":
+        try:
+            import plotly.graph_objects as go
+            
+            galeriler = ["Ana Desandre", "1. Doğu Galerisi", "2. Batı Galerisi", "3. Ayna (Aktif)"]
+            x_coords = [0, 50, -50, -70]
+            y_coords = [0, -100, -150, -250]
+            risk_levels = [1, 2, 2, 5] 
+            
+            fig = go.Figure()
+            fig.add_trace(go.Scatter(x=x_coords, y=y_coords, mode='lines', line=dict(color='gray', width=4), name='Galeri Hatları'))
+            
+            fig.add_trace(go.Scatter(
+                x=x_coords, y=y_coords, text=galeriler, mode='markers+text', textposition="top center",
+                marker=dict(size=[r*10 for r in risk_levels], color=risk_levels, colorscale='Reds', showscale=True),
+                name='Risk Noktaları'
+            ))
+            
+            fig.update_layout(title="Yeraltı Maden Kot Planı (Kuşbakışı)", xaxis_title="Batı - Doğu Ekseni", yaxis_title="Derinlik / Yön Ekseni", template="plotly_dark", height=450)
+            st.plotly_chart(fig, use_container_width=True)
+        except ImportError:
+            st.warning("Yeraltı haritası için terminalden 'pip install plotly' kurmanız gereklidir.")
+            
+    else:
+        try:
+            import folium
+            from streamlit_folium import st_folium
+            
+            # Örnek Koordinat: Bilecik / Bozüyük bölgesi (Sistemi kendi bölgenize uyarlamak için)
+            merkez_enlem, merkez_boylam = 39.9056, 30.0381 
+            
+            # Uydu/Terrain haritası oluşturma
+            m = folium.Map(location=[merkez_enlem, merkez_boylam], zoom_start=13, tiles="OpenStreetMap")
+            
+            # Riskli bölgelere Folium Pinleri ekleme
+            folium.Marker(
+                [39.9100, 30.0400],
+                popup="Pasa Döküm Alanı - Şev Kayması Riski",
+                tooltip="Uyarı: Sarı Risk",
+                icon=folium.Icon(color="orange", icon="info-sign")
+            ).add_to(m)
+            
+            folium.Marker(
+                [39.9000, 30.0350],
+                popup="Açık Ocak Arın Bölgesi - Patlatma Sonrası Çatlak",
+                tooltip="Kritik: Kırmızı Risk",
+                icon=folium.Icon(color="red", icon="warning-sign")
+            ).add_to(m)
+            
+            folium.Marker(
+                [39.9056, 30.0381],
+                popup="Ana Tesis ve Kantar - Sorun Yok",
+                tooltip="Normal",
+                icon=folium.Icon(color="green", icon="ok-circle")
+            ).add_to(m)
+            
+            st.caption("Açık ocak sahası yerüstü izleme modülü.")
+            st_folium(m, width=900, height=450, returned_objects=[])
+        except ImportError:
+            st.warning("Yerüstü haritası için terminalden 'pip install folium streamlit-folium' kurmanız gereklidir.")
