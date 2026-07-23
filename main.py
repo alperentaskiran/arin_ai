@@ -6,6 +6,7 @@ import json
 import re
 from datetime import datetime
 import random
+import sqlite3
 
 # ==========================================
 # CHROMA VE RUST KİLİTLENMELERİNİ ENGELLEYEN AYARLAR
@@ -42,6 +43,27 @@ from docx import Document
 
 # Sayfa Genişlik Ayarı (Scriptin en başında kalmalıdır)
 st.set_page_config(layout="wide", page_title="Arın AI - Maden İSG & Karar Destek", page_icon="🛡️")
+
+# --- SQLITE PERSONEL VERİTABANI BAŞLATMA ---
+def init_db():
+    os.makedirs("database", exist_ok=True)
+    conn = sqlite3.connect("database/arin_ai_enterprise.db")
+    cursor = conn.cursor()
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS personel_matrisi (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            ad_soyad TEXT NOT NULL,
+            sicil_no TEXT UNIQUE NOT NULL,
+            gorev TEXT NOT NULL,
+            saglik_raporu_tarihi TEXT,
+            myk_belge_durumu TEXT,
+            vardiya TEXT
+        )
+    """)
+    conn.commit()
+    conn.close()
+
+init_db()
 
 # --- BULUT İLK KURULUM: VERİTABANI KONTROLÜ ---
 def check_db_validity(path):
@@ -84,6 +106,86 @@ if "quick_question" not in st.session_state:
     st.session_state.quick_question = ""
 
 # --- YARDIMCI FONKSİYONLAR ---
+def personel_ekle(ad_soyad, sicil_no, gorev, saglik_tarihi, myk_durumu, vardiya):
+    conn = sqlite3.connect("database/arin_ai_enterprise.db")
+    cursor = conn.cursor()
+    try:
+        cursor.execute("""
+            INSERT INTO personel_matrisi (ad_soyad, sicil_no, gorev, saglik_raporu_tarihi, myk_belge_durumu, vardiya)
+            VALUES (?, ?, ?, ?, ?, ?)
+        """, (ad_soyad, sicil_no, gorev, saglik_tarihi, myk_durumu, vardiya))
+        conn.commit()
+        return True
+    except Exception as e:
+        return False
+    finally:
+        conn.close()
+
+def personel_listesi_getir():
+    conn = sqlite3.connect("database/arin_ai_enterprise.db")
+    df = pd.read_sql_query("SELECT * FROM personel_matrisi", conn)
+    conn.close()
+    return df
+
+def ses_kaydini_metne_cevir(audio_file):
+    from openai import OpenAI
+    client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+    try:
+        transcript = client.audio.transcriptions.create(
+            model="whisper-1", 
+            file=audio_file,
+            language="tr" 
+        )
+        return transcript.text
+    except Exception as e:
+        return f"Ses işleme hatası: {e}"
+    
+def predictive_bakim_ve_loto_uret(ekipman_notu):
+    from openai import OpenAI
+    client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+    prompt = f"""
+    Sen kıdemli bir Maden Bakım Şefi ve İSG Uzmanısın. Aşağıdaki ekipman arıza veya bakım notunu incele:
+    "{ekipman_notu}"
+    
+    Şu başlıklar altında kurumsal bir 'Predictive Maintenance ve LOTO İş Emri' raporu hazırla:
+    1. Riskli Ekipman ve Arıza Tanımı
+    2. Gerekli Adımsal LOTO (Kilitleme/Etiketleme) Prosedürü
+    3. Kullanılacak Yedek Parça / Bakım İhtiyacı
+    4. Sorumlu Birim (Örn: Elektrik Bakım Şefliği / Mekanik Bakım Atölyesi)
+    """
+    try:
+        response = client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[{"role": "user", "content": prompt}],
+            temperature=0.3
+        )
+        return response.choices[0].message.content
+    except Exception as e:
+        return f"Bakım iş emri oluşturulurken hata: {e}"
+
+# --- OFFLINE KONTROL VE KUYRUK YÖNETİMİ ---
+OFFLINE_QUEUE_FILE = "database/offline_queue.json"
+
+def get_offline_queue():
+    if os.path.exists(OFFLINE_QUEUE_FILE):
+        try:
+            with open(OFFLINE_QUEUE_FILE, "r", encoding="utf-8") as f:
+                return json.load(f)
+        except Exception:
+            return []
+    return []
+
+def save_to_offline_queue(item):
+    queue = get_offline_queue()
+    queue.append(item)
+    os.makedirs(os.path.dirname(OFFLINE_QUEUE_FILE), exist_ok=True)
+    with open(OFFLINE_QUEUE_FILE, "w", encoding="utf-8") as f:
+        json.dump(queue, f, ensure_ascii=False, indent=2)
+
+def clear_offline_queue():
+    if os.path.exists(OFFLINE_QUEUE_FILE):
+        os.remove(OFFLINE_QUEUE_FILE)
+
 def get_image_base64(path):
     if os.path.exists(path):
         with open(path, "rb") as img_file:
@@ -141,7 +243,7 @@ def create_pdf_from_markdown(markdown_text):
 def form_doldur_llm(vardiya_notu, form_tipi):
     from openai import OpenAI
     client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-    bugun = datetime.now().strftime("%d %m %Y") # Dinamik Tarih
+    bugun = datetime.now().strftime("%d %m %Y") 
     
     prompt = f"""
     Sen kıdemli bir Maden İSG Baş Mühendisisin. Aşağıdaki vardiya notunu incele ve resmi bir '{form_tipi}' oluştur.
@@ -195,7 +297,7 @@ def gorev_sevk_et(girdi_metni, kaynak_belge):
     except:
         return False
 
-# --- YENİ EKLENEN GÖRSEL İSG ANALİZ MOTORU ---
+# --- GÖRSEL İSG ANALİZ MOTORU ---
 def analiz_et_gorsel(file_bytes):
     from openai import OpenAI
     client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
@@ -299,13 +401,49 @@ with st.sidebar:
     if "analiz_verisi" not in st.session_state: st.session_state.analiz_verisi = ""
     if "son_yuklenen_dosya" not in st.session_state: st.session_state.son_yuklenen_dosya = None
 
-    # GÜNCELLENMİŞ UPLOADER (Görsel Desteği)
-    uploaded_file = st.file_uploader("📂 Rapor, Ses veya Fotoğraf Yükleyin", type=["pdf", "docx", "xlsx", "xls", "txt", "mp3", "wav", "m4a", "png", "jpg", "jpeg"])
+    # --- OFFLINE MOD ANAHTARI ---
+    st.sidebar.markdown("### 📡 Saha Bağlantı Modu")
+    is_offline = st.sidebar.toggle("🚫 Yeraltı Çevrimdışı (Offline) Mod", value=False)
+    
+    if is_offline:
+        st.sidebar.warning("⚡ Yeraltındasınız: Veriler yerel hafızaya kaydedilecek, internete bağlanınca analiz edilecek.")
+        offline_note = st.sidebar.text_area("✍️ Offline Vardiya Notu / Taslak:", key="off_note")
+        if st.sidebar.button("💾 Taslağı Yeraltı Hafızasına Kaydet"):
+            if offline_note.strip():
+                save_to_offline_queue({
+                    "tarih": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                    "not": offline_note.strip()
+                })
+                st.sidebar.success("✅ Taslak yerel belleğe kaydedildi!")
+            else:
+                st.sidebar.error("Metin boş olamaz.")
+    
+    # KUYRUKTA BEKLEYEN TASLAKLARI SENKRONİZE ETME
+    current_queue = get_offline_queue()
+    if current_queue:
+        st.sidebar.info(f"📥 Senkronize Edilmeyi Bekleyen: **{len(current_queue)} adet taslak** var.")
+        if st.sidebar.button("🔄 Yerüstüne Çıkıldı: Taslakları Senkronize Et & Analiz Et", type="primary"):
+            birlestirilmis_notlar = "\n\n--- OFFLINE TOPLANAN VARDİYA KAYITLARI ---\n"
+            for idx, q in enumerate(current_queue, 1):
+                birlestirilmis_notlar += f"\n[{q['tarih']}] Kayıt #{idx}:\n{q['not']}\n"
+            
+            st.session_state.analiz_verisi = birlestirilmis_notlar
+            clear_offline_queue()
+            st.sidebar.success("✅ Tüm offline veriler ana sisteme aktarıldı ve temizlendi!")
+            st.rerun()
+
+    st.markdown("---")
+
+    # GÜNCELLENMİŞ UPLOADER
+    st.sidebar.markdown("### 🎙️ Telsiz Ses Kaydı veya Belge/Fotoğraf Yükle")
+    uploaded_file = st.file_uploader("📂 Rapor, Telsiz Kaydı veya Fotoğraf Yükleyin", type=["pdf", "docx", "xlsx", "xls", "txt", "mp3", "wav", "m4a", "png", "jpg", "jpeg"])
     if uploaded_file is not None and uploaded_file.name != st.session_state.son_yuklenen_dosya:
         try:
             file_bytes = uploaded_file.read()
             if uploaded_file.name.endswith(('.mp3', '.wav', '.m4a')):
-                with st.spinner("🎤 Ses çözülüyor..."): st.session_state.analiz_verisi = extract_text_from_audio(file_bytes, uploaded_file.name)
+                st.audio(file_bytes, format=f"audio/{uploaded_file.name.split('.')[-1]}")
+                with st.spinner("🎙️ Whisper AI: Telsiz ses kaydı metne dönüştürülüyor..."): 
+                    st.session_state.analiz_verisi = extract_text_from_audio(file_bytes, uploaded_file.name)
             elif uploaded_file.name.endswith(('.png', '.jpg', '.jpeg')):
                 with st.spinner("👁️ Görsel İSG Motoru analiz ediyor..."):
                     st.session_state.analiz_verisi = analiz_et_gorsel(file_bytes)
@@ -316,7 +454,7 @@ with st.sidebar:
             
             st.session_state.son_yuklenen_dosya = uploaded_file.name
             st.session_state.analiz_sonucu = None
-            st.success("✅ Veri aktarıldı!")
+            st.success("✅ Veri çözümlendi ve aktarıldı!")
             time.sleep(0.5)
             st.rerun()
         except Exception as e: st.error(f"Hata: {e}")
@@ -343,13 +481,14 @@ with st.sidebar:
 st.title("🛡️ Arın AI Enterprise: Proaktif Maden İSG & Saha Yönetim Platformu")
 st.caption("Aethel Technologies — Multi-Agent RAG, Jeoloji & Operasyonel Karar Destek Mimarisi")
 
-# 5 SEKMELİ YENİ MİMARİ
-tab_dashboard, tab_engine, tab_forms, tab_operations, tab_scada = st.tabs([
+# 6 SEKMELİ YENİ MİMARİ
+tab_dashboard, tab_engine, tab_forms, tab_operations, tab_scada, tab_personel = st.tabs([
     "📊 Canlı İSG Analiz Paneli", 
     "🧮 Deterministik Risk & Ölçüm Motoru",
     "📋 Form & Kök Neden Merkezi", 
     "📡 Sahadan Canlı Görev Sevk Panosu",
-    "🔴 SCADA & GIS (Sensör ve Harita)"
+    "🔴 SCADA & GIS (Sensör ve Harita)",
+    "👷‍♂️ Personel & Vardiya Matrisi"
 ])
 
 # --- TAB 1: CANLI ANALİZ PANELİ ---
@@ -403,7 +542,6 @@ with tab_dashboard:
         if isinstance(res, dict) and "error" in res:
             st.error(res["error"])
         elif isinstance(res, dict):
-            # 1. ADIM: LOKASYON KARTI
             loc_info = res.get("location", {})
             st.subheader(f"📍 Algılanan Saha Alanı: {loc_info.get('title', 'Belirtilmedi')}")
             
@@ -413,7 +551,6 @@ with tab_dashboard:
             with c_loc2:
                 st.info(f"**Zorunlu Kritik Kontroller:** {', '.join(loc_info.get('critical_checks', []))}")
             
-            # 2. ADIM: EKİPMAN (LOTO) KARTI
             equipment_info = res.get("equipment", {})
             if equipment_info:
                 st.markdown("<br>", unsafe_allow_html=True)
@@ -428,7 +565,6 @@ with tab_dashboard:
                             st.success(f"**🔒 Zorunlu LOTO Prosedürü:** {eq_data['loto_protocol']}")
             st.write("---")
 
-            # 3. ADIM: GEÇMİŞ VARDİYA TRENDİ VE GRAFİK BÖLÜMÜ
             st.subheader("📈 Saha Vardiyalar Arası Gaz Trend Grafiği (Memory)")
             try:
                 if os.path.exists("database/shift_memory.json"):
@@ -452,7 +588,6 @@ with tab_dashboard:
                 st.subheader("🤖 Başmühendis Final Kararı ve DÖF Planı")
                 st.info(res.get("final_decision", ""))
                 
-                # İNSAN ONAYLI SAHAYA SEVK BUTONU
                 c_btn1, c_btn2 = st.columns(2)
                 with c_btn1:
                     pdf_data = create_pdf_from_markdown(res.get("final_decision", ""))
@@ -465,7 +600,6 @@ with tab_dashboard:
                                 time.sleep(1)
                                 st.rerun()
 
-                # HAFIZA AKIŞI EXPANDER
                 with st.expander("⏳ Lokasyon Geçmiş Vardiya Akışı (Saha Hafızası)", expanded=False):
                     raw_history = res.get("history", "")
                     if raw_history and raw_history != "Geçmiş kayıt bulunamadı.":
@@ -501,7 +635,6 @@ with tab_dashboard:
                     else:
                         st.info("Bu lokasyon için henüz geçmiş vardiya kaydı bulunmuyor.")
 
-                # ÇOKLU AJAN ÇATIŞMA PANELİ
                 with st.expander("👷 İSG Denetim Ajanı Görüşü (Tavizsiz Güvenlik)", expanded=False):
                     st.error(res.get("isg_agent", ""))
                     
@@ -577,7 +710,6 @@ with tab_engine:
         except ValueError:
             st.error("Lütfen geçerli sayısal değerler girin.")
 
-    # YENİ: RMR HESAPLAYICI
     st.markdown("---")
     st.subheader("4. Jeoteknik RMR (Rock Mass Rating) Hesaplayıcı")
     st.caption("Bieniawski (1989) parametrelerine göre yeraltı tahkimat önerisi.")
@@ -610,12 +742,13 @@ with tab_engine:
 
 # --- TAB 3: FORM & KÖK NEDEN MERKEZİ ---
 with tab_forms:
-    st.subheader("📋 Resmi İSG Form ve Analiz Matrisi")
+    st.subheader("📋 Resmi İSG Form, Kök Neden & Bakım Matrisi")
     secilen_form = st.selectbox("Üretilecek Belge Tipini Seçin:", [
         "Maden İşletmeleri Ramak Kala Olay Formu", 
         "Tehlike Bildirim Formu", 
         "İş Durdurma Tutanağı",
-        "Kök Neden Analizi (5 Neden - 5 Whys)" # YENİ 5 WHYS
+        "Kök Neden Analizi (5 Neden - 5 Whys)",
+        "Predictive Maintenance & LOTO İş Emri"
     ])
     
     if st.button(f"✨ {secilen_form} Üret"):
@@ -626,6 +759,8 @@ with tab_forms:
                 prompt = f"Şu olayın/vardiya notunun '5 Neden (5 Whys)' analizini yap. En sonda Kök Nedeni (Root Cause) ve Düzeltici Önleyici Faaliyeti (DÖF) belirt.\n\nOlay: {st.session_state.analiz_verisi}"
                 resp = client.chat.completions.create(model="gpt-4o-mini", messages=[{"role": "user", "content": prompt}])
                 st.session_state[f"form_cache_{secilen_form}"] = resp.choices[0].message.content
+            elif "Predictive Maintenance" in secilen_form:
+                st.session_state[f"form_cache_{secilen_form}"] = predictive_bakim_ve_loto_uret(st.session_state.analiz_verisi)
             else:
                 st.session_state[f"form_cache_{secilen_form}"] = form_doldur_llm(st.session_state.analiz_verisi, secilen_form)
             
@@ -636,24 +771,86 @@ with tab_forms:
         with btn1:
             st.download_button("📥 Belgeyi PDF İndir", data=create_pdf_from_markdown(st.session_state[cache_key]), file_name=f"{secilen_form.replace(' ', '_')}.pdf", mime="application/pdf", use_container_width=True)
         with btn2:
-            if st.button("📡 SAHAYA SEVK ET (DÖF)", type="primary", use_container_width=True):
+            if st.button("📡 SAHAYA SEVK ET (BAKIM İŞ EMRİ)", type="primary", use_container_width=True):
                 if gorev_sevk_et(st.session_state[cache_key], secilen_form):
-                    st.success("📢 Görev Canlı Takip Panosuna eklendi!")
+                    st.success("📢 Bakım iş emri Canlı Takip Panosuna sevk edildi!")
 
 # --- TAB 4: SAHADAN CANLI GÖREV SEVK PANOSU ---
 with tab_operations:
     st.subheader("🔄 Vardiya Teslim (Handover) Zekası")
-    if st.button("Geçmiş 24 Saati Özetle ve Açık Riskleri Raporla", type="secondary"):
-        with st.spinner("Hafızadaki vardiyalar birleştiriliyor..."):
-            from openai import OpenAI
-            client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-            
-            ornek_gecmis = "Gece vardiyası: 3. batı galerisinde su geliri arttı. Gündüz vardiyası: Aynı bölgede fan arızalandı, %1.2 CH4 ölçüldü, onarım beklemede."
-            prompt = f"Aşağıdaki geçmiş 24 saatlik maden notlarını incele. Yeni gelen amir için 'DEVREDİLEN AÇIK RİSKLER' adında 3 maddelik acil bir brifing hazırla.\n\nVeri: {ornek_gecmis}"
-            
-            resp = client.chat.completions.create(model="gpt-4o-mini", messages=[{"role": "user", "content": prompt}])
-            st.warning("⚠️ **Yeni Vardiya Amirinin Dikkatine (Açık Riskler):**")
-            st.markdown(resp.choices[0].message.content)
+    
+    col_handover, col_report = st.columns([1, 1])
+    
+    with col_handover:
+        if st.button("Geçmiş 24 Saati Özetle ve Açık Riskleri Raporla", type="secondary", use_container_width=True):
+            with st.spinner("Hafızadaki vardiyalar birleştiriliyor..."):
+                from openai import OpenAI
+                client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+                
+                ornek_gecmis = "Gece vardiyası: 3. batı galerisinde su geliri arttı. Gündüz vardiyası: Aynı bölgede fan arızalandı, %1.2 CH4 ölçüldü, onarım beklemede."
+                prompt = f"Aşağıdaki geçmiş 24 saatlik maden notlarını incele. Yeni gelen amir için 'DEVREDİLEN AÇIK RİSKLER' adında 3 maddelik acil bir brifing hazırla.\n\nVeri: {ornek_gecmis}"
+                
+                resp = client.chat.completions.create(model="gpt-4o-mini", messages=[{"role": "user", "content": prompt}])
+                st.warning("⚠️ **Yeni Vardiya Amirinin Dikkatine (Açık Riskler):**")
+                st.markdown(resp.choices[0].message.content)
+
+    with col_report:
+        # FİNAL ADIMI: KAPSAMLI PDF RAPOR OLUŞTURUCU
+        if st.button("📑 Kapsamlı Vardiya Kapanış Raporu Oluştur (PDF)", type="primary", use_container_width=True):
+            with st.spinner("Tüm sistem verileri toplanıyor ve Kurumsal Rapor hazırlanıyor..."):
+                rapor_metni = f"# ARIN AI ENTERPRISE - VARDİYA KAPANIŞ RAPORU\n\n"
+                rapor_metni += f"**Tarih / Saat:** {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n"
+                rapor_metni += f"**Sistem Modu:** Çoklu Ajan Karar Destek Aktif\n\n"
+                rapor_metni += "---\n\n"
+                
+                rapor_metni += "## 1. SON ANALİZ VE SAHA BULGULARI\n"
+                if st.session_state.analiz_sonucu and isinstance(st.session_state.analiz_sonucu, dict):
+                    loc = st.session_state.analiz_sonucu.get("location", {}).get("title", "Belirtilmedi")
+                    rapor_metni += f"**İncelenen Lokasyon:** {loc}\n\n"
+                    rapor_metni += f"**Başmühendis Kararı:**\n{st.session_state.analiz_sonucu.get('final_decision', 'Analiz edilmedi.')}\n\n"
+                else:
+                    rapor_metni += "Bu vardiyada tam kapsamlı AI risk analizi yürütülmedi.\n\n"
+                
+                rapor_metni += "## 2. AÇIK İŞ EMİRLERİ VE DÖF (Düzeltici Önleyici Faaliyetler)\n"
+                if st.session_state.canli_gorevler:
+                    for idx, task in enumerate(st.session_state.canli_gorevler, 1):
+                        rapor_metni += f"**{idx}. [ID: {task['Gorev ID']}]** - {task['Aksiyon / İş Emri']}\n"
+                        rapor_metni += f"Sorumlu: {task['Sorumlu Birim']} | Termin: {task['Termin']} | Durum: {task['Durum']}\n\n"
+                else:
+                    rapor_metni += "Bu vardiyada atanmış aktif bir görev bulunmamaktadır.\n\n"
+                
+                rapor_metni += "## 3. İSG PERSONEL & UYUMLULUK İHLALLERİ\n"
+                try:
+                    df_personel = personel_listesi_getir()
+                    bugun = datetime.now().strftime("%Y-%m-%d")
+                    riskli_personel = df_personel[(df_personel['myk_belge_durumu'] != "Geçerli / Aktif") | (df_personel['saglik_raporu_tarihi'] < bugun)]
+                    
+                    if not riskli_personel.empty:
+                        for _, row in riskli_personel.iterrows():
+                            rapor_metni += f"⚠️ **{row['ad_soyad']} (Sicil: {row['sicil_no']})** - {row['gorev']}\n"
+                            rapor_metni += f"Durum: MYK ({row['myk_belge_durumu']}) | Sağlık Raporu ({row['saglik_raporu_tarihi']})\n\n"
+                    else:
+                        rapor_metni += "✅ Tüm personelin İSG belgeleri ve sağlık raporları günceldir.\n\n"
+                except Exception as e:
+                    rapor_metni += f"Personel verisi çekilemedi: {e}\n\n"
+                
+                rapor_metni += "---\n*Bu belge Aethel Technologies - Arın AI Sistemi tarafından otomatik oluşturulmuştur.*"
+                
+                # PDF'i oluştur ve Session State'e at
+                pdf_bytes = create_pdf_from_markdown(rapor_metni)
+                st.session_state.kapanis_raporu = pdf_bytes
+                st.success("✅ Rapor başarıyla oluşturuldu!")
+
+    # Rapor oluştuysa indirme butonunu göster
+    if "kapanis_raporu" in st.session_state:
+        st.download_button(
+            label="📥 Oluşturulan Kapanış Raporunu İndir (PDF)",
+            data=st.session_state.kapanis_raporu,
+            file_name=f"Vardiya_Kapanis_Raporu_{datetime.now().strftime('%Y%m%d')}.pdf",
+            mime="application/pdf",
+            type="primary",
+            use_container_width=True
+        )
 
     st.write("---")
     st.subheader("📡 Canlı Operasyonel Görev Takip Panosu")
@@ -662,37 +859,77 @@ with tab_operations:
 
 # --- TAB 5: SCADA & GIS (LIVE SENSORS & MAP) ---
 with tab_scada:
-    st.header("🔴 Anlık Sensör Verileri & İnteraktif Saha Haritası")
-    st.caption("Mock-up canlı veri akışı ve kat planı.")
+    st.header("🔴 Anlık Sensör Verileri & Kestirimci Anomali Tahmini (Predictive AI)")
+    st.caption("IoT Sensör Akışı, Trend Analizi ve Erken Uyarı Mimarisi")
     
-    # 1. IoT Sensör Verileri
     sc1, sc2, sc3, sc4 = st.columns(4)
-    ch4_val = round(random.uniform(0.1, 1.8), 2)
+    
+    if "ch4_history" not in st.session_state:
+        st.session_state.ch4_history = [0.4, 0.6, 0.8, 1.1, 1.35]
+    
+    ch4_val = st.session_state.ch4_history[-1]
     co_val = random.randint(10, 45)
     temp_val = round(random.uniform(25.0, 32.0), 1)
     air_val = round(random.uniform(0.5, 2.0), 2)
     
     with sc1:
-        st.metric("Metan (CH4)", f"%{ch4_val}", delta="Kritik!" if ch4_val >= 1.5 else "Normal", delta_color="inverse")
+        st.metric("Metan (CH4) Mevcut", f"%{ch4_val}", delta=f"+%{round(ch4_val - st.session_state.ch4_history[-2], 2)} (Yükselişte)", delta_color="inverse")
     with sc2:
         st.metric("Karbonmonoksit (CO)", f"{co_val} ppm", delta="Uyarı" if co_val > 30 else "İyi", delta_color="inverse")
     with sc3:
         st.metric("Ortam Sıcaklığı", f"{temp_val} °C", "Normal")
     with sc4:
         st.metric("Hava Hızı", f"{air_val} m/s", "-0.1 m/s (Düşüş)")
-        
-    if ch4_val >= 1.5:
-        st.error("🚨 SİSTEM UYARISI: CH4 Seviyesi Kritik Eşiği (%1.5) aştı! Lütfen galeriyi derhal boşaltın ve havalandırma fanlarını tam kapasiteye alın.")
+
+    st.markdown("<br>", unsafe_allow_html=True)
+    st.subheader("📈 Kestirimci Gaz Eğrisi ve Erken Uyarı (Predictive Trend Analysis)")
     
-    if st.button("🔄 Sensörleri Yenile"):
-        st.rerun()
+    c_chart, c_predict = st.columns([2, 1])
+    
+    x = np.array(range(len(st.session_state.ch4_history)))
+    y = np.array(st.session_state.ch4_history)
+    slope, intercept = np.polyfit(x, y, 1) 
+    
+    future_x = np.array([5, 6, 7])
+    future_ch4 = slope * future_x + intercept
+    tahmini_kritik_sure = int((1.5 - ch4_val) / (slope if slope > 0 else 0.01) * 5) 
+    
+    with c_chart:
+        df_chart = pd.DataFrame({
+            "Geçmiş Ölçümler": st.session_state.ch4_history + [None, None, None],
+            "AI Tahmin Eğrisi (Gelecek)": [None]*4 + [ch4_val] + list(np.round(future_ch4, 2))
+        })
+        st.line_chart(df_chart)
+
+    with c_predict:
+        st.markdown("#### 🔮 AI Tahmin Raporu")
+        if slope > 0.1:
+            st.error(f"🚨 **ANOMALİ TESPİT EDİLDİ!**\n\nGaz seviyesinde ivmeli bir artış var (Eğim: +{round(slope, 2)}).")
+            if tahmini_kritik_sure > 0:
+                st.warning(f"⏳ **Kritik Eşik Uyarısı:** Tahmini **{tahmini_kritik_sure} dakika içinde** metan oranı %1.5 kritik patlama threshold'unu aşacak!")
+            st.info("💡 **Proaktif Tavsiye:** Ana havalandırma fan devrini %20 artırın ve 3. Batı Galerisi'ndeki patlatmaları durdurun.")
+        else:
+            st.success("🟢 Gaz yükseliş trendi stabil. Anomali riski tespit edilmedi.")
 
     st.write("---")
     
-    # 2. İnteraktif GIS / Floor Plan (Plotly & Folium)
+    col_btn1, col_btn2 = st.columns(2)
+    with col_btn1:
+        if st.button("🔄 Sensör Verisini Yenile (Anlık Akış)"):
+            new_val = round(min(2.0, max(0.2, st.session_state.ch4_history[-1] + random.uniform(-0.1, 0.25))), 2)
+            st.session_state.ch4_history.pop(0)
+            st.session_state.ch4_history.append(new_val)
+            st.rerun()
+            
+    with col_btn2:
+        if st.button("⚠️ Yapay Anomali Tetikle (Test)"):
+            st.session_state.ch4_history = [0.5, 0.7, 0.95, 1.2, 1.45]
+            st.rerun()
+
+    st.write("---")
+    
     st.subheader("🗺️ Maden GIS ve Risk Haritası")
     
-    # Kullanıcıya Açık Ocak veya Yeraltı seçimi sunuyoruz
     harita_tipi = st.radio("Harita Modunu Seçin:", ["⛏️ Yeraltı Kat Planı (Galeri Krokisi)", "🛰️ Açık Ocak / Yerüstü (Uydu GIS)"], horizontal=True)
     
     if harita_tipi == "⛏️ Yeraltı Kat Planı (Galeri Krokisi)":
@@ -702,7 +939,7 @@ with tab_scada:
             galeriler = ["Ana Desandre", "1. Doğu Galerisi", "2. Batı Galerisi", "3. Ayna (Aktif)"]
             x_coords = [0, 50, -50, -70]
             y_coords = [0, -100, -150, -250]
-            risk_levels = [1, 2, 2, 5] 
+            risk_levels = [1, 2, 2, 5 if ch4_val >= 1.4 else 3] 
             
             fig = go.Figure()
             fig.add_trace(go.Scatter(x=x_coords, y=y_coords, mode='lines', line=dict(color='gray', width=4), name='Galeri Hatları'))
@@ -723,13 +960,9 @@ with tab_scada:
             import folium
             from streamlit_folium import st_folium
             
-            # Örnek Koordinat: Bilecik / Bozüyük bölgesi (Sistemi kendi bölgenize uyarlamak için)
             merkez_enlem, merkez_boylam = 39.9056, 30.0381 
-            
-            # Uydu/Terrain haritası oluşturma
             m = folium.Map(location=[merkez_enlem, merkez_boylam], zoom_start=13, tiles="OpenStreetMap")
             
-            # Riskli bölgelere Folium Pinleri ekleme
             folium.Marker(
                 [39.9100, 30.0400],
                 popup="Pasa Döküm Alanı - Şev Kayması Riski",
@@ -755,3 +988,54 @@ with tab_scada:
             st_folium(m, width=900, height=450, returned_objects=[])
         except ImportError:
             st.warning("Yerüstü haritası için terminalden 'pip install folium streamlit-folium' kurmanız gereklidir.")
+
+# --- TAB 6: PERSONEL & VARDİYA MATRİSİ ---
+with tab_personel:
+    st.subheader("👷‍♂️ Personel Yetkinlik, Sağlık & MYK Uyumluluk Matrisi")
+    
+    col1, col2 = st.columns([1, 2])
+    
+    with col1:
+        st.markdown("### ➕ Yeni Personel Kaydı")
+        with st.form("personel_formu", clear_on_submit=True):
+            p_ad = st.text_input("Ad Soyad:")
+            p_sicil = st.text_input("Sicil No:")
+            p_gorev = st.selectbox("Görevi / Unvanı:", ["Tarakçı / Kazıcı", "Dinamitçi / Patlatma Uzmanı", "Makinist", "Gaz Ölçüm Elemanı", "Ayna Çavuşu", "Elektrik / Mekanik Bakımcı"])
+            p_saglik = st.date_input("Sağlık Raporu Bitiş Tarihi:")
+            p_myk = st.selectbox("MYK Yetki Belgesi Durumu:", ["Geçerli / Aktif", "Süresi Doldu", "Eksik / Yok"])
+            p_vardiya = st.selectbox("Atandığı Vardiya:", ["Gündüz (08:00 - 16:00)", "Pasa (16:00 - 00:00)", "Gece (00:00 - 08:00)"])
+            
+            if st.form_submit_button("Personeli Sisteme Kaydet", type="primary", use_container_width=True):
+                if p_ad and p_sicil:
+                    if personel_ekle(p_ad, p_sicil, p_gorev, str(p_saglik), p_myk, p_vardiya):
+                        st.success(f"{p_ad} personeli veritabanına başarıyla eklendi!")
+                        st.rerun()
+                    else:
+                        st.error("Hata: Sicil numarası zaten kayıtlı olabilir.")
+                else:
+                    st.warning("Lütfen Ad Soyad ve Sicil No alanlarını doldurun.")
+
+    with col2:
+        st.markdown("### 📋 Kayıtlı Personel Listesi ve Risk Uyarıları")
+        personeller = personel_listesi_getir()
+        
+        if not personeller.empty:
+            bugun = datetime.now().strftime("%Y-%m-%d")
+            
+            def durum_isle(row):
+                if row['myk_belge_durumu'] != "Geçerli / Aktif" or row['saglik_raporu_tarihi'] < bugun:
+                    return "❌ UYGUNSUZ / RİSKLİ"
+                return "✅ UYGUN"
+
+            personeller['İSG Uyumluluk Statusu'] = personeller.apply(durum_isle, axis=1)
+            
+            st.dataframe(
+                personeller[['sicil_no', 'ad_soyad', 'gorev', 'saglik_raporu_tarihi', 'myk_belge_durumu', 'vardiya', 'İSG Uyumluluk Statusu']],
+                use_container_width=True
+            )
+            
+            riskli_sayisi = len(personeller[personeller['İSG Uyumluluk Statusu'] == "❌ UYGUNSUZ / RİSKLİ"])
+            if riskli_sayisi > 0:
+                st.error(f"⚠️ DİKKAT: Vardiyalarda çalışmaya engel veya belgeleri eksik/süresi dolmuş **{riskli_sayisi} personel** tespit edildi!")
+        else:
+            st.info("Henüz sisteme kayıtlı personel bulunmamaktadır.")
