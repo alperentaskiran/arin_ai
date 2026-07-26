@@ -7,6 +7,7 @@ import re
 from datetime import datetime
 import random
 import sqlite3
+import hashlib
 
 # ==========================================
 # CHROMA VE RUST KİLİTLENMELERİNİ ENGELLEYEN AYARLAR
@@ -25,6 +26,13 @@ if not hasattr(np, "int_"):
 if not hasattr(np, "float_"):
     np.float_ = np.float64
 import streamlit as st
+
+# Yeni Görüntü İşleme Bağımlılıkları (KVKK & Filigran için)
+try:
+    import cv2
+    from PIL import Image, ImageDraw, ImageFont
+except ImportError:
+    st.error("Lütfen terminalden şu kütüphaneleri yükleyin: pip install opencv-python pillow")
 
 # Modeller ve İSG Motorları Güvenli İçe Aktarma
 try:
@@ -297,13 +305,48 @@ def gorev_sevk_et(girdi_metni, kaynak_belge):
     except:
         return False
 
+# --- KVKK GÖRSEL ANONİMLEŞTİRME VE DİJİTAL DELİL FİLİGRANI ---
+def apply_kvkk_and_watermark(image_bytes):
+    try:
+        nparr = np.frombuffer(image_bytes, np.uint8)
+        img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+        
+        # Yüz Tespiti ve Blur (Haar Cascade)
+        face_cascade_path = cv2.data.haarcascades + 'haarcascade_frontalface_default.xml'
+        face_cascade = cv2.CascadeClassifier(face_cascade_path)
+        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        faces = face_cascade.detectMultiScale(gray, 1.1, 4)
+        
+        for (x, y, w, h) in faces:
+            roi = img[y:y+h, x:x+w]
+            roi = cv2.GaussianBlur(roi, (51, 51), 30)
+            img[y:y+h, x:x+w] = roi
+            
+        # Pillow (PIL) formatına geçirerek metin ekleme
+        img_pil = Image.fromarray(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
+        draw = ImageDraw.Draw(img_pil)
+        
+        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        gps_mock = "40.028° N, 30.187° E (Söğüt Tesisleri)" 
+        raw_hash = hashlib.sha256(image_bytes).hexdigest()[:16]
+        watermark_text = f"AETHEL AI - DIJITAL KANIT\nTarih: {timestamp}\nGPS: {gps_mock}\nHash: {raw_hash}\n[KVKK Maskeleme Aktif]"
+        
+        draw.text((20, 20), watermark_text, fill=(255, 0, 0))
+        
+        buf = io.BytesIO()
+        img_pil.save(buf, format="JPEG")
+        return buf.getvalue()
+    except Exception as e:
+        st.error(f"Görsel işleme hatası: {e}")
+        return image_bytes
+
 # --- GÖRSEL İSG ANALİZ MOTORU ---
-def analiz_et_gorsel(file_bytes):
+def analiz_et_gorsel(file_bytes, domain_prompt="Genel İSG Kuralları"):
     from openai import OpenAI
     client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
     base64_image = base64.b64encode(file_bytes).decode('utf-8')
     
-    prompt = "Sen bir İSG denetçisisin. Bu maden sahası/ekipman fotoğrafını incele. Olası İSG ihlallerini (baret/maske eksikliği, hatalı tahkimat, açık kablo vb.) tespit et ve ilgili maden mevzuatı maddeleriyle eşleştir. Sadece bulguları ve önerileri yaz."
+    prompt = f"Sen bir İSG denetçisisin. Uzmanlık Alanın: {domain_prompt}. Bu maden sahası/ekipman fotoğrafını incele. Olası İSG ihlallerini tespit et ve ilgili maden mevzuatı maddeleriyle eşleştir. Sadece bulguları ve önerileri yaz."
     
     try:
         response = client.chat.completions.create(
@@ -398,6 +441,31 @@ with st.sidebar:
         st.title("🛡️ Arın AI Enterprise")
         
     st.markdown("---")
+    
+    # --- YENİ: MADEN TİPİ VE OPERASYON ADAPTÖRÜ ---
+    st.subheader("🏗️ Maden & Operasyon Tipi")
+    maden_tipi = st.selectbox(
+        "Çalışılan Tesis Tipi:",
+        [
+            "Değerli Metal (Altın, Gümüş - Siyanür / Atık Barajı)",
+            "Metalik Madencilik (Bakır, Demir - Patlatma & Ağır Metal)",
+            "Nadir Toprak Elementleri & Endüstriyel (Kimyasal Risk)",
+            "Mermer & Doğaltaş (Şev Stabilitesi & Tel Kesme)",
+            "Kömür & Yeraltı Galerisi (Grizu / Havalandırma)"
+        ]
+    )
+
+    domain_instructions = {
+        "Değerli Metal (Altın, Gümüş - Siyanür / Atık Barajı)": "Sen Değerli Metal Madenciliği (Altın/Gümüş) İSG uzmanısın. Analizlerinde ICMC (Siyanür Yönetimi), Atık Barajı sızıntıları, patlatma emniyeti ve cevher zenginleştirme risklerine odaklan.",
+        "Metalik Madencilik (Bakır, Demir - Patlatma & Ağır Metal)": "Sen Metalik Maden İSG uzmanısın. Yeraltı/Açık ocak patlatma emniyeti, ağır makine devrilmeleri, galeri tahkimatları ve toz/ağır metal maruziyetine odaklan.",
+        "Nadir Toprak Elementleri & Endüstriyel (Kimyasal Risk)": "Sen Nadir Toprak Elementleri ve Endüstriyel Mineral İSG uzmanısın. Nükleer/Doğal Radyasyon (TENORM), asit/reaktif kimyasal sızıntıları ve yüksek sıcaklık proses risklerine odaklan.",
+        "Mermer & Doğaltaş (Şev Stabilitesi & Tel Kesme)": "Sen Mermer ve Doğaltaş Ocakçılığı İSG uzmanısın. Açık ocak şev stabilitesi, tel kesme/sayalama halat kopmaları, blok devrilmesi ve silikozis (toz) risklerine odaklan.",
+        "Kömür & Yeraltı Galerisi (Grizu / Havalandırma)": "Sen Yeraltı Kömür Madenciliği İSG uzmanısın. Metan (CH4), Karbonmonoksit (CO) gaz tavanı, kömür tozu patlaması ve yeraltı havalandırma kapıları risklerine odaklan."
+    }
+    st.session_state.current_domain_prompt = domain_instructions[maden_tipi]
+
+    st.markdown("---")
+    
     if "analiz_verisi" not in st.session_state: st.session_state.analiz_verisi = ""
     if "son_yuklenen_dosya" not in st.session_state: st.session_state.son_yuklenen_dosya = None
 
@@ -434,7 +502,7 @@ with st.sidebar:
 
     st.markdown("---")
 
-    # GÜNCELLENMİŞ UPLOADER
+    # GÜNCELLENMİŞ UPLOADER (KVKK DESTEKLİ)
     st.sidebar.markdown("### 🎙️ Telsiz Ses Kaydı veya Belge/Fotoğraf Yükle")
     uploaded_file = st.file_uploader("📂 Rapor, Telsiz Kaydı veya Fotoğraf Yükleyin", type=["pdf", "docx", "xlsx", "xls", "txt", "mp3", "wav", "m4a", "png", "jpg", "jpeg"])
     if uploaded_file is not None and uploaded_file.name != st.session_state.son_yuklenen_dosya:
@@ -445,8 +513,10 @@ with st.sidebar:
                 with st.spinner("🎙️ Whisper AI: Telsiz ses kaydı metne dönüştürülüyor..."): 
                     st.session_state.analiz_verisi = extract_text_from_audio(file_bytes, uploaded_file.name)
             elif uploaded_file.name.endswith(('.png', '.jpg', '.jpeg')):
-                with st.spinner("👁️ Görsel İSG Motoru analiz ediyor..."):
-                    st.session_state.analiz_verisi = analiz_et_gorsel(file_bytes)
+                with st.spinner("👁️ KVKK Maskeleme & Dijital Filigran Uygulanıyor..."):
+                    processed_img = apply_kvkk_and_watermark(file_bytes)
+                    st.sidebar.image(processed_img, caption="Mühürlü ve Anonimleştirilmiş Görsel")
+                    st.session_state.analiz_verisi = analiz_et_gorsel(processed_img, st.session_state.current_domain_prompt)
             elif uploaded_file.name.endswith('.pdf'): st.session_state.analiz_verisi = extract_text_from_pdf(file_bytes)
             elif uploaded_file.name.endswith(('.docx', '.doc')): st.session_state.analiz_verisi = extract_text_from_docx(file_bytes)
             elif uploaded_file.name.endswith(('.xlsx', '.xls')): st.session_state.analiz_verisi = extract_text_from_excel(file_bytes)
@@ -470,6 +540,7 @@ with st.sidebar:
     st.session_state.analiz_verisi = manuel_metin
 
     if st.button("🚀 MULTI-AGENT ANALİZİ BAŞLAT", type="primary", use_container_width=True):
+        st.session_state.analiz_verisi_zengin = f"[Seçili Maden Tipi: {maden_tipi}]\n[Özel Talimat: {st.session_state.current_domain_prompt}]\n\n{st.session_state.analiz_verisi}"
         st.session_state.analiz_basladi = True
         st.session_state.analiz_sonucu = None
         st.session_state.mevzuat_kaynaklari = ""
@@ -513,18 +584,20 @@ with tab_dashboard:
             status.info("📍 Saha Lokasyon Mimarisi ve Geçmiş Vardiya Hafızası çekiliyor...")
             progress.progress(20)
             
-            status.info("📚 RAG: Mevzuat, Kaza ve MTA Jeoloji Veritabanı taranıyor...")
+            status.info(f"📚 RAG: {maden_tipi.split('(')[0].strip()} mevzuatı, Kaza ve MTA Jeoloji Veritabanı taranıyor...")
             progress.progress(50)
             if rag_engine:
-                st.session_state.mevzuat_kaynaklari = rag_engine.mevzuat_ara_ozetli(st.session_state.analiz_verisi)
-                st.session_state.kaza_kaynaklari = rag_engine.kaza_raporu_ara_ozetli(st.session_state.analiz_verisi)
-                st.session_state.jeoloji_kaynaklari = rag_engine.jeoloji_ara_ozetli(st.session_state.analiz_verisi)
+                hedef_metin = st.session_state.get("analiz_verisi_zengin", st.session_state.analiz_verisi)
+                st.session_state.mevzuat_kaynaklari = rag_engine.mevzuat_ara_ozetli(hedef_metin)
+                st.session_state.kaza_kaynaklari = rag_engine.kaza_raporu_ara_ozetli(hedef_metin)
+                st.session_state.jeoloji_kaynaklari = rag_engine.jeoloji_ara_ozetli(hedef_metin)
             
             status.info("⚖️ Multi-Agent Çatışma Simülasyonu (İSG Denetçisi vs Üretim Mühendisi vs Başmühendis)...")
             progress.progress(85)
             
             if rag_engine:
-                res_dict = rag_engine.saha_raporu_analiz_et(st.session_state.analiz_verisi)
+                hedef_metin = st.session_state.get("analiz_verisi_zengin", st.session_state.analiz_verisi)
+                res_dict = rag_engine.saha_raporu_analiz_et(hedef_metin)
                 st.session_state.analiz_sonucu = res_dict
             
             progress.progress(100)
@@ -756,7 +829,8 @@ with tab_forms:
             if "Kök Neden" in secilen_form:
                 from openai import OpenAI
                 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-                prompt = f"Şu olayın/vardiya notunun '5 Neden (5 Whys)' analizini yap. En sonda Kök Nedeni (Root Cause) ve Düzeltici Önleyici Faaliyeti (DÖF) belirt.\n\nOlay: {st.session_state.analiz_verisi}"
+                hedef = st.session_state.get("analiz_verisi_zengin", st.session_state.analiz_verisi)
+                prompt = f"Şu olayın/vardiya notunun '5 Neden (5 Whys)' analizini yap. En sonda Kök Nedeni (Root Cause) ve Düzeltici Önleyici Faaliyeti (DÖF) belirt.\n\nOlay: {hedef}"
                 resp = client.chat.completions.create(model="gpt-4o-mini", messages=[{"role": "user", "content": prompt}])
                 st.session_state[f"form_cache_{secilen_form}"] = resp.choices[0].message.content
             elif "Predictive Maintenance" in secilen_form:
@@ -836,12 +910,10 @@ with tab_operations:
                 
                 rapor_metni += "---\n*Bu belge Aethel Technologies - Arın AI Sistemi tarafından otomatik oluşturulmuştur.*"
                 
-                # PDF'i oluştur ve Session State'e at
                 pdf_bytes = create_pdf_from_markdown(rapor_metni)
                 st.session_state.kapanis_raporu = pdf_bytes
                 st.success("✅ Rapor başarıyla oluşturuldu!")
 
-    # Rapor oluştuysa indirme butonunu göster
     if "kapanis_raporu" in st.session_state:
         st.download_button(
             label="📥 Oluşturulan Kapanış Raporunu İndir (PDF)",
