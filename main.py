@@ -242,7 +242,6 @@ def taseron_listesi_getir():
 # GİRİŞ (LOGIN) EKRANI & SPLASH SCREEN
 # ==========================================
 if not st.session_state.logged_in:
-    # AETHEL TECHNOLOGIES SPLASH ANIMASYONU
     if not st.session_state.splash_shown:
         splash = st.empty()
         with splash.container():
@@ -253,11 +252,10 @@ if not st.session_state.logged_in:
                     st.image("aethel_logo.png", use_container_width=True)
                 except:
                     pass
-        time.sleep(2) # Logonun ekranda kalma süresi
+        time.sleep(2)
         st.session_state.splash_shown = True
         st.rerun()
     
-    # NORMAL GİRİŞ EKRANI
     else:
         st.markdown("<br><br>", unsafe_allow_html=True)
         col1, col2, col3 = st.columns([1, 2, 1])
@@ -309,23 +307,39 @@ def apply_kvkk_and_watermark(image_bytes):
     try:
         nparr = np.frombuffer(image_bytes, np.uint8)
         img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
-        face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
+        
+        # Görüntüyü gri tonlamaya çeviriyoruz
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        faces = face_cascade.detectMultiScale(gray, 1.1, 4)
-        for (x, y, w, h) in faces:
+        
+        # GÜNCELLEME: Hem cepheden hem de profilden (yandan) yüzleri tespit etmek için modelleri yüklüyoruz
+        cascade_frontal = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
+        cascade_profile = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_profileface.xml')
+        
+        # GÜNCELLEME: scaleFactor ve minNeighbors değerlerini düşürerek hassasiyeti artırıyoruz
+        faces_frontal = cascade_frontal.detectMultiScale(gray, scaleFactor=1.05, minNeighbors=3, minSize=(30, 30))
+        faces_profile = cascade_profile.detectMultiScale(gray, scaleFactor=1.05, minNeighbors=3, minSize=(30, 30))
+        
+        # Her iki modelden gelen tespitleri tek bir listede birleştiriyoruz
+        all_faces = list(faces_frontal) + list(faces_profile)
+        
+        for (x, y, w, h) in all_faces:
             roi = img[y:y+h, x:x+w]
-            img[y:y+h, x:x+w] = cv2.GaussianBlur(roi, (51, 51), 30)
+            # GÜNCELLEME: Bulanıklık oranını (51,51)'den (99,99)'a çıkararak yüzün tamamen gizlenmesini sağlıyoruz
+            img[y:y+h, x:x+w] = cv2.GaussianBlur(roi, (99, 99), 30)
             
         img_pil = Image.fromarray(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
         draw = ImageDraw.Draw(img_pil)
+        
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         raw_hash = hashlib.sha256(image_bytes).hexdigest()[:16]
         watermark_text = f"AETHEL AI - DIJITAL KANIT\nTarih: {timestamp}\nHash: {raw_hash}\n[KVKK Maskeleme Aktif]"
         draw.text((20, 20), watermark_text, fill=(255, 0, 0))
+        
         buf = io.BytesIO()
         img_pil.save(buf, format="JPEG")
         return buf.getvalue()
-    except Exception: return image_bytes
+    except Exception as e:
+        return image_bytes
 
 def analiz_et_gorsel(file_bytes, domain_prompt="Genel İSG Kuralları"):
     from openai import OpenAI
@@ -453,9 +467,8 @@ if st.session_state.user_role == "Vardiya Amiri":
         camera_photo = st.camera_input("📷 Fotoğraf Çek")
         if camera_photo:
             processed_img = apply_kvkk_and_watermark(camera_photo.getvalue())
-            # Burada da vardiya amirleri için ayrı tutulabilir istenirse
-            gorsel_sonuc = analiz_et_gorsel(processed_img, st.session_state.current_domain_prompt)
             st.image(processed_img, caption="✅ Maskelendi")
+            gorsel_sonuc = analiz_et_gorsel(processed_img, st.session_state.current_domain_prompt)
             st.info(gorsel_sonuc)
     with col_audio:
         audio_file = st.file_uploader("🎙️ Ses Dosyası", type=["mp3", "wav"])
@@ -511,7 +524,6 @@ else:
                     processed_img = apply_kvkk_and_watermark(uploaded_file.getvalue())
                     st.image(processed_img, caption="✅ Yüklenen Görsel (Maskeli)")
                     
-                    # GÜNCELLEME: Sadece görseli analiz eder, metin kutusuna YAZMAZ.
                     if st.button("🖼️ Sadece Görseli Analiz Et"):
                         with st.spinner("Görsel detaylı olarak inceleniyor..."):
                             gorsel_sonuc = analiz_et_gorsel(processed_img, st.session_state.current_domain_prompt)
@@ -543,7 +555,6 @@ else:
                     hafiza_baglami = "\n\n[ŞİRKETİN GEÇMİŞ BAŞMÜHENDİS ONAYLI KARARLARI]:\n" + hafiza_df.head(3).to_string()
 
                 ek_baglam = ""
-                # GÜNCELLEME: Eğer sistemde görsel varsa RAG motoruna sessizce arka planda eklenir
                 if uploaded_file and uploaded_file.name.endswith(("png", "jpg", "jpeg")):
                     gorsel_metni = analiz_et_gorsel(apply_kvkk_and_watermark(uploaded_file.getvalue()), st.session_state.current_domain_prompt)
                     ek_baglam = f"\n\n[ARKA PLAN GÖRSEL ANALİZİ]:\n{gorsel_metni}"
