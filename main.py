@@ -129,6 +129,8 @@ def init_db():
 
 init_db()
 
+init_db()
+
 # --- BULUT İLK KURULUM ---
 def check_db_validity(path):
     return os.path.exists(os.path.join(path, "chroma.sqlite3"))
@@ -136,9 +138,10 @@ def check_db_validity(path):
 if not (check_db_validity("database/mevzuat") and check_db_validity("database/kazalar") and check_db_validity("database/jeoloji")):
     st.warning("⚠️ **Sistem Uyarısı: Vektör Veritabanları Hazırlanıyor...**")
     try:
-        from backend.ingestion import veritabani_besle
-        veritabani_besle()
-        st.success("✅ Veritabanları oluşturuldu!")
+        # Eski ingestion yerine yeni otonom pipeline'ı çağır
+        from backend.arin_ai_scraper_pipeline import run_full_arin_ai_ingestion # type: ignore
+        run_full_arin_ai_ingestion()
+        st.success("✅ Veritabanları oluşturuldu ve güncellendi!")
         st.rerun()
     except Exception as e:
         st.error(f"Veritabanı oluşturma hatası: {e}")
@@ -307,24 +310,22 @@ def apply_kvkk_and_watermark(image_bytes):
     try:
         nparr = np.frombuffer(image_bytes, np.uint8)
         img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
-        
-        # Görüntüyü gri tonlamaya çeviriyoruz
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         
-        # GÜNCELLEME: Hem cepheden hem de profilden (yandan) yüzleri tespit etmek için modelleri yüklüyoruz
+        # KVKK HEDEFLERİ: Yüz ve Plaka Modelleri
         cascade_frontal = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
         cascade_profile = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_profileface.xml')
+        cascade_plate = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_russian_plate_number.xml') # Plakalar için
         
-        # GÜNCELLEME: scaleFactor ve minNeighbors değerlerini düşürerek hassasiyeti artırıyoruz
-        faces_frontal = cascade_frontal.detectMultiScale(gray, scaleFactor=1.05, minNeighbors=3, minSize=(30, 30))
-        faces_profile = cascade_profile.detectMultiScale(gray, scaleFactor=1.05, minNeighbors=3, minSize=(30, 30))
+        # HASSASİYET OPTİMİZASYONU: Yanlış hedefleri bulmaması için minNeighbors artırıldı
+        faces_frontal = cascade_frontal.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=5, minSize=(40, 40))
+        faces_profile = cascade_profile.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=5, minSize=(40, 40))
+        plates = cascade_plate.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=4, minSize=(30, 10))
         
-        # Her iki modelden gelen tespitleri tek bir listede birleştiriyoruz
-        all_faces = list(faces_frontal) + list(faces_profile)
+        all_targets = list(faces_frontal) + list(faces_profile) + list(plates)
         
-        for (x, y, w, h) in all_faces:
+        for (x, y, w, h) in all_targets:
             roi = img[y:y+h, x:x+w]
-            # GÜNCELLEME: Bulanıklık oranını (51,51)'den (99,99)'a çıkararak yüzün tamamen gizlenmesini sağlıyoruz
             img[y:y+h, x:x+w] = cv2.GaussianBlur(roi, (99, 99), 30)
             
         img_pil = Image.fromarray(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))

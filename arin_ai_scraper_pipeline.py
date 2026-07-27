@@ -9,6 +9,7 @@ import logging
 import requests
 import urllib3
 import hashlib
+import feedparser
 from typing import List, Dict, Any
 from datetime import datetime
 from dotenv import load_dotenv
@@ -27,6 +28,7 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(
 logger = logging.getLogger("ArinAI_Ingestion")
 
 from langchain_community.document_loaders import PyPDFLoader, PyPDFDirectoryLoader, WebBaseLoader, DirectoryLoader, TextLoader
+from langchain_community.document_loaders import PlaywrightURLLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_chroma import Chroma
 from langchain_openai import OpenAIEmbeddings
@@ -65,6 +67,46 @@ PIPELINE_CONFIGS = [
     }
 ]
 
+# --- OTONOM TARAMA ---
+def get_dynamic_mevzuat_sources():
+    """
+    İlgili kurumların RSS/Duyuru akışlarını tarayarak 
+    sisteme eklenecek yeni bağlantıları otomatik keşfeder.
+    """
+    # Not: Aşağıdakiler temsilidir. Kurumların aktif RSS linkleri veya duyuru XML'leri eklenebilir.
+    rss_feeds = [
+        "https://www.resmigazete.gov.tr/rss",  # Resmî Gazete RSS
+        "https://www.csgb.gov.tr/rss.xml"      # ÇSGB Duyuruları
+    ]
+    
+    # Sistemin ilgileneceği anahtar kelimeler
+    keywords = ["maden", "iş sağlığı", "güvenliği", "yönetmelik", "tebliğ", "isg", "tahkimat", "grizu"]
+    dynamic_sources = []
+    
+    for feed_url in rss_feeds:
+        try:
+            logger.info(f"Otonom Tarama: {feed_url} dinleniyor...")
+            feed = feedparser.parse(feed_url)
+            
+            for entry in feed.entries:
+                title = entry.title.lower()
+                
+                # Eğer başlıkta madencilik ve İSG ile ilgili bir terim geçiyorsa
+                if any(kw in title for kw in keywords):
+                    # Linki hash'leyerek benzersiz bir ID oluştur
+                    source_id = hashlib.md5(entry.link.encode()).hexdigest()[:10]
+                    
+                    dynamic_sources.append({
+                        "id": f"dinamik_{source_id}",
+                        "name": entry.title,
+                        "category": "Dinamik/RSS Kesif",
+                        "type": "html", # İlk etapta web sayfası olarak alıyoruz
+                        "url": entry.link
+                    })
+        except Exception as e:
+            logger.error(f"RSS Okuma Hatası ({feed_url}): {e}")
+            
+    return dynamic_sources
 
 # --- 2. METİN TEMİZLEME ---
 def clean_isg_text(text: str) -> str:
@@ -168,7 +210,13 @@ class ArinAIIngestionPipeline:
                 loader = PyPDFLoader(temp_file)
                 documents = loader.load()
             elif source["type"] == "html":
-                loader = WebBaseLoader(source["url"])
+                # Eski WebBaseLoader yerine Playwright kullanıyoruz
+                logger.info("Playwright ile JS tabanlı sayfa işleniyor...")
+                loader = PlaywrightURLLoader(
+                    urls=[source["url"]],
+                    remove_selectors=["nav", "footer", "header", "script", "style", "aside"], # Menü ve altbilgileri filtrele
+                    kwargs={"headless": True} # Arka planda sessiz çalış
+                )
                 documents = loader.load()
                 
             for doc in documents:
@@ -277,6 +325,20 @@ class ArinAIIngestionPipeline:
 def run_full_arin_ai_ingestion():
     logger.info("=== 🚀 ARIN AI TÜM VERİTABANI BESLEME DÖNGÜSÜ BAŞLADI ===")
     
+    # 1. Dinamik bağlantıları (RSS) keşfet
+    yeni_dinamik_kaynaklar = get_dynamic_mevzuat_sources()
+    
+    if yeni_dinamik_kaynaklar:
+        logger.info(f"Otonom Keşif: {len(yeni_dinamik_kaynaklar)} adet yeni mevzuat/duyuru linki bulundu.")
+    else:
+        logger.info("Otonom Keşif: Gündemde yeni bir İSG/Maden mevzuat duyurusu yok.")
+
+    # 2. Keşfedilen bağlantıları yapılandırmaya (PIPELINE_CONFIGS) dahil et
+    for config in PIPELINE_CONFIGS:
+        if config["domain"] == "mevzuat" and yeni_dinamik_kaynaklar:
+            config["sources"].extend(yeni_dinamik_kaynaklar)
+    
+    # 3. Klasik işleme döngüsü
     for config in PIPELINE_CONFIGS:
         logger.info(f"\n--- [{config['domain'].upper()}] Alanı İşleniyor ---")
         pipeline = ArinAIIngestionPipeline(

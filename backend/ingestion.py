@@ -24,10 +24,10 @@ from langchain_chroma import Chroma
 
 # Modül import yolunu güvenli hale getirme
 try:
-    from backend.models import ISGChunkMetadata
+    from backend.models import ISGChunkMetadata # type: ignore
 except ImportError:
     try:
-        from models import ISGChunkMetadata
+        from models import ISGChunkMetadata # type: ignore
     except ImportError:
         ISGChunkMetadata = None
 
