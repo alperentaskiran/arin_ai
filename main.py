@@ -149,7 +149,7 @@ if "logged_in" not in st.session_state: st.session_state.logged_in = False
 if "user_role" not in st.session_state: st.session_state.user_role = None
 if "user_name" not in st.session_state: st.session_state.user_name = None
 if "analiz_basladi" not in st.session_state: st.session_state.analiz_basladi = False
-if "splash_shown" not in st.session_state: st.session_state.splash_shown = False # Animasyon kontrolcüsü eklendi
+if "splash_shown" not in st.session_state: st.session_state.splash_shown = False 
 
 if "canli_gorevler" not in st.session_state:
     st.session_state.canli_gorevler = [{
@@ -253,7 +253,7 @@ if not st.session_state.logged_in:
                     st.image("aethel_logo.png", use_container_width=True)
                 except:
                     pass
-        time.sleep(2) # Logonun ekranda kalma süresi (2 saniye)
+        time.sleep(2) # Logonun ekranda kalma süresi
         st.session_state.splash_shown = True
         st.rerun()
     
@@ -264,7 +264,7 @@ if not st.session_state.logged_in:
         
         with col2:
             try:
-                st.image("arin_logo.png", use_container_width=True) # Arın AI Logosu
+                st.image("arin_logo.png", use_container_width=True) 
             except:
                 pass
                 
@@ -286,7 +286,7 @@ if not st.session_state.logged_in:
                             st.session_state.user_name = user_data[0]
                             st.session_state.user_role = user_data[1]
                             st.success(f"Giriş başarılı! Hoş geldiniz, {user_data[0]}...")
-                            st.balloons() 
+                         
                             time.sleep(1.5)
                             st.rerun()
                         else: st.error("Hatalı kullanıcı adı veya şifre!")
@@ -406,7 +406,7 @@ except Exception: rag_engine, crew_manager = None, None
 # --- SIDEBAR ---
 with st.sidebar:
     try:
-        st.image("arin_logo.png", use_container_width=True) # Yan menü logosu güncellendi
+        st.image("arin_logo.png", use_container_width=True) 
     except:
         pass
         
@@ -453,8 +453,10 @@ if st.session_state.user_role == "Vardiya Amiri":
         camera_photo = st.camera_input("📷 Fotoğraf Çek")
         if camera_photo:
             processed_img = apply_kvkk_and_watermark(camera_photo.getvalue())
-            st.session_state.analiz_verisi = analiz_et_gorsel(processed_img, st.session_state.current_domain_prompt)
+            # Burada da vardiya amirleri için ayrı tutulabilir istenirse
+            gorsel_sonuc = analiz_et_gorsel(processed_img, st.session_state.current_domain_prompt)
             st.image(processed_img, caption="✅ Maskelendi")
+            st.info(gorsel_sonuc)
     with col_audio:
         audio_file = st.file_uploader("🎙️ Ses Dosyası", type=["mp3", "wav"])
         if audio_file:
@@ -467,7 +469,7 @@ if st.session_state.user_role == "Vardiya Amiri":
         st.success("✅ Rapor Merkeze İletildi!")
 
 else:
-    # 8 SEKMELİ TAM KURUMSAL PANEL (Asistan Eklendi)
+    # 8 SEKMELİ TAM KURUMSAL PANEL
     tab_dashboard, tab_assistant, tab_hafiza, tab_scada, tab_roi, tab_taseron, tab_engine, tab_operations = st.tabs([
         "📊 Canlı İSG Analiz Paneli", 
         "💬 Veritabanı Asistanı",
@@ -479,7 +481,7 @@ else:
         "📡 Görev Sevk Merkezi"
     ])
 
-    # TAB 1: ANALİZ (Dosya Yükleme Genişletildi)
+    # TAB 1: ANALİZ
     with tab_dashboard:
         if "analiz_sonucu" not in st.session_state: st.session_state.analiz_sonucu = None
         iot_data = get_live_iot_data(sim_anomali)
@@ -503,24 +505,29 @@ else:
         with col_in:
             st.markdown("### ✍️ Saha & Sensör Verisi İnceleme")
             
-            # KAPSAMLI DOSYA YÜKLEYİCİ EKLENDİ
             uploaded_file = st.file_uploader("📂 Çoklu Dosya Yükle (Fotoğraf, PDF, TXT, Ses)", type=["png", "jpg", "jpeg", "pdf", "txt", "mp3", "wav"])
             if uploaded_file:
                 if uploaded_file.name.endswith(("png", "jpg", "jpeg")):
                     processed_img = apply_kvkk_and_watermark(uploaded_file.getvalue())
                     st.image(processed_img, caption="✅ Yüklenen Görsel (Maskeli)")
-                    if st.button("🖼️ Görseli Analiz Et"):
-                        st.session_state.analiz_verisi = analiz_et_gorsel(processed_img, st.session_state.current_domain_prompt)
+                    
+                    # GÜNCELLEME: Sadece görseli analiz eder, metin kutusuna YAZMAZ.
+                    if st.button("🖼️ Sadece Görseli Analiz Et"):
+                        with st.spinner("Görsel detaylı olarak inceleniyor..."):
+                            gorsel_sonuc = analiz_et_gorsel(processed_img, st.session_state.current_domain_prompt)
+                            st.info(f"**Görsel İnceleme Sonucu:**\n\n{gorsel_sonuc}")
+                            
                 elif uploaded_file.name.endswith("pdf"):
                     pdf_reader = PdfReader(uploaded_file)
                     st.session_state.analiz_verisi = "\n".join([page.extract_text() for page in pdf_reader.pages])
-                    st.success("PDF Başarıyla Okundu!")
+                    st.success("PDF Başarıyla Okundu! İçeriği aşağıdaki kutuya aktarıldı.")
                 elif uploaded_file.name.endswith("txt"):
                     st.session_state.analiz_verisi = uploaded_file.getvalue().decode("utf-8")
-                    st.success("TXT Başarıyla Okundu!")
+                    st.success("TXT Başarıyla Okundu! İçeriği aşağıdaki kutuya aktarıldı.")
                 elif uploaded_file.name.endswith(("mp3", "wav")):
                     if st.button("🎙️ Sesi Metne Çevir"):
                         st.session_state.analiz_verisi = extract_text_from_audio(uploaded_file.read(), uploaded_file.name)
+                        st.success("Ses deşifre edildi! İçeriği aşağıdaki kutuya aktarıldı.")
             
             if st.button("📥 Canlı IoT Sensör Akışını Analize Ekle"):
                 iot_text_summary = f"[CANLI SENSÖR VERİSİ - {datetime.now().strftime('%H:%M:%S')}]:\n- Metan (CH4): %{iot_data['ch4_percent']}\n- Karbonmonoksit (CO): {iot_data['co_ppm']} ppm\n- Oksijen (O2): %{iot_data['o2_percent']}\n- Sıcaklık: {iot_data['temp_c']} C\n- Personel Nabız: {iot_data['wearable_heart_rate']} BPM\n- Düşme Sensörü: {'DÜŞME TESPİT EDİLDİ!' if iot_data['wearable_fall_detected'] else 'Normal'}"
@@ -535,7 +542,13 @@ else:
                 if not hafiza_df.empty:
                     hafiza_baglami = "\n\n[ŞİRKETİN GEÇMİŞ BAŞMÜHENDİS ONAYLI KARARLARI]:\n" + hafiza_df.head(3).to_string()
 
-                st.session_state.analiz_verisi_zengin = f"[Seçili Maden Tipi: {maden_tipi}]\n[Talimat: {st.session_state.current_domain_prompt}]{hafiza_baglami}\n\n{st.session_state.analiz_verisi}"
+                ek_baglam = ""
+                # GÜNCELLEME: Eğer sistemde görsel varsa RAG motoruna sessizce arka planda eklenir
+                if uploaded_file and uploaded_file.name.endswith(("png", "jpg", "jpeg")):
+                    gorsel_metni = analiz_et_gorsel(apply_kvkk_and_watermark(uploaded_file.getvalue()), st.session_state.current_domain_prompt)
+                    ek_baglam = f"\n\n[ARKA PLAN GÖRSEL ANALİZİ]:\n{gorsel_metni}"
+                    
+                st.session_state.analiz_verisi_zengin = f"[Seçili Maden Tipi: {maden_tipi}]\n[Talimat: {st.session_state.current_domain_prompt}]{hafiza_baglami}\n\n[VARDİYA NOTU]:\n{st.session_state.analiz_verisi}{ek_baglam}"
                 st.session_state.analiz_basladi = True
                 st.session_state.analiz_sonucu = None
                 st.rerun()
@@ -585,7 +598,7 @@ else:
                                 time.sleep(1)
                                 st.rerun()
 
-    # TAB 2: VERİTABANI ASİSTANI (YENİDEN EKLENDİ)
+    # TAB 2: VERİTABANI ASİSTANI
     with tab_assistant:
         st.header("💬 İSG Mevzuat ve Kurumsal Hafıza Asistanı")
         st.caption("Uluslararası İSG standartları, eski kaza raporları veya şirket prosedürleri hakkında anında bilgi alın.")
@@ -692,7 +705,7 @@ else:
                     st.success("Taşeron eklendi!")
                     st.rerun()
 
-    # TAB 7: RİSK & FORMLAR (Genişletildi)
+    # TAB 7: RİSK & FORMLAR
     with tab_engine:
         st.header("🧮 Risk Hesaplayıcıları & Form Hazırlayıcı")
         
