@@ -246,7 +246,7 @@ if not st.session_state.logged_in:
     
     with col2:
         try:
-            st.image("arin.logo.png", use_container_width=True) # Arın AI Logosu
+            st.image("arin_logo.png", use_container_width=True) # Arın AI Logosu
         except:
             pass
             
