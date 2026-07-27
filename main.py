@@ -149,6 +149,7 @@ if "logged_in" not in st.session_state: st.session_state.logged_in = False
 if "user_role" not in st.session_state: st.session_state.user_role = None
 if "user_name" not in st.session_state: st.session_state.user_name = None
 if "analiz_basladi" not in st.session_state: st.session_state.analiz_basladi = False
+if "splash_shown" not in st.session_state: st.session_state.splash_shown = False # Animasyon kontrolcüsü eklendi
 
 if "canli_gorevler" not in st.session_state:
     st.session_state.canli_gorevler = [{
@@ -238,51 +239,68 @@ def taseron_listesi_getir():
     return df
 
 # ==========================================
-# GİRİŞ (LOGIN) EKRANI
+# GİRİŞ (LOGIN) EKRANI & SPLASH SCREEN
 # ==========================================
 if not st.session_state.logged_in:
-    st.markdown("<br><br>", unsafe_allow_html=True)
-    col1, col2, col3 = st.columns([1, 2, 1])
+    # AETHEL TECHNOLOGIES SPLASH ANIMASYONU
+    if not st.session_state.splash_shown:
+        splash = st.empty()
+        with splash.container():
+            st.markdown("<br><br><br><br><br>", unsafe_allow_html=True)
+            sc1, sc2, sc3 = st.columns([1, 2, 1])
+            with sc2:
+                try:
+                    st.image("aethel_logo.png", use_container_width=True)
+                except:
+                    pass
+        time.sleep(2) # Logonun ekranda kalma süresi (2 saniye)
+        st.session_state.splash_shown = True
+        st.rerun()
     
-    with col2:
-        try:
-            st.image("arin_logo.png", use_container_width=True) # Arın AI Logosu
-        except:
-            pass
-            
-        st.markdown("<h1 style='text-align: center;'>🛡️ Arın AI Giriş Portalı</h1>", unsafe_allow_html=True)
-        st.markdown("<p style='text-align: center; color: gray;'>Aethel Technologies Kurumsal Karar Destek Mimarisi</p>", unsafe_allow_html=True)
+    # NORMAL GİRİŞ EKRANI
+    else:
+        st.markdown("<br><br>", unsafe_allow_html=True)
+        col1, col2, col3 = st.columns([1, 2, 1])
         
-        tab_login, tab_reset = st.tabs(["🔑 Giriş Yap", "🔄 Şifremi Unuttum"])
-        
-        with tab_login:
-            with st.form("login_form"):
-                username = st.text_input("Kullanıcı Adı")
-                password = st.text_input("Şifre", type="password")
-                submit_button = st.form_submit_button("Sisteme Giriş Yap", use_container_width=True, type="primary")
+        with col2:
+            try:
+                st.image("arin_logo.png", use_container_width=True) # Arın AI Logosu
+            except:
+                pass
                 
-                if submit_button:
-                    user_data = kullanici_dogrula(username, password)
-                    if user_data:
-                        st.session_state.logged_in = True
-                        st.session_state.user_name = user_data[0]
-                        st.session_state.user_role = user_data[1]
-                        st.success(f"Giriş başarılı! Hoş geldiniz, {user_data[0]}...")
-                        st.balloons() # Giriş Animasyonu Geri Eklendi
-                        time.sleep(1.5)
-                        st.rerun()
-                    else: st.error("Hatalı kullanıcı adı veya şifre!")
+            st.markdown("<h1 style='text-align: center;'>🛡️ Arın AI Giriş Portalı</h1>", unsafe_allow_html=True)
+            st.markdown("<p style='text-align: center; color: gray;'>Aethel Technologies Kurumsal Karar Destek Mimarisi</p>", unsafe_allow_html=True)
+            
+            tab_login, tab_reset = st.tabs(["🔑 Giriş Yap", "🔄 Şifremi Unuttum"])
+            
+            with tab_login:
+                with st.form("login_form"):
+                    username = st.text_input("Kullanıcı Adı")
+                    password = st.text_input("Şifre", type="password")
+                    submit_button = st.form_submit_button("Sisteme Giriş Yap", use_container_width=True, type="primary")
+                    
+                    if submit_button:
+                        user_data = kullanici_dogrula(username, password)
+                        if user_data:
+                            st.session_state.logged_in = True
+                            st.session_state.user_name = user_data[0]
+                            st.session_state.user_role = user_data[1]
+                            st.success(f"Giriş başarılı! Hoş geldiniz, {user_data[0]}...")
+                            st.balloons() 
+                            time.sleep(1.5)
+                            st.rerun()
+                        else: st.error("Hatalı kullanıcı adı veya şifre!")
 
-        with tab_reset:
-            with st.form("reset_form"):
-                r_username = st.text_input("Kullanıcı Adınız")
-                r_sicil = st.text_input("Sicil Numaranız")
-                r_new_pass = st.text_input("Yeni Şifreniz", type="password")
-                reset_button = st.form_submit_button("Şifreyi Sıfırla", use_container_width=True)
-                if reset_button:
-                    if sifre_guncelle(r_username, r_sicil, r_new_pass): st.success("✅ Şifreniz değiştirildi!")
-                    else: st.error("❌ Eşleşme başarısız.")
-    st.stop() 
+            with tab_reset:
+                with st.form("reset_form"):
+                    r_username = st.text_input("Kullanıcı Adınız")
+                    r_sicil = st.text_input("Sicil Numaranız")
+                    r_new_pass = st.text_input("Yeni Şifreniz", type="password")
+                    reset_button = st.form_submit_button("Şifreyi Sıfırla", use_container_width=True)
+                    if reset_button:
+                        if sifre_guncelle(r_username, r_sicil, r_new_pass): st.success("✅ Şifreniz değiştirildi!")
+                        else: st.error("❌ Eşleşme başarısız.")
+        st.stop() 
 
 # ==========================================
 # UYGULAMA ANA MOTORU
@@ -388,7 +406,7 @@ except Exception: rag_engine, crew_manager = None, None
 # --- SIDEBAR ---
 with st.sidebar:
     try:
-        st.image("logo.png", use_container_width=True) # Logo eklentisi
+        st.image("arin_logo.png", use_container_width=True) # Yan menü logosu güncellendi
     except:
         pass
         
