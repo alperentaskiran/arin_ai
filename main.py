@@ -375,9 +375,9 @@ def rapor_pdf_olustur(rapor_metni):
     pdf.add_page()
     
     try:
-        pdf.add_font('Dejavu', '', 'DejaVuSans.ttf', uni=True)
-        pdf.add_font('Dejavu', 'B', 'DejaVuSans-Bold.ttf', uni=True)
-        pdf.set_font('Dejavu', 'B', 14)
+        pdf.add_font('Roboto', '', 'Roboto-Regular.ttf', uni=True)
+        pdf.add_font('Roboto', 'B', 'Roboto-Bold.ttf', uni=True)
+        pdf.set_font('Roboto', 'B', 14)
     except:
         pdf.set_font('Arial', 'B', 14)
     
@@ -385,7 +385,7 @@ def rapor_pdf_olustur(rapor_metni):
     pdf.ln(5)
     
     try:
-        pdf.set_font('Dejavu', '', 11)
+        pdf.set_font('Roboto', '', 11)
     except:
         pdf.set_font('Arial', '', 11)
         
