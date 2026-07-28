@@ -431,10 +431,27 @@ with st.sidebar:
         st.rerun()
         
     st.markdown("---")
+    
+    # --- TEMA SEÇİMİ (Karanlık/Aydınlık Mod) ---
+    st.markdown("### 🎨 Görünüm")
+    tema = st.radio("Tema Seçimi", ["Aydınlık", "Karanlık"], horizontal=True, label_visibility="collapsed")
+    
+    if tema == "Karanlık":
+        st.markdown("""
+        <style>
+            .stApp { background-color: #0E1117; color: #FAFAFA; }
+            .stSidebar { background-color: #262730; color: #FAFAFA; }
+            h1, h2, h3, p, span { color: #FAFAFA !important; }
+        </style>
+        """, unsafe_allow_html=True)
+
+    st.markdown("---")
     st.title("🛡️ Arın AI Enterprise")
     
+    # --- ULUSLARARASI İSG STANDARDI ---
     st.subheader("🌐 Uluslararası İSG Standardı & Tesis Tipi")
-    iso_msha_modu = st.checkbox("🌍 MSHA & ISO 45001 Standart Denetimini Aktif Et", value=True)
+    # Checkbox yerine daimi aktif olduğunu gösteren şık bir uyarı kutusu
+    st.info("✅ **MSHA & ISO 45001** denetimi daimi olarak aktiftir.", icon="🛡️")
     
     maden_tipi = st.selectbox("Çalışılan Tesis Tipi:", [
         "Değerli Metal (Altın, Gümüş - Siyanür / Atık Barajı)",
@@ -444,16 +461,23 @@ with st.sidebar:
         "Kömür & Yeraltı Galerisi (Grizu / Havalandırma)"
     ])
     
-    domain_prompt = f"Çalışılan Alan: {maden_tipi}."
-    if iso_msha_modu:
-        domain_prompt += " Ayrıca Türkiye İSG Mevzuatına ek olarak ABD MSHA standartlarına ve ISO 45001 maddelerine paralel kıyaslama yap."
+    # İSG standardı daimi açık olduğu için prompt'u buna göre sabitliyoruz
+    domain_prompt = f"Çalışılan Alan: {maden_tipi}. Ayrıca Türkiye İSG Mevzuatına ek olarak ABD MSHA standartlarına ve ISO 45001 maddelerine paralel kıyaslama yap."
     st.session_state.current_domain_prompt = domain_prompt
 
     st.markdown("---")
-    st.subheader("🔴 IoT Sensör Simülasyonu")
-    sim_anomali = st.toggle("🚨 Yapay Anomali / Gaz Sızıntısı Simüle Et", value=False)
     
-    if "analiz_verisi" not in st.session_state: st.session_state.analiz_verisi = ""
+    # --- IOT SENSÖR SİMÜLASYONU (Geliştirilmiş Görünüm) ---
+    st.subheader("🔴 IoT Sensör Simülasyonu")
+    with st.container(border=True):
+        st.caption("Sistemin risk tepkisini test etmek için canlı veri akışında yapay bir anomali oluşturun.")
+        sim_anomali = st.toggle("🚨 Yapay Anomali / Gaz Sızıntısı Simüle Et", value=False)
+        
+        if sim_anomali:
+            st.warning("⚠️ Anomali Devrede! Metan (CH4) ve Karbonmonoksit (CO) seviyeleri riskli sınırlarda üretiliyor.")
+    
+    if "analiz_verisi" not in st.session_state: 
+        st.session_state.analiz_verisi = ""
 
 # --- ANA EKRAN ---
 st.title("🛡️ Arın AI Enterprise: Proaktif Maden İSG Platformu")
