@@ -612,20 +612,19 @@ else:
     with tab_assistant:
         st.header("💬 İSG Mevzuat ve Kurumsal Hafıza Asistanı")
         
-        # 1. Arayüzü WhatsApp/Instagram tarzına yaklaştıran CSS Stilleri
+        # Arayüzü WhatsApp/Instagram tarzına yaklaştıran CSS Stilleri
         st.markdown("""
         <style>
-        /* İsim etiketleri için zarif görünüm */
         .chat-name-user {
             font-size: 0.8rem;
-            color: #10B981; /* Kullanıcı için koyu yeşil ton */
+            color: #10B981; 
             font-weight: 600;
             margin-bottom: 5px;
             letter-spacing: 0.5px;
         }
         .chat-name-bot {
             font-size: 0.8rem;
-            color: #F97316; /* Aethel kurumsal turuncu vurgusu */
+            color: #F97316; 
             font-weight: 600;
             margin-bottom: 5px;
             letter-spacing: 0.5px;
@@ -637,39 +636,47 @@ else:
         if "chat_history" not in st.session_state:
             st.session_state.chat_history = []
             
-        # 2. Geçmiş mesajları sırasıyla ve isim etiketleriyle ekrana çizdirme
-        for msg in st.session_state.chat_history:
-            if msg["role"] == "user":
-                with st.chat_message("user", avatar="👤"):
-                    # Sistemde aktif olan kullanıcının ismini dinamik olarak yazdırıyoruz
-                    st.markdown(f"<div class='chat-name-user'>Siz ({st.session_state.user_name})</div>", unsafe_allow_html=True)
-                    st.markdown(msg["content"])
-            else:
-                with st.chat_message("assistant", avatar="🛡️"):
-                    # Asistan için marka adını yazdırıyoruz
-                    st.markdown("<div class='chat-name-bot'>Arın AI</div>", unsafe_allow_html=True)
-                    st.markdown(msg["content"])
+        # 1. EKRANI SABİTLEYEN DÜZENLEME: 
+        # 500px yüksekliğinde, sadece kendi içinde kaydırılabilir (scrollable) bir alan oluşturuyoruz.
+        # Bu sayede mesajlar uzasa da sayfa aşağı kaymaz, input kutusu hep yerinde kalır.
+        chat_container = st.container(height=500, border=False)
+        
+        # 2. Geçmiş mesajları ana ekrana değil, bu SABİT KUTUNUN (chat_container) içine çizdiriyoruz
+        with chat_container:
+            for msg in st.session_state.chat_history:
+                if msg["role"] == "user":
+                    with st.chat_message("user", avatar="👤"):
+                        st.markdown(f"<div class='chat-name-user'>Siz ({st.session_state.user_name})</div>", unsafe_allow_html=True)
+                        st.markdown(msg["content"])
+                else:
+                    with st.chat_message("assistant", avatar="🛡️"):
+                        st.markdown("<div class='chat-name-bot'>Arın AI</div>", unsafe_allow_html=True)
+                        st.markdown(msg["content"])
 
-        # 3. Yeni soru girişi ve işlenmesi
+        # 3. Yeni soru girişi (Container'ın hemen dışında ama sekmenin içinde yer alarak alta sabitlenir)
         user_q = st.chat_input("İSG mevzuatı veya geçmiş kazalar hakkında bir soru sorun...")
+        
         if user_q:
-            # Kullanıcının sorusunu ekrana bas ve geçmişe kaydet
+            # Kullanıcının sorusunu geçmişe kaydet
             st.session_state.chat_history.append({"role": "user", "content": user_q})
-            with st.chat_message("user", avatar="👤"):
-                st.markdown(f"<div class='chat-name-user'>Siz ({st.session_state.user_name})</div>", unsafe_allow_html=True)
-                st.markdown(user_q)
-                
-            # Asistanın yanıt alanını oluştur
-            with st.chat_message("assistant", avatar="🛡️"):
-                st.markdown("<div class='chat-name-bot'>Arın AI</div>", unsafe_allow_html=True)
-                with st.spinner("Sektörel veritabanları taranıyor..."):
-                    if rag_engine:
-                        cevap = rag_engine.soru_cevapla(user_q)
-                        st.markdown(cevap)
-                        # Asistanın cevabını geçmişe kaydet
-                        st.session_state.chat_history.append({"role": "assistant", "content": cevap})
-                    else:
-                        st.error("RAG Motoru aktif değil. Lütfen arkaplan servislerini kontrol edin.")
+            
+            # Yeni etkileşimleri de yine SABİT KUTU (chat_container) içine yazdırıyoruz
+            with chat_container:
+                with st.chat_message("user", avatar="👤"):
+                    st.markdown(f"<div class='chat-name-user'>Siz ({st.session_state.user_name})</div>", unsafe_allow_html=True)
+                    st.markdown(user_q)
+                    
+                # Asistanın yanıt alanını oluştur
+                with st.chat_message("assistant", avatar="🛡️"):
+                    st.markdown("<div class='chat-name-bot'>Arın AI</div>", unsafe_allow_html=True)
+                    with st.spinner("Sektörel veritabanları taranıyor..."):
+                        if rag_engine:
+                            cevap = rag_engine.soru_cevapla(user_q)
+                            st.markdown(cevap)
+                            # Asistanın cevabını geçmişe kaydet
+                            st.session_state.chat_history.append({"role": "assistant", "content": cevap})
+                        else:
+                            st.error("RAG Motoru aktif değil. Lütfen arkaplan servislerini kontrol edin.")
 
     # TAB 3: HAFIZA
     with tab_hafiza:
