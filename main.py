@@ -136,7 +136,6 @@ def check_db_validity(path):
 if not (check_db_validity("database/mevzuat") and check_db_validity("database/kazalar") and check_db_validity("database/jeoloji")):
     st.warning("⚠️ **Sistem Uyarısı: Vektör Veritabanları Hazırlanıyor...**")
     try:
-        # Eski ingestion yerine yeni otonom pipeline'ı çağır
         from backend.arin_ai_scraper_pipeline import run_full_arin_ai_ingestion # type: ignore
         run_full_arin_ai_ingestion()
         st.success("✅ Veritabanları oluşturuldu ve güncellendi!")
@@ -310,12 +309,10 @@ def apply_kvkk_and_watermark(image_bytes):
         img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         
-        # KVKK HEDEFLERİ: Yüz ve Plaka Modelleri
         cascade_frontal = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
         cascade_profile = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_profileface.xml')
-        cascade_plate = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_russian_plate_number.xml') # Plakalar için
+        cascade_plate = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_russian_plate_number.xml')
         
-        # HASSASİYET OPTİMİZASYONU: Yanlış hedefleri bulmaması için minNeighbors artırıldı
         faces_frontal = cascade_frontal.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=5, minSize=(40, 40))
         faces_profile = cascade_profile.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=5, minSize=(40, 40))
         plates = cascade_plate.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=4, minSize=(30, 10))
@@ -364,26 +361,44 @@ def extract_text_from_audio(file_bytes, file_name):
     finally:
         if os.path.exists(temp_filename): os.remove(temp_filename)
 
-def create_pdf_from_markdown(markdown_text):
-    from reportlab.lib.pagesizes import letter
-    from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
-    from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+# --- FPDF ile Türkçe Karakter Destekli PDF Çıktı Motoru ---
+def rapor_pdf_olustur(rapor_metni):
+    try:
+        from fpdf import FPDF
+    except ImportError:
+        return b"Lutfen terminalden su kutuphaneyi yukleyin: pip install fpdf2"
+        
+    pdf = FPDF()
+    pdf.add_page()
     
-    styles = getSampleStyleSheet()
-    title_style = ParagraphStyle('PDFTitle', parent=styles['Heading1'], fontSize=16, leading=20, textColor='#F97316')
-    body_style = ParagraphStyle('PDFBody', parent=styles['BodyText'], fontSize=10, leading=14)
-
-    buffer = io.BytesIO()
-    doc = SimpleDocTemplate(buffer, pagesize=letter)
-    story = [Paragraph("Arın AI Enterprise - Karar Raporu", title_style), Spacer(1, 10)]
+    try:
+        # Font dosyaları main.py ile aynı dizinde olmalıdır.
+        pdf.add_font('Roboto', '', 'Roboto-Regular.ttf', uni=True)
+        pdf.add_font('Roboto', 'B', 'Roboto-Bold.ttf', uni=True)
+        pdf.set_font('Roboto', 'B', 14)
+    except:
+        pdf.set_font('Arial', 'B', 14)
     
-    for line in str(markdown_text).split('\n'):
-        if line.strip():
-            story.append(Paragraph(line.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;'), body_style))
-            story.append(Spacer(1, 3))
-
-    doc.build(story)
-    return buffer.getvalue()
+    # Başlık
+    pdf.cell(0, 10, "Arin AI Enterprise - Kurumsal Rapor", ln=True, align='L')
+    pdf.ln(5)
+    
+    # Gövde Metni
+    try:
+        pdf.set_font('Roboto', '', 11)
+    except:
+        pdf.set_font('Arial', '', 11)
+        
+    # Markdown karakterlerini temizleme (PDF'te yıldızlar görünmesin)
+    temiz_metin = str(rapor_metni).replace('**', '').replace('### ', '').replace('## ', '')
+    
+    pdf.multi_cell(0, 8, temiz_metin)
+    
+    # FPDF2 için output doğrudan byte döndürür
+    try:
+        return bytearray(pdf.output())
+    except:
+        return pdf.output(dest='S').encode('latin-1')
 
 def form_doldur_llm(vardiya_notu, form_tipi):
     from openai import OpenAI
@@ -450,7 +465,6 @@ with st.sidebar:
     
     # --- ULUSLARARASI İSG STANDARDI ---
     st.subheader("🌐 Uluslararası İSG Standardı & Tesis Tipi")
-    # Checkbox yerine daimi aktif olduğunu gösteren şık bir uyarı kutusu
     st.info("✅ **MSHA & ISO 45001** denetimi daimi olarak aktiftir.", icon="🛡️")
     
     maden_tipi = st.selectbox("Çalışılan Tesis Tipi:", [
@@ -461,13 +475,12 @@ with st.sidebar:
         "Kömür & Yeraltı Galerisi (Grizu / Havalandırma)"
     ])
     
-    # İSG standardı daimi açık olduğu için prompt'u buna göre sabitliyoruz
     domain_prompt = f"Çalışılan Alan: {maden_tipi}. Ayrıca Türkiye İSG Mevzuatına ek olarak ABD MSHA standartlarına ve ISO 45001 maddelerine paralel kıyaslama yap."
     st.session_state.current_domain_prompt = domain_prompt
 
     st.markdown("---")
     
-    # --- IOT SENSÖR SİMÜLASYONU (Geliştirilmiş Görünüm) ---
+    # --- IOT SENSÖR SİMÜLASYONU ---
     st.subheader("🔴 IoT Sensör Simülasyonu")
     with st.container(border=True):
         st.caption("Sistemin risk tepkisini test etmek için canlı veri akışında yapay bir anomali oluşturun.")
@@ -505,7 +518,6 @@ if st.session_state.user_role == "Vardiya Amiri":
         st.success("✅ Rapor Merkeze İletildi!")
 
 else:
-    # 8 SEKMELİ TAM KURUMSAL PANEL
     tab_dashboard, tab_assistant, tab_hafiza, tab_scada, tab_roi, tab_taseron, tab_engine, tab_operations = st.tabs([
         "📊 Canlı İSG Analiz Paneli", 
         "💬 Veritabanı Asistanı",
@@ -623,7 +635,8 @@ else:
                     st.markdown("<br>", unsafe_allow_html=True)
                     c_btn1, c_btn2 = st.columns(2)
                     with c_btn1:
-                        pdf_data = create_pdf_from_markdown(res.get("final_decision", ""))
+                        # REPORTLAB YERİNE ARTIK FPDF FONKSİYONU ÇAĞRILIYOR
+                        pdf_data = rapor_pdf_olustur(res.get("final_decision", ""))
                         st.download_button("📥 PDF İndir", data=pdf_data, file_name="ArinAI_Karar.pdf", mime="application/pdf", use_container_width=True)
                     with c_btn2:
                         if st.button("📡 DÖF PLANINI SAHAYA SEVK ET", type="primary", use_container_width=True):
@@ -636,36 +649,18 @@ else:
     with tab_assistant:
         st.header("💬 İSG Mevzuat ve Kurumsal Hafıza Asistanı")
         
-        # Arayüzü WhatsApp/Instagram tarzına yaklaştıran CSS Stilleri
         st.markdown("""
         <style>
-        .chat-name-user {
-            font-size: 0.8rem;
-            color: #10B981; 
-            font-weight: 600;
-            margin-bottom: 5px;
-            letter-spacing: 0.5px;
-        }
-        .chat-name-bot {
-            font-size: 0.8rem;
-            color: #F97316; 
-            font-weight: 600;
-            margin-bottom: 5px;
-            letter-spacing: 0.5px;
-        }
+        .chat-name-user { font-size: 0.8rem; color: #10B981; font-weight: 600; margin-bottom: 5px; letter-spacing: 0.5px; }
+        .chat-name-bot { font-size: 0.8rem; color: #F97316; font-weight: 600; margin-bottom: 5px; letter-spacing: 0.5px; }
         </style>
         """, unsafe_allow_html=True)
         
-        # Sohbet geçmişini başlat
         if "chat_history" not in st.session_state:
             st.session_state.chat_history = []
             
-        # 1. EKRANI SABİTLEYEN DÜZENLEME: 
-        # 500px yüksekliğinde, sadece kendi içinde kaydırılabilir (scrollable) bir alan oluşturuyoruz.
-        # Bu sayede mesajlar uzasa da sayfa aşağı kaymaz, input kutusu hep yerinde kalır.
         chat_container = st.container(height=500, border=False)
         
-        # 2. Geçmiş mesajları ana ekrana değil, bu SABİT KUTUNUN (chat_container) içine çizdiriyoruz
         with chat_container:
             for msg in st.session_state.chat_history:
                 if msg["role"] == "user":
@@ -677,27 +672,20 @@ else:
                         st.markdown("<div class='chat-name-bot'>Arın AI</div>", unsafe_allow_html=True)
                         st.markdown(msg["content"])
 
-        # 3. Yeni soru girişi (Container'ın hemen dışında ama sekmenin içinde yer alarak alta sabitlenir)
         user_q = st.chat_input("İSG mevzuatı veya geçmiş kazalar hakkında bir soru sorun...")
         
         if user_q:
-            # Kullanıcının sorusunu geçmişe kaydet
             st.session_state.chat_history.append({"role": "user", "content": user_q})
-            
-            # Yeni etkileşimleri de yine SABİT KUTU (chat_container) içine yazdırıyoruz
             with chat_container:
                 with st.chat_message("user", avatar="👤"):
                     st.markdown(f"<div class='chat-name-user'>Siz ({st.session_state.user_name})</div>", unsafe_allow_html=True)
                     st.markdown(user_q)
-                    
-                # Asistanın yanıt alanını oluştur
                 with st.chat_message("assistant", avatar="🛡️"):
                     st.markdown("<div class='chat-name-bot'>Arın AI</div>", unsafe_allow_html=True)
                     with st.spinner("Sektörel veritabanları taranıyor..."):
                         if rag_engine:
                             cevap = rag_engine.soru_cevapla(user_q)
                             st.markdown(cevap)
-                            # Asistanın cevabını geçmişe kaydet
                             st.session_state.chat_history.append({"role": "assistant", "content": cevap})
                         else:
                             st.error("RAG Motoru aktif değil. Lütfen arkaplan servislerini kontrol edin.")
@@ -749,9 +737,9 @@ else:
             
             # ROI HESABI
             engellenen_kaza_maliyeti = yillik_dof_sayisi * ortalama_is_gunu_kaybi * gunluk_isgucu_maliyeti
-            tazminat_tasarrufu = yillik_dof_sayisi * 85000  # Olası tazminat/tedavi tasarruf tahmini
+            tazminat_tasarrufu = yillik_dof_sayisi * 85000 
             toplam_finansal_kazanc = engellenen_kaza_maliyeti + tazminat_tasarrufu
-            yazilim_maliyeti = 450000  # Enterprise Lisans Bedeli (Örnek)
+            yazilim_maliyeti = 450000 
             roi_orani = round(((toplam_finansal_kazanc - yazilim_maliyeti) / yazilim_maliyeti) * 100, 1)
 
         with c_roi2:
@@ -794,11 +782,10 @@ else:
                     st.success("Taşeron eklendi!")
                     st.rerun()
 
-    # TAB 7: RİSK & FORMLAR
+    # TAB 7: RİSK & FORMLAR (GÜNCELLENMİŞ PDF İNDİRME ALANI İLE BİRLİKTE)
     with tab_engine:
         st.header("🧮 Risk Hesaplayıcıları & Form Hazırlayıcı")
         
-        # Risk Matrisleri
         c1, c2 = st.columns(2)
         with c1:
             ihtimal_l = st.slider("İhtimal", 1, 5, 3, key="l_ihtimal")
@@ -816,7 +803,6 @@ else:
                 
         st.markdown("---")
         
-        # Form Merkezi
         st.subheader("📋 Resmi İSG Form Merkezi")
         secilen_form = st.selectbox("Belge Tipi:", [
             "Tehlike Bildirim Formu", 
@@ -826,11 +812,23 @@ else:
             "Günlük Saha Denetim Listesi"
         ])
         if st.button(f"✨ {secilen_form} Üret"):
-            st.session_state[f"form_cache_{secilen_form}"] = form_doldur_llm(st.session_state.analiz_verisi, secilen_form)
+            with st.spinner("Yapay Zeka Formu Dolduruyor..."):
+                st.session_state[f"form_cache_{secilen_form}"] = form_doldur_llm(st.session_state.analiz_verisi, secilen_form)
         
         cache_key = f"form_cache_{secilen_form}"
         if cache_key in st.session_state: 
             st.markdown(st.session_state[cache_key])
+            st.markdown("---")
+            
+            # PDF Çıktı Butonu
+            pdf_data = rapor_pdf_olustur(st.session_state[cache_key])
+            st.download_button(
+                label="📄 PDF Olarak İndir",
+                data=pdf_data,
+                file_name=f"{secilen_form.replace(' ', '_').lower()}.pdf",
+                mime="application/pdf",
+                use_container_width=True
+            )
 
     # TAB 8: GÖREV & KULLANICI YÖNETİMİ
     with tab_operations:
