@@ -129,8 +129,6 @@ def init_db():
 
 init_db()
 
-init_db()
-
 # --- BULUT İLK KURULUM ---
 def check_db_validity(path):
     return os.path.exists(os.path.join(path, "chroma.sqlite3"))

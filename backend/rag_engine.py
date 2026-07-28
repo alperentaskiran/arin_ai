@@ -434,3 +434,11 @@ GÖREVİN: Sağlanan veritabanı/canlı arama kesitlerini öncelikli baz alarak 
     def jeoloji_ara_ozetli(self, sorgu: str, k: int = 6) -> str:
         ham_sonuc = self.jeoloji_ara(sorgu, k=k)
         return self._llm_ozetle(ham_sonuc, "jeoloji ve maden verisi", sorgu=sorgu, mod="jeoloji")
+    def soru_cevapla(self, user_q: str) -> str:
+        """Asistan sekmesinden gelen soruları RAG ve LLM ile yanıtlar."""
+        try:
+            # Hazırda olan mevzuat RAG altyapını doğrudan kullanıyoruz
+            return self.mevzuat_ara_ozetli(sorgu=user_q, k=6)
+        except Exception as e:
+            logger.error(f"Soru yanıtlama hatası: {e}")
+            return f"Üzgünüm, sorunuzu yanıtlarken bir hata oluştu: {e}"
