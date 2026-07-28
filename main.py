@@ -361,7 +361,8 @@ def extract_text_from_audio(file_bytes, file_name):
     finally:
         if os.path.exists(temp_filename): os.remove(temp_filename)
 
-# --- FPDF ile Türkçe Karakter Destekli PDF Çıktı Motoru ---
+import tempfile
+
 def rapor_pdf_olustur(rapor_metni):
     try:
         from fpdf import FPDF
@@ -372,33 +373,32 @@ def rapor_pdf_olustur(rapor_metni):
     pdf.add_page()
     
     try:
-        # Font dosyaları main.py ile aynı dizinde olmalıdır.
         pdf.add_font('Roboto', '', 'Roboto-Regular.ttf', uni=True)
         pdf.add_font('Roboto', 'B', 'Roboto-Bold.ttf', uni=True)
         pdf.set_font('Roboto', 'B', 14)
     except:
         pdf.set_font('Arial', 'B', 14)
     
-    # Başlık
     pdf.cell(0, 10, "Arin AI Enterprise - Kurumsal Rapor", ln=True, align='L')
     pdf.ln(5)
     
-    # Gövde Metni
     try:
         pdf.set_font('Roboto', '', 11)
     except:
         pdf.set_font('Arial', '', 11)
         
-    # Markdown karakterlerini temizleme (PDF'te yıldızlar görünmesin)
+    # PDF'te kötü görünen Markdown karakterlerini temizle
     temiz_metin = str(rapor_metni).replace('**', '').replace('### ', '').replace('## ', '')
-    
     pdf.multi_cell(0, 8, temiz_metin)
     
-    # FPDF2 için output doğrudan byte döndürür
-    try:
-        return bytearray(pdf.output())
-    except:
-        return pdf.output(dest='S').encode('latin-1')
+    # --- GÜNCELLEME: Streamlit için en güvenilir PDF çıktı yöntemi ---
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp:
+        pdf.output(tmp.name) # PDF'i diske yaz
+        with open(tmp.name, "rb") as f:
+            pdf_bytes = f.read() # Kusursuz byte olarak geri oku
+            
+    os.remove(tmp.name) # Diskte yer kaplamaması için sil
+    return pdf_bytes
 
 def form_doldur_llm(vardiya_notu, form_tipi):
     from openai import OpenAI
