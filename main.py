@@ -613,15 +613,35 @@ else:
         st.header("💬 İSG Mevzuat ve Kurumsal Hafıza Asistanı")
         st.caption("Uluslararası İSG standartları, eski kaza raporları veya şirket prosedürleri hakkında anında bilgi alın.")
         
+        # 1. Sohbet geçmişini tutmak için session_state başlatıyoruz
+        if "chat_history" not in st.session_state:
+            st.session_state.chat_history = []
+            
+        # 2. Geçmiş mesajları sırasıyla ekrana çizdiriyoruz (Custom Avatarlar ile)
+        for msg in st.session_state.chat_history:
+            # Kullanıcı için standart profil, Arın AI için kalkan/güvenlik ikonu
+            avatar_icon = "👤" if msg["role"] == "user" else "🛡️"
+            with st.chat_message(msg["role"], avatar=avatar_icon):
+                st.markdown(msg["content"])
+
+        # 3. Yeni soru girişi ve işlenmesi
         user_q = st.chat_input("İSG mevzuatı veya geçmiş kazalar hakkında bir soru sorun...")
         if user_q:
-            st.chat_message("user").write(user_q)
-            with st.spinner("Sektörel veritabanları taranıyor..."):
-                if rag_engine:
-                    cevap = rag_engine.soru_cevapla(user_q)
-                    st.chat_message("assistant").write(cevap)
-                else:
-                    st.error("RAG Motoru aktif değil. Lütfen arkaplan servislerini kontrol edin.")
+            # Kullanıcının sorusunu ekrana bas ve geçmişe kaydet
+            st.session_state.chat_history.append({"role": "user", "content": user_q})
+            with st.chat_message("user", avatar="👤"):
+                st.markdown(user_q)
+                
+            # Asistanın yanıt alanını oluştur
+            with st.chat_message("assistant", avatar="🛡️"):
+                with st.spinner("Sektörel veritabanları taranıyor..."):
+                    if rag_engine:
+                        cevap = rag_engine.soru_cevapla(user_q)
+                        st.markdown(cevap)
+                        # Asistanın cevabını geçmişe kaydet
+                        st.session_state.chat_history.append({"role": "assistant", "content": cevap})
+                    else:
+                        st.error("RAG Motoru aktif değil. Lütfen arkaplan servislerini kontrol edin.")
 
     # TAB 3: HAFIZA
     with tab_hafiza:
