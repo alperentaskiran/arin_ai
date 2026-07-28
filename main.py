@@ -361,7 +361,9 @@ def extract_text_from_audio(file_bytes, file_name):
     finally:
         if os.path.exists(temp_filename): os.remove(temp_filename)
 
+import os
 import tempfile
+import re
 
 def rapor_pdf_olustur(rapor_metni):
     try:
@@ -373,9 +375,9 @@ def rapor_pdf_olustur(rapor_metni):
     pdf.add_page()
     
     try:
-        pdf.add_font('Roboto', '', 'Roboto-Regular.ttf', uni=True)
-        pdf.add_font('Roboto', 'B', 'Roboto-Bold.ttf', uni=True)
-        pdf.set_font('Roboto', 'B', 14)
+        pdf.add_font('Dejavu', '', 'DejaVuSans.ttf', uni=True)
+        pdf.add_font('Dejavu', 'B', 'DejaVuSans-Bold.ttf', uni=True)
+        pdf.set_font('Dejavu', 'B', 14)
     except:
         pdf.set_font('Arial', 'B', 14)
     
@@ -383,21 +385,36 @@ def rapor_pdf_olustur(rapor_metni):
     pdf.ln(5)
     
     try:
-        pdf.set_font('Roboto', '', 11)
+        pdf.set_font('Dejavu', '', 11)
     except:
         pdf.set_font('Arial', '', 11)
         
-    # PDF'te kötü görünen Markdown karakterlerini temizle
+    # 1. ADIM: Markdown işaretlerini temizle
     temiz_metin = str(rapor_metni).replace('**', '').replace('### ', '').replace('## ', '')
+    
+    # 2. ADIM: PDF'in çökmesine neden olan Emojileri temizle (Türkçe karakterleri korur)
+    # Sadece harf, rakam, noktalama ve boşluk karakterlerini bırakır.
+    temiz_metin = re.sub(r'[^\w\s.,!?:;\'"()\[\]{}+-*/=%₺$€@&]', '', temiz_metin, flags=re.UNICODE)
+    
     pdf.multi_cell(0, 8, temiz_metin)
     
-    # --- GÜNCELLEME: Streamlit için en güvenilir PDF çıktı yöntemi ---
-    with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp:
-        pdf.output(tmp.name) # PDF'i diske yaz
-        with open(tmp.name, "rb") as f:
-            pdf_bytes = f.read() # Kusursuz byte olarak geri oku
+    # --- WINDOWS KİLİTLENME HATASI ÇÖZÜMÜ ---
+    # Geçici dosya oluştur ve İŞLETİM SİSTEMİ KİLİDİNİ HEMEN KALDIR
+    tmp_fd, tmp_path = tempfile.mkstemp(suffix=".pdf")
+    os.close(tmp_fd) 
+    
+    try:
+        # FPDF PDF'i dosyaya yazsın
+        pdf.output(tmp_path) 
+        
+        # Dosyayı byte (binary) olarak geri oku
+        with open(tmp_path, "rb") as f:
+            pdf_bytes = f.read() 
+    finally:
+        # Sunucuda/Bilgisayarda çöp dosya kalmaması için sil
+        if os.path.exists(tmp_path):
+            os.remove(tmp_path) 
             
-    os.remove(tmp.name) # Diskte yer kaplamaması için sil
     return pdf_bytes
 
 def form_doldur_llm(vardiya_notu, form_tipi):
