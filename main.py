@@ -594,7 +594,16 @@ else:
                     gorsel_metni = analiz_et_gorsel(apply_kvkk_and_watermark(uploaded_file.getvalue()), st.session_state.current_domain_prompt)
                     ek_baglam = f"\n\n[ARKA PLAN GÖRSEL ANALİZİ]:\n{gorsel_metni}"
                     
-                st.session_state.analiz_verisi_zengin = f"[Seçili Maden Tipi: {maden_tipi}]\n[Talimat: {st.session_state.current_domain_prompt}]{hafiza_baglami}\n\n[VARDİYA NOTU]:\n{st.session_state.analiz_verisi}{ek_baglam}"
+                # --- GÜNCELLEME: SIKI PROMPT YÖNERGESİ ---
+                st.session_state.analiz_verisi_zengin = f"""[Seçili Maden Tipi: {maden_tipi}]
+[Talimat: {st.session_state.current_domain_prompt}]
+{hafiza_baglami}
+
+[SİSTEM EMRİ KESİN KURAL]: AŞAĞIDAKİ VARDİYA NOTU / SENSÖR VERİSİ SAHANIN GÜNCEL DURUMUDUR. SADECE BU DEĞERLERE ODAKLAN! EĞER DEĞERLER NORMAL LİMİTLER İÇİNDEYSE (Örn: Metan < %1, CO < 30ppm vb.) DURUMUN GÜVENLİ OLDUĞUNU BELİRT. ASLA GEÇMİŞ KAZALARI VEYA LOTO GİBİ İLGİSİZ ARIZA SENARYOLARINI UYDURMA. SADECE SANA VERİLEN RAKAMLARI YORUMLA!
+
+[VARDİYA NOTU]:
+{st.session_state.analiz_verisi}{ek_baglam}
+"""
                 st.session_state.analiz_basladi = True
                 st.session_state.analiz_sonucu = None
                 st.rerun()
