@@ -611,18 +611,44 @@ else:
     # TAB 2: VERİTABANI ASİSTANI
     with tab_assistant:
         st.header("💬 İSG Mevzuat ve Kurumsal Hafıza Asistanı")
-        st.caption("Uluslararası İSG standartları, eski kaza raporları veya şirket prosedürleri hakkında anında bilgi alın.")
         
-        # 1. Sohbet geçmişini tutmak için session_state başlatıyoruz
+        # 1. Arayüzü WhatsApp/Instagram tarzına yaklaştıran CSS Stilleri
+        st.markdown("""
+        <style>
+        /* İsim etiketleri için zarif görünüm */
+        .chat-name-user {
+            font-size: 0.8rem;
+            color: #10B981; /* Kullanıcı için koyu yeşil ton */
+            font-weight: 600;
+            margin-bottom: 5px;
+            letter-spacing: 0.5px;
+        }
+        .chat-name-bot {
+            font-size: 0.8rem;
+            color: #F97316; /* Aethel kurumsal turuncu vurgusu */
+            font-weight: 600;
+            margin-bottom: 5px;
+            letter-spacing: 0.5px;
+        }
+        </style>
+        """, unsafe_allow_html=True)
+        
+        # Sohbet geçmişini başlat
         if "chat_history" not in st.session_state:
             st.session_state.chat_history = []
             
-        # 2. Geçmiş mesajları sırasıyla ekrana çizdiriyoruz (Custom Avatarlar ile)
+        # 2. Geçmiş mesajları sırasıyla ve isim etiketleriyle ekrana çizdirme
         for msg in st.session_state.chat_history:
-            # Kullanıcı için standart profil, Arın AI için kalkan/güvenlik ikonu
-            avatar_icon = "👤" if msg["role"] == "user" else "🛡️"
-            with st.chat_message(msg["role"], avatar=avatar_icon):
-                st.markdown(msg["content"])
+            if msg["role"] == "user":
+                with st.chat_message("user", avatar="👤"):
+                    # Sistemde aktif olan kullanıcının ismini dinamik olarak yazdırıyoruz
+                    st.markdown(f"<div class='chat-name-user'>Siz ({st.session_state.user_name})</div>", unsafe_allow_html=True)
+                    st.markdown(msg["content"])
+            else:
+                with st.chat_message("assistant", avatar="🛡️"):
+                    # Asistan için marka adını yazdırıyoruz
+                    st.markdown("<div class='chat-name-bot'>Arın AI</div>", unsafe_allow_html=True)
+                    st.markdown(msg["content"])
 
         # 3. Yeni soru girişi ve işlenmesi
         user_q = st.chat_input("İSG mevzuatı veya geçmiş kazalar hakkında bir soru sorun...")
@@ -630,10 +656,12 @@ else:
             # Kullanıcının sorusunu ekrana bas ve geçmişe kaydet
             st.session_state.chat_history.append({"role": "user", "content": user_q})
             with st.chat_message("user", avatar="👤"):
+                st.markdown(f"<div class='chat-name-user'>Siz ({st.session_state.user_name})</div>", unsafe_allow_html=True)
                 st.markdown(user_q)
                 
             # Asistanın yanıt alanını oluştur
             with st.chat_message("assistant", avatar="🛡️"):
+                st.markdown("<div class='chat-name-bot'>Arın AI</div>", unsafe_allow_html=True)
                 with st.spinner("Sektörel veritabanları taranıyor..."):
                     if rag_engine:
                         cevap = rag_engine.soru_cevapla(user_q)
