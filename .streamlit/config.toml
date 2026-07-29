@@ -1,14 +1,15 @@
 [theme]
-primaryColor = "#F97316"              # "Multi-Agent Analizi Başlat" butonu canlı kurumsal turuncu olacak
-backgroundColor = "#F8FAFC"           # Ana arka plan temiz, açık gri/beyaz (Gözü yormayan modern SaaS stili)
-secondaryBackgroundColor = "#FFFFFF"  # Sol menü (Sidebar) ve kartlar saf beyaz
-textColor = "#1E293B"                 # Tüm metinler okunaklı koyu füme
+primaryColor = "#F97316"              # Tünel turuncusu (Butonlar ve ana vurgular)
+backgroundColor = "#0F172A"           # Logodaki tünel içi derin lacivert (Gözü yormayan zemin)
+secondaryBackgroundColor = "#1E293B" # Sol menü (Sidebar) ve kart alanları (Derin lacivert)
+textColor = "#F8FAFC"                 # Okunaklı açık gri / beyaz yazı
 font = "sans serif"
+
 [server]
-maxUploadSize = 200 # Fotoğraf ve PDF yüklemeleri için MB limiti (varsayılan 200MB)
+maxUploadSize = 200
 
 [client]
-showErrorDetails = false # Üretim ortamında kullanıcıya detaylı python hata traceback'lerini gizler
+showErrorDetails = false
 
 [browser]
-gatherUsageStats = false # Gizlilik için Streamlit kullanım istatistikleri toplanmasını kapatır
+gatherUsageStats = false

@@ -37,9 +37,13 @@ from docx import Document
 
 st.set_page_config(layout="wide", page_title="Arın AI - Maden İSG & Karar Destek", page_icon="🛡️")
 
-# --- CUSTOM CSS (config.toml Teması ile Uyumlu Modern SaaS Stili) ---
+# --- CUSTOM CSS (Arın AI Logo Renk Paleti Entegrasyonu) ---
 st.markdown("""
     <style>
+    /* Genel Zemin ve Yazı Renkleri */
+    .stApp { background-color: #0F172A !important; color: #F8FAFC !important; }
+    .stSidebar { background-color: #1E293B !important; color: #F8FAFC !important; border-right: 1px solid #334155; }
+    
     /* Ana Buton Stilleri */
     .stButton>button { 
         height: 3.2rem !important; 
@@ -48,12 +52,21 @@ st.markdown("""
         border-radius: 10px !important; 
     }
     
-    /* Özel Kart Tasarımları (Açık Tema Renk Paleti) */
-    .saha-card { background-color: #FFFFFF; border-left: 6px solid #F97316; padding: 15px; border-radius: 8px; margin-bottom: 15px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-    .feedback-card { background-color: #FFFFFF; border: 1px solid #E2E8F0; padding: 15px; border-radius: 8px; margin-top: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
-    .sensor-critical { background-color: #FEF2F2; border: 2px solid #EF4444; padding: 15px; border-radius: 8px; color: #991B1B; margin-bottom: 10px; font-weight: bold; }
-    .sensor-normal { background-color: #ECFDF5; border: 1px solid #10B981; padding: 15px; border-radius: 8px; color: #065F46; margin-bottom: 10px; font-weight: bold; }
-    .roi-card { background-color: #065F46; border-left: 6px solid #34D399; padding: 20px; border-radius: 10px; color: white; }
+    /* Özel Kart Tasarımları (Arın AI Logo Kurumsal Renkleri) */
+    .saha-card { background-color: #1E293B; border-left: 6px solid #F97316; padding: 15px; border-radius: 8px; margin-bottom: 15px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.3); }
+    .feedback-card { background-color: #1E293B; border: 1px solid #334155; border-left: 5px solid #06B6D4; padding: 15px; border-radius: 8px; margin-top: 10px; }
+    .sensor-critical { background-color: #450A0A; border: 2px solid #EF4444; padding: 15px; border-radius: 8px; color: #FEE2E2; margin-bottom: 10px; font-weight: bold; }
+    .sensor-normal { background-color: #064E3B; border: 1px solid #10B981; padding: 15px; border-radius: 8px; color: #ECFDF5; margin-bottom: 10px; font-weight: bold; }
+    .roi-card { background-color: #1E293B; border-left: 6px solid #F97316; border-right: 2px solid #06B6D4; padding: 20px; border-radius: 10px; color: #F8FAFC; }
+    
+    /* Input ve Textarea Alanları */
+    .stTextArea textarea {
+        background-color: #1E293B !important;
+        color: #06B6D4 !important;
+        border: 1px solid #334155 !important;
+        font-family: 'Courier New', monospace !important;
+    }
+    h1, h2, h3, h4, h5, h6, p, span { color: #F8FAFC !important; }
     </style>
 """, unsafe_allow_html=True)
 
@@ -275,7 +288,7 @@ if not st.session_state.logged_in:
                 pass
                 
             st.markdown("<h1 style='text-align: center;'>🛡️ Arın AI Giriş Portalı</h1>", unsafe_allow_html=True)
-            st.markdown("<p style='text-align: center; color: #64748B;'>Aethel Technologies Kurumsal Karar Destek Mimarisi</p>", unsafe_allow_html=True)
+            st.markdown("<p style='text-align: center; color: #06B6D4;'>Aethel Technologies Kurumsal Karar Destek Mimarisi</p>", unsafe_allow_html=True)
             
             tab_login, tab_reset = st.tabs(["🔑 Giriş Yap", "🔄 Şifremi Unuttum"])
             
@@ -455,44 +468,6 @@ with st.sidebar:
     if st.button("🚪 Sistemden Çıkış Yap", use_container_width=True):
         st.session_state.logged_in = False
         st.rerun()
-        
-    st.markdown("---")
-    
-    # --- TEMA SEÇİMİ (Karanlık/Aydınlık Mod) ---
-    st.markdown("### 🎨 Görünüm")
-    tema = st.radio("Tema Seçimi", ["Aydınlık (SaaS)", "Karanlık"], horizontal=True, label_visibility="collapsed")
-    
-    if tema == "Karanlık":
-        st.markdown("""
-        <style>
-            .stApp { background-color: #0E1117; color: #FAFAFA; }
-            .stSidebar { background-color: #1E222D; color: #FAFAFA; }
-            div[data-testid="stExpander"], div[data-testid="stVerticalBlock"] > div[style*="background-color"] {
-                background-color: #1E222D !important;
-                border: 1px solid #2E3440 !important;
-                border-radius: 8px !important;
-            }
-            .stTextArea textarea {
-                background-color: #161922 !important;
-                color: #00FFC6 !important;
-                font-family: 'Courier New', monospace !important;
-            }
-            h1, h2, h3, p, span { color: #FAFAFA !important; }
-        </style>
-        """, unsafe_allow_html=True)
-    else:
-        # config.toml Açık Temayı Destekleyen Ek CSS Uyarlaması
-        st.markdown("""
-        <style>
-            .stApp { background-color: #F8FAFC; color: #1E293B; }
-            .stSidebar { background-color: #FFFFFF; color: #1E293B; border-right: 1px solid #E2E8F0; }
-            .stTextArea textarea {
-                background-color: #FFFFFF !important;
-                color: #1E293B !important;
-                border: 1px solid #CBD5E1 !important;
-            }
-        </style>
-        """, unsafe_allow_html=True)
 
     st.markdown("---")
     st.title("🛡️ Arın AI Enterprise")
@@ -692,7 +667,7 @@ else:
         
         st.markdown("""
         <style>
-        .chat-name-user { font-size: 0.8rem; color: #10B981; font-weight: 600; margin-bottom: 5px; letter-spacing: 0.5px; }
+        .chat-name-user { font-size: 0.8rem; color: #06B6D4; font-weight: 600; margin-bottom: 5px; letter-spacing: 0.5px; }
         .chat-name-bot { font-size: 0.8rem; color: #F97316; font-weight: 600; margin-bottom: 5px; letter-spacing: 0.5px; }
         </style>
         """, unsafe_allow_html=True)
