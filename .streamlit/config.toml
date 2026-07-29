@@ -4,3 +4,11 @@ backgroundColor = "#F8FAFC"           # Ana arka plan temiz, açık gri/beyaz (G
 secondaryBackgroundColor = "#FFFFFF"  # Sol menü (Sidebar) ve kartlar saf beyaz
 textColor = "#1E293B"                 # Tüm metinler okunaklı koyu füme
 font = "sans serif"
+[server]
+maxUploadSize = 200 # Fotoğraf ve PDF yüklemeleri için MB limiti (varsayılan 200MB)
+
+[client]
+showErrorDetails = false # Üretim ortamında kullanıcıya detaylı python hata traceback'lerini gizler
+
+[browser]
+gatherUsageStats = false # Gizlilik için Streamlit kullanım istatistikleri toplanmasını kapatır

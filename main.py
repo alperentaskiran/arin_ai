@@ -37,14 +37,22 @@ from docx import Document
 
 st.set_page_config(layout="wide", page_title="Arın AI - Maden İSG & Karar Destek", page_icon="🛡️")
 
-# --- CUSTOM CSS ---
+# --- CUSTOM CSS (config.toml Teması ile Uyumlu Modern SaaS Stili) ---
 st.markdown("""
     <style>
-    .stButton>button { height: 3.2rem !important; font-size: 1.1rem !important; font-weight: bold !important; border-radius: 10px !important; }
-    .saha-card { background-color: #1E293B; border-left: 6px solid #F97316; padding: 15px; border-radius: 8px; margin-bottom: 15px; }
-    .feedback-card { background-color: #0F172A; border: 1px solid #334155; padding: 15px; border-radius: 8px; margin-top: 10px; }
-    .sensor-critical { background-color: #7F1D1D; border: 2px solid #EF4444; padding: 15px; border-radius: 8px; color: white; margin-bottom: 10px; }
-    .sensor-normal { background-color: #064E3B; border: 1px solid #10B981; padding: 15px; border-radius: 8px; color: white; margin-bottom: 10px; }
+    /* Ana Buton Stilleri */
+    .stButton>button { 
+        height: 3.2rem !important; 
+        font-size: 1.1rem !important; 
+        font-weight: bold !important; 
+        border-radius: 10px !important; 
+    }
+    
+    /* Özel Kart Tasarımları (Açık Tema Renk Paleti) */
+    .saha-card { background-color: #FFFFFF; border-left: 6px solid #F97316; padding: 15px; border-radius: 8px; margin-bottom: 15px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+    .feedback-card { background-color: #FFFFFF; border: 1px solid #E2E8F0; padding: 15px; border-radius: 8px; margin-top: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+    .sensor-critical { background-color: #FEF2F2; border: 2px solid #EF4444; padding: 15px; border-radius: 8px; color: #991B1B; margin-bottom: 10px; font-weight: bold; }
+    .sensor-normal { background-color: #ECFDF5; border: 1px solid #10B981; padding: 15px; border-radius: 8px; color: #065F46; margin-bottom: 10px; font-weight: bold; }
     .roi-card { background-color: #065F46; border-left: 6px solid #34D399; padding: 20px; border-radius: 10px; color: white; }
     </style>
 """, unsafe_allow_html=True)
@@ -267,7 +275,7 @@ if not st.session_state.logged_in:
                 pass
                 
             st.markdown("<h1 style='text-align: center;'>🛡️ Arın AI Giriş Portalı</h1>", unsafe_allow_html=True)
-            st.markdown("<p style='text-align: center; color: gray;'>Aethel Technologies Kurumsal Karar Destek Mimarisi</p>", unsafe_allow_html=True)
+            st.markdown("<p style='text-align: center; color: #64748B;'>Aethel Technologies Kurumsal Karar Destek Mimarisi</p>", unsafe_allow_html=True)
             
             tab_login, tab_reset = st.tabs(["🔑 Giriş Yap", "🔄 Şifremi Unuttum"])
             
@@ -361,11 +369,11 @@ def extract_text_from_audio(file_bytes, file_name):
     finally:
         if os.path.exists(temp_filename): os.remove(temp_filename)
 
-import os
-import tempfile
-import re
-
 def rapor_pdf_olustur(rapor_metni):
+    """
+    Roboto-Regular ve Roboto-Bold fontlarını kullanan,
+    tamamen bellekte (BytesIO/Byte Streams) çalışan hatasız PDF üreticisi.
+    """
     try:
         from fpdf import FPDF
     except ImportError:
@@ -378,7 +386,7 @@ def rapor_pdf_olustur(rapor_metni):
         pdf.add_font('Roboto', '', 'Roboto-Regular.ttf', uni=True)
         pdf.add_font('Roboto', 'B', 'Roboto-Bold.ttf', uni=True)
         pdf.set_font('Roboto', 'B', 14)
-    except:
+    except Exception:
         pdf.set_font('Arial', 'B', 14)
     
     pdf.cell(0, 10, "Arin AI Enterprise - Kurumsal Rapor", ln=True, align='L')
@@ -386,36 +394,22 @@ def rapor_pdf_olustur(rapor_metni):
     
     try:
         pdf.set_font('Roboto', '', 11)
-    except:
+    except Exception:
         pdf.set_font('Arial', '', 11)
         
     # 1. ADIM: Markdown işaretlerini temizle
     temiz_metin = str(rapor_metni).replace('**', '').replace('### ', '').replace('## ', '')
     
-    # 2. ADIM: PDF'in çökmesine neden olan Emojileri temizle (Türkçe karakterleri korur)
-    # Sadece harf, rakam, noktalama ve boşluk karakterlerini bırakır.
+    # 2. ADIM: Emojileri temizle (Türkçe karakterleri korur)
     temiz_metin = re.sub(r'[^\w\s.,!?:;\'"()\[\]{}+-*/=%₺$€@&]', '', temiz_metin, flags=re.UNICODE)
     
     pdf.multi_cell(0, 8, temiz_metin)
     
-    # --- WINDOWS KİLİTLENME HATASI ÇÖZÜMÜ ---
-    # Geçici dosya oluştur ve İŞLETİM SİSTEMİ KİLİDİNİ HEMEN KALDIR
-    tmp_fd, tmp_path = tempfile.mkstemp(suffix=".pdf")
-    os.close(tmp_fd) 
-    
-    try:
-        # FPDF PDF'i dosyaya yazsın
-        pdf.output(tmp_path) 
-        
-        # Dosyayı byte (binary) olarak geri oku
-        with open(tmp_path, "rb") as f:
-            pdf_bytes = f.read() 
-    finally:
-        # Sunucuda/Bilgisayarda çöp dosya kalmaması için sil
-        if os.path.exists(tmp_path):
-            os.remove(tmp_path) 
-            
-    return pdf_bytes
+    # --- DOĞRUDAN BELLEKTEN YAZDIRMA (KİLİTLENME VE CORRUPTED PDF ÇÖZÜMÜ) ---
+    pdf_output = pdf.output(dest='S')
+    if isinstance(pdf_output, str):
+        return pdf_output.encode('latin1', errors='replace')
+    return bytes(pdf_output)
 
 def form_doldur_llm(vardiya_notu, form_tipi):
     from openai import OpenAI
@@ -466,14 +460,37 @@ with st.sidebar:
     
     # --- TEMA SEÇİMİ (Karanlık/Aydınlık Mod) ---
     st.markdown("### 🎨 Görünüm")
-    tema = st.radio("Tema Seçimi", ["Aydınlık", "Karanlık"], horizontal=True, label_visibility="collapsed")
+    tema = st.radio("Tema Seçimi", ["Aydınlık (SaaS)", "Karanlık"], horizontal=True, label_visibility="collapsed")
     
     if tema == "Karanlık":
         st.markdown("""
         <style>
             .stApp { background-color: #0E1117; color: #FAFAFA; }
-            .stSidebar { background-color: #262730; color: #FAFAFA; }
+            .stSidebar { background-color: #1E222D; color: #FAFAFA; }
+            div[data-testid="stExpander"], div[data-testid="stVerticalBlock"] > div[style*="background-color"] {
+                background-color: #1E222D !important;
+                border: 1px solid #2E3440 !important;
+                border-radius: 8px !important;
+            }
+            .stTextArea textarea {
+                background-color: #161922 !important;
+                color: #00FFC6 !important;
+                font-family: 'Courier New', monospace !important;
+            }
             h1, h2, h3, p, span { color: #FAFAFA !important; }
+        </style>
+        """, unsafe_allow_html=True)
+    else:
+        # config.toml Açık Temayı Destekleyen Ek CSS Uyarlaması
+        st.markdown("""
+        <style>
+            .stApp { background-color: #F8FAFC; color: #1E293B; }
+            .stSidebar { background-color: #FFFFFF; color: #1E293B; border-right: 1px solid #E2E8F0; }
+            .stTextArea textarea {
+                background-color: #FFFFFF !important;
+                color: #1E293B !important;
+                border: 1px solid #CBD5E1 !important;
+            }
         </style>
         """, unsafe_allow_html=True)
 
@@ -611,7 +628,6 @@ else:
                     gorsel_metni = analiz_et_gorsel(apply_kvkk_and_watermark(uploaded_file.getvalue()), st.session_state.current_domain_prompt)
                     ek_baglam = f"\n\n[ARKA PLAN GÖRSEL ANALİZİ]:\n{gorsel_metni}"
                     
-                # --- GÜNCELLEME: SIKI PROMPT YÖNERGESİ ---
                 st.session_state.analiz_verisi_zengin = f"""[Seçili Maden Tipi: {maden_tipi}]
 [Talimat: {st.session_state.current_domain_prompt}]
 {hafiza_baglami}
@@ -661,7 +677,6 @@ else:
                     st.markdown("<br>", unsafe_allow_html=True)
                     c_btn1, c_btn2 = st.columns(2)
                     with c_btn1:
-                        # REPORTLAB YERİNE ARTIK FPDF FONKSİYONU ÇAĞRILIYOR
                         pdf_data = rapor_pdf_olustur(res.get("final_decision", ""))
                         st.download_button("📥 PDF İndir", data=pdf_data, file_name="ArinAI_Karar.pdf", mime="application/pdf", use_container_width=True)
                     with c_btn2:
@@ -808,7 +823,7 @@ else:
                     st.success("Taşeron eklendi!")
                     st.rerun()
 
-    # TAB 7: RİSK & FORMLAR (GÜNCELLENMİŞ PDF İNDİRME ALANI İLE BİRLİKTE)
+    # TAB 7: RİSK & FORMLAR
     with tab_engine:
         st.header("🧮 Risk Hesaplayıcıları & Form Hazırlayıcı")
         
