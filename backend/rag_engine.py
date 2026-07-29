@@ -1,11 +1,13 @@
 """
-Arın AI - RAG Engine, Multi-Agent, Shift Memory & LOTO Equipment Entegrasyon Modülü
+Arın AI - RAG Engine, Multi-Agent Debate Loop, Shift Memory, LOTO & Function Calling Modülü
 Aethel Technologies - 2026
 """
 
 import os
 import json
 import logging
+import re
+import requests
 from datetime import datetime
 
 # ==========================================
@@ -26,51 +28,34 @@ logger = logging.getLogger("ArinAI_RagEngine")
 # --- KÖK DİZİN (ABSOLUTE PATH) AYARLAMASI ---
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-# --- 1. ADIM: SAHA LOKASYON HİYERARŞİSİ VE RİSK MATRİSİ ---
-LOCATIONS_RISK_MATRIX = {
-    "YERALTI_AYNA": {
-        "title": "Üretim Aynası / Hazırlık Galerisi",
-        "primary_risks": ["Ani Gaz Debisi (Metan/CO)", "Kaya Düşmesi / Göçük", "Toz Yoğunluğu"],
-        "critical_checks": ["Gaz Dedektörü Kalibrasyonu", "Tahkimat ve Pasaj Kontrolü", "Su Perdesi / Toz Bastırma"]
+# ==========================================
+# 1. DİNAMİK MADEN TİPİ VE RİSK VERİTABANI
+# ==========================================
+DYNAMIC_RISK_DB = {
+    "Mermer & Doğaltaş (Şev Stabilitesi & Tel Kesme)": {
+        "lokasyonlar": ["Açık Ocak", "Kademeler", "Kırma Eleme", "Stok Alanı", "Elmas Tel Kesme Bölgesi"],
+        "riskler": ["Şev Kayması", "Tel Kesme Makinesi Kopması / Tel Çarpması", "Ağır Tonajlı Blok Devrilmesi", "İş Makinesi Kör Nokta Kazası"],
+        "loto_ekipmanlari": ["Ekskavatör", "Elmas Tel Kesme Makinesi", "Loder", "Kaya Delici (Rok)"]
     },
-    "GALERI_KOR": {
-        "title": "Kör Galeri / Havalandırma Uç Noktası",
-        "primary_risks": ["Yetersiz Oksijen (O2 Boğulma)", "Tehlikeli Gaz Birikmesi", "Tıkalı/Devre Dışı Tali Fan"],
-        "critical_checks": ["Tali Fan Çalışma Durumu", "Anlık O2 ve CH4 Ölçümü", "Yedek Güç Hattı"]
+    "Kömür & Yeraltı Galerisi (Grizu / Havalandırma)": {
+        "lokasyonlar": ["Yeraltı Ayna", "Kör Galeri", "Nakliyat Hattı", "Nefeslik"],
+        "riskler": ["Grizu Patlaması", "Göçük / Tavan Çökmesi", "Karbonmonoksit Zehirlenmesi", "Toz İnfılakı"],
+        "loto_ekipmanlari": ["Ana Emiş Fanı", "Konveyör Bant", "Yeraltı Trafosu", "Sürekli Kazıcı"]
     },
-    "NAKLIYAT_HATTI": {
-        "title": "Ana Nakliyat & Konveyör Bant Hattı",
-        "primary_risks": ["Bant Sürtünmesi ve Yangın Riskleri", "Mekanik Sıkışma / Uzuv Kaptırma", "Yüksek Gürültü ve İnce Toz"],
-        "critical_checks": ["Acil Stop İp/Tel Mekanizması", "Bant Kayma Sensörü", "Otomatik Yangın Söndürme Nozulları"]
+    "Değerli Metal (Altın, Gümüş - Siyanür / Atık Barajı)": {
+        "lokasyonlar": ["Yığın Liç Alanı", "Atık Barajı", "Kimyasal Tesis (ADR)", "Açık Ocak"],
+        "riskler": ["Siyanür Sızıntısı / Zehirlenme", "Atık Barajı Yırtılması / Taşması", "Ağır Metal Kontaminasyonu", "Şev Kayması"],
+        "loto_ekipmanlari": ["Sirkülasyon Pompaları", "Siyanür Dozajlama Tankları", "Karıştırıcılar"]
     },
-    "ACIK_OCAK_KIRMA": {
-        "title": "Kırma-Eleme Tesisleri / Açık Ocak Şantiye Alanı",
-        "primary_risks": ["Solunabilir Kuvars Tozu", "Ağır İş Makinesi Trafiği", "Yüksekten Düşme"],
-        "critical_checks": ["Toz Bastırma Fıskiyeleri", "Görünürlük ve Siren / KKD Kontrolü", "LOTO (Kilitleme/Etiketleme)"]
-    }
-}
-
-# --- 4. ADIM: EKİPMAN (MAKİNE PARKI) VE LOTO MATRİSİ ---
-EQUIPMENT_RISK_MATRIX = {
-    "FAN_SISTEMI": {
-        "name": "Ana / Tali Havalandırma Fanı",
-        "risks": ["Gaz Birikimi (CH4/CO)", "Oksijensiz Kalma", "Elektrik Kontağı Yangını"],
-        "loto_protocol": "Panodan enerji kesilmeli, LOTO kilidi asılmalı. Ex-proof gaz ölçümü yapılmadan müdahale yasaktır."
+    "Metalik Madencilik (Bakır, Demir - Patlatma & Ağır Metal)": {
+        "lokasyonlar": ["Açık Ocak", "Patlatma Patern Alanı", "Zenginleştirme Tesisi", "Kırma Eleme"],
+        "riskler": ["Kontrolsüz Patlatma / Uçan Kaya", "Ağır Makine Çarpışması", "Asit Kaya Drenajı", "Toz Emisyonu"],
+        "loto_ekipmanlari": ["Delici Makine", "Kırıcı Çeneler", "Değirmenler"]
     },
-    "KONVEYOR_BANT": {
-        "name": "Konveyör Bant / Vagon Sistemi",
-        "risks": ["Rulman Sürtünmesi (Yangın)", "Uzuv Kaptırma", "Kömür Tozu Patlaması"],
-        "loto_protocol": "Acil stop teli çekilmeli. Motor şalteri kilitlenmeli, bantta biriken kömür tozu yıkanarak temizlenmeli."
-    },
-    "TRAFO_ELEKTRIK": {
-        "name": "Yeraltı Trafosu / Dağıtım Panosu",
-        "risks": ["Ark Parlaması", "Yüksek Voltaj Çarpılması", "İzolasyon Yağı Yangını"],
-        "loto_protocol": "Ana kesici açılmalı, topraklama ıstakası takılmalı. Sadece yetkili YG personeli müdahale edebilir."
-    },
-    "IS_MAKINESI": {
-        "name": "Yükleyici / Ekskavatör / LHD",
-        "risks": ["Kör Nokta Çarpması", "Hidrolik Boşalması", "Fren Kaybı"],
-        "loto_protocol": "Makine düz zemine park edilmeli, kova yere indirilmeli, tekerleklere takoz konmalı ve kontak anahtarı alınmalı."
+    "Nadir Toprak Elementleri & Endüstriyel (Kimyasal Risk)": {
+        "lokasyonlar": ["Flotasyon Tesisi", "Açık Ocak / Galeri", "Kimyasal Depolama"],
+        "riskler": ["Kimyasal Reaksiyon", "Radyasyon (NTE Ocağı ise)", "Toz Solunumu", "Korozyon / Asit Yanığı"],
+        "loto_ekipmanlari": ["Flotasyon Hücreleri", "Asit Pompaları", "Basınçlı Kaplar"]
     }
 }
 
@@ -78,14 +63,15 @@ EQUIPMENT_RISK_MATRIX = {
 class RagEngine:
     def __init__(self):
         self.embeddings = OpenAIEmbeddings(model="text-embedding-3-small")
+        self.client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
         
-        # Mutlak Yollar (Absolute Paths)
+        # Mutlak Yollar
         self.mevzuat_path = os.path.join(BASE_DIR, "database", "mevzuat")
         self.kazalar_path = os.path.join(BASE_DIR, "database", "kazalar")
         self.jeoloji_path = os.path.join(BASE_DIR, "database", "jeoloji")
         self.memory_file = os.path.join(BASE_DIR, "database", "shift_memory.json")
 
-        # Canlı Web Arama Aracı Güvenli Yükleme
+        # Canlı Web Arama Aracı
         self.web_search = None
         try:
             from langchain_community.tools import DuckDuckGoSearchRun
@@ -93,14 +79,11 @@ class RagEngine:
         except Exception as e:
             logger.warning(f"Web arama aracı pasif hale getirildi: {e}")
 
-        # Güvenli Chroma Yükleme Fonksiyonu
         def safe_load_chroma(path):
             try:
                 db_file = os.path.join(path, "chroma.sqlite3")
                 if os.path.exists(db_file):
                     return Chroma(persist_directory=path, embedding_function=self.embeddings)
-                else:
-                    logger.warning(f"Veritabanı dosyası bulunamadı: {db_file}")
             except Exception as e:
                 logger.error(f"Chroma yükleme hatası ({path}): {e}")
             return None
@@ -108,13 +91,16 @@ class RagEngine:
         self.db_mevzuat = safe_load_chroma(self.mevzuat_path)
         self.db_kazalar = safe_load_chroma(self.kazalar_path)
         self.db_jeoloji = safe_load_chroma(self.jeoloji_path)
-        
-        # Hafıza Dosyasını Başlat
         self._init_memory_file()
+
+    def _extract_domain(self, metin: str) -> str:
+        match = re.search(r"\[Seçili Maden Tipi:\s*(.*?)\]", metin)
+        if match:
+            return match.group(1).strip()
+        return "Kömür & Yeraltı Galerisi (Grizu / Havalandırma)"
 
     # --- HAFIZA (MEMORY) FONKSİYONLARI ---
     def _init_memory_file(self):
-        """Vardiya hafızası için JSON dosyası oluşturur."""
         try:
             os.makedirs(os.path.dirname(self.memory_file), exist_ok=True)
             if not os.path.exists(self.memory_file):
@@ -124,7 +110,6 @@ class RagEngine:
             logger.error(f"Hafıza dosyası oluşturma hatası: {e}")
 
     def save_to_memory(self, location_key: str, report_text: str, ch4_level: float = None):
-        """Analizi yapılan vardiyayı lokasyon bazlı hafızaya kaydeder."""
         try:
             if not os.path.exists(self.memory_file):
                 self._init_memory_file()
@@ -149,7 +134,6 @@ class RagEngine:
             logger.error(f"Hafızaya kaydetme hatası: {e}")
 
     def get_location_history(self, location_key: str, limit: int = 3) -> str:
-        """Belirtilen lokasyonun geçmiş vardiya verilerini getirir."""
         try:
             if not os.path.exists(self.memory_file):
                 return "Bu lokasyon için geçmiş vardiya kaydı bulunamadı."
@@ -169,12 +153,9 @@ class RagEngine:
                 history_text += f"[{i+1}] Tarih: {r['timestamp']} {ch4_str} | Özet: {r['report_summary']}\n"
             return history_text
         except Exception as e:
-            logger.error(f"Hafıza okuma hatası: {e}")
             return "Hafıza okunamadı."
 
     def extract_metrics_from_report(self, report_text: str) -> float:
-        """Rapordan basit kural tabanlı Metan (CH4) oranını çeker."""
-        import re
         match = re.search(r'(?:ch4|metan).*?(?:%)\s*(\d+\.?\d*)', report_text.lower())
         if not match:
             match = re.search(r'(?:%)\s*(\d+\.?\d*).*?(?:ch4|metan)', report_text.lower())
@@ -186,35 +167,7 @@ class RagEngine:
                 pass
         return None
 
-    # --- LOKASYON & EKİPMAN TESPİTİ ---
-    def detect_location(self, report_text: str) -> tuple:
-        text_lower = report_text.lower()
-        
-        if any(k in text_lower for k in ["kör galeri", "uzatma", "dip", "tıkalı"]):
-            return LOCATIONS_RISK_MATRIX["GALERI_KOR"], "GALERI_KOR"
-        elif any(k in text_lower for k in ["bant", "nakliyat", "vagon", "varagel", "konveyör", "desandre"]):
-            return LOCATIONS_RISK_MATRIX["NAKLIYAT_HATTI"], "NAKLIYAT_HATTI"
-        elif any(k in text_lower for k in ["kırma", "eleme", "tesis", "şantiye", "konkasör", "açık ocak"]):
-            return LOCATIONS_RISK_MATRIX["ACIK_OCAK_KIRMA"], "ACIK_OCAK_KIRMA"
-        else:
-            return LOCATIONS_RISK_MATRIX["YERALTI_AYNA"], "YERALTI_AYNA"
-
-    def detect_equipment(self, report_text: str) -> dict:
-        text_lower = report_text.lower()
-        found_equipment = {}
-
-        if any(k in text_lower for k in ["fan", "havalandırma", "aspiratör", "vantilatör"]):
-            found_equipment["FAN_SISTEMI"] = EQUIPMENT_RISK_MATRIX["FAN_SISTEMI"]
-        if any(k in text_lower for k in ["bant", "konveyör", "tambur", "rulman"]):
-            found_equipment["KONVEYOR_BANT"] = EQUIPMENT_RISK_MATRIX["KONVEYOR_BANT"]
-        if any(k in text_lower for k in ["trafo", "elektrik", "pano", "kablo", "şalter", "voltaj"]):
-            found_equipment["TRAFO_ELEKTRIK"] = EQUIPMENT_RISK_MATRIX["TRAFO_ELEKTRIK"]
-        if any(k in text_lower for k in ["yükleyici", "lhd", "ekskavatör", "kamyon", "fren", "fayton"]):
-            found_equipment["IS_MAKINESI"] = EQUIPMENT_RISK_MATRIX["IS_MAKINESI"]
-
-        return found_equipment
-            
-    # --- ARAMA FONKSİYONLARI ---
+    # --- ARAÇ (TOOL) FONKSİYONLARI ---
     def canli_web_ara(self, sorgu: str) -> str:
         if not self.web_search:
             return "Canlı arama aracı yapılandırılamadı."
@@ -224,197 +177,231 @@ class RagEngine:
             sonuc = self.web_search.run(arama_sorgusu)
             return f"--- CANLI WEB TARAMA SONUÇLARI ---\n{sonuc}" if sonuc else "Canlı aramada sonuç bulunamadı."
         except Exception as e:
-            logger.error(f"Canlı web aramasında hata: {e}")
             return f"Canlı arama hatası: {e}"
 
-    def mevzuat_ara(self, sorgu: str, k: int = 8, score_threshold: float = 0.75, use_mmr: bool = True) -> str:
-        if not self.db_mevzuat:
-            logger.warning("Mevzuat veritabanı bulunamadı/yüklenemedi. Canlı aramaya geçiliyor...")
-            return self.canli_web_ara(sorgu)
-            
+    def hava_durumu_getir(self, lokasyon: str) -> str:
+        """API Anahtarı gerektirmeyen wttr.in üzerinden hava durumu çeker."""
         try:
-            if use_mmr:
-                retriever = self.db_mevzuat.as_retriever(
-                    search_type="mmr",
-                    search_kwargs={"k": k, "fetch_k": 30, "lambda_mult": 0.7}
-                )
-                docs = retriever.invoke(sorgu)
-                if docs:
-                    return "\n\n".join([doc.page_content for doc in docs])
-            
-            sonuclar_ile_skor = self.db_mevzuat.similarity_search_with_score(sorgu, k=k)
-            filtrelenmis = [doc.page_content for doc, score in sonuclar_ile_skor if score < score_threshold]
-            
-            if not filtrelenmis:
-                if sonuclar_ile_skor:
-                    return "\n\n".join([doc.page_content for doc, score in sonuclar_ile_skor[:3]])
-                return self.canli_web_ara(sorgu)
-                
-            return "\n\n".join(filtrelenmis)
+            logger.info(f"☁️ Hava Durumu Sorgulanıyor: '{lokasyon}'")
+            url = f"https://wttr.in/{lokasyon}?format=%C+%t+%h+%p"
+            response = requests.get(url, timeout=5)
+            if response.status_code == 200:
+                return f"{lokasyon} Anlık Hava Durumu (Durum/Sıcaklık/Nem/Yağış): {response.text.strip()}"
+            else:
+                return f"Hava durumu alınamadı. (HTTP {response.status_code})"
         except Exception as e:
-            logger.error(f"Mevzuat aramasında hata: {e}")
+            return f"Hava durumu API hatası: {e}"
+
+    # --- RAG ARAMA FONKSİYONLARI ---
+    def mevzuat_ara(self, sorgu: str, k: int = 8, score_threshold: float = 0.75) -> str:
+        if not self.db_mevzuat:
+            return self.canli_web_ara(sorgu)
+        try:
+            retriever = self.db_mevzuat.as_retriever(search_type="mmr", search_kwargs={"k": k, "fetch_k": 30, "lambda_mult": 0.7})
+            docs = retriever.invoke(sorgu)
+            if docs: return "\n\n".join([doc.page_content for doc in docs])
+            
+            sonuclar = self.db_mevzuat.similarity_search_with_score(sorgu, k=k)
+            filtrelenmis = [doc.page_content for doc, score in sonuclar if score < score_threshold]
+            return "\n\n".join(filtrelenmis) if filtrelenmis else self.canli_web_ara(sorgu)
+        except Exception:
             return self.canli_web_ara(sorgu)
 
     def kaza_raporu_ara(self, sorgu: str, k: int = 6) -> str:
-        if not self.db_kazalar:
-            return "Kaza raporları veritabanı bulunamadı."
+        if not self.db_kazalar: return "Kaza raporları veritabanı bulunamadı."
         try:
             sonuclar = self.db_kazalar.similarity_search(sorgu, k=k)
             return "\n\n".join([doc.page_content for doc in sonuclar]) if sonuclar else "İLGİLİ_KAZA_KAYDI_BULUNAMADI"
-        except Exception as e:
-            return f"Kaza aramasında hata: {e}"
+        except Exception: return "Hata"
 
     def jeoloji_ara(self, sorgu: str, k: int = 6) -> str:
-        if not self.db_jeoloji:
-            return "MTA / Jeoloji veritabanı bulunamadı."
+        if not self.db_jeoloji: return "Jeoloji veritabanı bulunamadı."
         try:
             sonuclar = self.db_jeoloji.similarity_search(sorgu, k=k)
             return "\n\n".join([doc.page_content for doc in sonuclar]) if sonuclar else "İLGİLİ_JEOLOJİ_KAYDI_BULUNAMADI"
-        except Exception as e:
-            return f"Jeoloji aramasında hata: {e}"
+        except Exception: return "Hata"
 
-    # --- 2. ADIM: ÇOKLU AJAN (CREW SIMULATION), HAFIZA & LOTO ENTEGRASYONU ---
+    # ==========================================
+    # 2. MÜNAZARA (DEBATE) DÖNGÜSÜ & FUNCTION CALLING
+    # ==========================================
     def saha_raporu_analiz_et(self, vardiya_raporu: str) -> dict:
-        api_key = os.environ.get("OPENAI_API_KEY")
-        if not api_key:
+        if not self.client.api_key:
             return {"error": "⚠️ OPENAI_API_KEY eksik."}
 
-        location_info, loc_key = self.detect_location(vardiya_raporu)
-        equipment_info = self.detect_equipment(vardiya_raporu)
+        domain = self._extract_domain(vardiya_raporu)
+        domain_context = DYNAMIC_RISK_DB.get(domain, DYNAMIC_RISK_DB["Kömür & Yeraltı Galerisi (Grizu / Havalandırma)"])
+
         ch4_level = self.extract_metrics_from_report(vardiya_raporu)
-
-        eq_text = ""
-        if equipment_info:
-            eq_text = "Tespit Edilen Kritik Ekipmanlar ve LOTO Prosedürleri:\n"
-            for key, info in equipment_info.items():
-                eq_text += f"- {info['name']}:\n  Riskler: {', '.join(info['risks'])}\n  Zorunlu LOTO: {info['loto_protocol']}\n"
-
-        shift_history = self.get_location_history(loc_key, limit=3)
-        self.save_to_memory(loc_key, vardiya_raporu, ch4_level)
-
-        mevzuat_bg = self.mevzuat_ara(vardiya_raporu, k=8)
-        kaza_bg = self.kaza_raporu_ara(vardiya_raporu, k=6)
-        jeoloji_bg = self.jeoloji_ara(vardiya_raporu, k=6)
+        shift_history = self.get_location_history(domain, limit=3)
+        
+        mevzuat_bg = self.mevzuat_ara(vardiya_raporu, k=6)
+        kaza_bg = self.kaza_raporu_ara(vardiya_raporu, k=3)
+        jeoloji_bg = self.jeoloji_ara(vardiya_raporu, k=3)
         
         birlesik_rag = f"--- MEVZUAT BİLGİLERİ ---\n{mevzuat_bg}\n\n--- JEOLOJİ VE MTA ---\n{jeoloji_bg}\n\n--- GEÇMİŞ KAZALAR ---\n{kaza_bg}"
 
-        client = OpenAI(api_key=api_key)
+        # --- ARAÇLARIN TANIMLANMASI (Function Calling) ---
+        tools = [
+            {
+                "type": "function",
+                "function": {
+                    "name": "canli_web_ara",
+                    "description": "Maden İSG mevzuatı veya iş güvenliği kuralları hakkında internette güncel arama yapar.",
+                    "parameters": {
+                        "type": "object",
+                        "properties": {
+                            "sorgu": {"type": "string", "description": "Aranacak anahtar kelimeler (Örn: 'mermer ocakları tel kesme makinesi güvenlik yönetmeliği')"}
+                        },
+                        "required": ["sorgu"]
+                    }
+                }
+            },
+            {
+                "type": "function",
+                "function": {
+                    "name": "hava_durumu_getir",
+                    "description": "Özellikle açık ocak madenciliğinde şev stabilitesini etkileyen yağış, nem ve sıcaklık gibi anlık hava durumu verilerini getirir.",
+                    "parameters": {
+                        "type": "object",
+                        "properties": {
+                            "lokasyon": {"type": "string", "description": "Hava durumu sorgulanacak ilçe veya il (Örn: 'Söğüt, Bilecik')"}
+                        },
+                        "required": ["lokasyon"]
+                    }
+                }
+            }
+        ]
 
+        # --- TUR 1: İSG AJANI (Araç Kullanma Yetkisiyle) ---
         prompt_isg = f"""
-        Sen tavizsiz bir Maden İSG Başdenetçisisin.
-        LOKASYON: {location_info['title']}
-        KRİTİK KONTROLLER: {location_info['critical_checks']}
-        
-        EKİPMAN DURUMU:
-        {eq_text if eq_text else "Spesifik bir makine arızası belirtilmedi."}
+        LOKASYON BAZLI YAPISAL RİSKLER: {', '.join(domain_context['riskler'])}
+        LOTO UYGULANABİLECEK EKİPMANLAR: {', '.join(domain_context['loto_ekipmanlari'])}
         
         GEÇMİŞ VARDİYA TRENDİ:
         {shift_history}
         
-        ANLIK SAHA VARDİYA RAPORU: "{vardiya_raporu}"
-        RAG / MEVZUAT VERİSİ:\n{birlesik_rag}
+        RAG / MEVZUAT VERİSİ:
+        {birlesik_rag}
         
-        GÖREVİN: Üretimi ve maliyeti tamamen göz ardı et. Varsa EKİPMAN DURUMU'ndaki LOTO (Kilitleme) prosedürünün uygulanıp uygulanmadığını sorgula. Geçmiş trendleri dikkate alarak hayati tehlikeleri, mevzuat ihlallerini ve durdurulması gereken riskleri net, sert ve tavizsiz bir dille raporla.
+        SAHA NOTU / SENSÖR VERİSİ:
+        {vardiya_raporu}
+        
+        GÖREVİN: Güvenlik açısından en kötü senaryolara odaklan. Açık ocak (Mermer vb.) ise şev stabilitesi için hava durumunu (Özellikle sahanın bulunduğu lokasyonu) sorgulamaktan çekinme. Gerekirse işi durdurma talebini yaz.
         """
 
-        prompt_uretim = f"""
-        Sen Kıdemli Maden İşletme Mühendisisin.
-        LOKASYON: {location_info['title']}
-        EKİPMAN DURUMU: {eq_text if eq_text else "Normal"}
-        GEÇMİŞ VARDİYA TRENDİ: {shift_history}
-        ANLIK SAHA VARDİYA RAPORU: "{vardiya_raporu}"
-        
-        GÖREVİN: Üretim hedeflerini, imalatın aksamamasının önemini ve duruş maliyetlerini göz önünde tut. Eğer bir makine arızası varsa (örneğin Tali Fan veya Bant arızası) tüm galeriyi kapatmak yerine arızalı makineyi baypas edecek veya yedek ekipmanı devreye alacak pratik, hızlı ve operasyonel çözümler öner.
-        """
+        messages_isg = [
+            {"role": "system", "content": f"Sen tavizsiz bir Maden İSG Başdenetçisisin. Sektör: {domain}. Gerekirse mevzuat taraması yapabilir veya açık ocak operasyonları için hava durumu aracını tetikleyebilirsin."},
+            {"role": "user", "content": prompt_isg}
+        ]
 
-        try:
-            res_isg = client.chat.completions.create(
-                model="gpt-4o-mini",
-                messages=[{"role": "user", "content": prompt_isg}],
+        response_isg_initial = self.client.chat.completions.create(
+            model="gpt-4o",
+            messages=messages_isg,
+            tools=tools,
+            tool_choice="auto",
+            temperature=0.2
+        )
+
+        isg_message = response_isg_initial.choices[0].message
+
+        # Araç Çağrısı Kontrolü
+        if isg_message.tool_calls:
+            messages_isg.append(isg_message)
+            for tool_call in isg_message.tool_calls:
+                func_name = tool_call.function.name
+                func_args = json.loads(tool_call.function.arguments)
+                
+                if func_name == "canli_web_ara":
+                    sonuc = self.canli_web_ara(func_args.get("sorgu"))
+                    messages_isg.append({"role": "tool", "tool_call_id": tool_call.id, "name": func_name, "content": sonuc})
+                
+                elif func_name == "hava_durumu_getir":
+                    sonuc = self.hava_durumu_getir(func_args.get("lokasyon"))
+                    messages_isg.append({"role": "tool", "tool_call_id": tool_call.id, "name": func_name, "content": sonuc})
+            
+            # Araç sonuçlarıyla birlikte nihai İSG Raporunu oluştur
+            res_isg = self.client.chat.completions.create(
+                model="gpt-4o",
+                messages=messages_isg,
                 temperature=0.2
             ).choices[0].message.content
-
-            res_uretim = client.chat.completions.create(
-                model="gpt-4o-mini",
-                messages=[{"role": "user", "content": prompt_uretim}],
-                temperature=0.3
-            ).choices[0].message.content
-
-            prompt_basmuhendis = f"""
-            Sen Arın AI Maden İşletme Başmühendisisin (Karar Makamı).
-            LOKASYON: {location_info['title']} 
-            EKİPMAN BİLGİSİ VE ZORUNLU LOTO PROSEDÜRLERİ: {eq_text}
-            GEÇMİŞ VARDİYA TRENDİ: {shift_history}
-            
-            ANLIK SAHA VARDİYA RAPORU: "{vardiya_raporu}"
-            
-            İSG DENETÇİSİ GÖRÜŞÜ:
-            {res_isg}
-            
-            ÜRETİM MÜHENDİSİ GÖRÜŞÜ:
-            {res_uretim}
-            
-            360° RAG KAYNAKLARI (Mevzuat + Kaza + Jeoloji):
-            {birlesik_rag}
-            
-            GÖREVLERİN:
-            1. **SON KARAR**: Geçmiş vardiya trendini, ekipman arızasını ve ajan görüşlerini sentezleyerek [ÜRETİM ACİL DURDURULMALI] / [ŞARTLI/TEDBİRLİ DEVAM] / [GÜVENLİ - DEVAM EDEBİLİR] etiketlerinden birini seç.
-            2. **RİSK SKORLAMASI**: 5x5 Risk Matrisine göre Olasılık (1-5) x Şiddet (1-5) skoru belirle.
-            3. **GEREKÇE**: İSG kanunu ve jeolojik verileri harmanlayarak gerekçeni açıkla. Ekipman arızası varsa LOTO protokolünün neden zorunlu olduğunu belirt.
-            4. **DÖF PLANI (Düzeltici Önleyici Faaliyetler)**: Sahada hemen uygulanacak 3 net eylem adımı yaz (Biri mutlaka Ekipman LOTO/Bakım adımı olmalı).
-            """
-
-            res_final = client.chat.completions.create(
-                model="gpt-4o-mini",
-                messages=[{"role": "user", "content": prompt_basmuhendis}],
-                temperature=0.2
-            ).choices[0].message.content
-
-            return {
-                "location": location_info,
-                "equipment": equipment_info,
-                "history": shift_history,
-                "isg_agent": res_isg,
-                "uretim_agent": res_uretim,
-                "final_decision": res_final,
-                "rag_sources": birlesik_rag
-            }
-
-        except Exception as e:
-            logger.error(f"Saha raporu analiz hatası: {e}")
-            return {"error": f"Analiz sırasında hata oluştu: {e}"}
-
-    def _llm_ozetle(self, ham_metin: str, veri_tipi: str, sorgu: str = "", mod: str = "analiz") -> str:
-        api_key = os.environ.get("OPENAI_API_KEY")
-        if not api_key:
-            return f"⚠️ API Anahtarı Eksik. Ham veri:\n\n{ham_metin}"
-            
-        client = OpenAI(api_key=api_key)
-        
-        if mod == "kaza":
-            prompt = f"""
-Sen Kıdemli Maden Kazaları ve Kök Neden Analiz Uzmanısın.
-SANA İLETİLEN SAHA BİLDİRİMİ / ANOMALİ: "{sorgu}"
-VERİTABANINDAN ÇEKİLEN GEÇMİŞ KAZA KESİTLERİ:\n---\n{ham_metin}\n---
-GÖREVİN: Saha risklerini ele al, Türkiye/Dünya maden facialarıyla (Amasra, Soma vb.) kök neden bazında eşleştir.
-"""
-        elif mod == "jeoloji":
-            prompt = f"""
-Sen MTA Saha Raporları ve Maden Jeolojisi Uzmanısın.
-SORGULANAN BÖLGE / TERİM: "{sorgu}"
-VERİTABANINDAN ÇEKİLEN JEOLOJİ KESİTLERİ:\n---\n{ham_metin}\n---
-GÖREVİN: Formasyon yapısını, cevher potansiyelini ve bölgeye özgü İSG risklerini açıkla.
-"""
         else:
-            prompt = f"""
-Sen Arın AI Maden Mevzuat Danışmanısın.
-KULLANICI SORUSU: "{sorgu}"
-MEVZUAT VERİTABANI VE CANLI ARAMA KESİTLERİ:\n---\n{ham_metin}\n---
-GÖREVİN: Sağlanan veritabanı/canlı arama kesitlerini öncelikli baz alarak soruyu yönetmelik maddeleriyle net bir şekilde yanıtla.
-"""
+            res_isg = isg_message.content
 
+        # --- TUR 2: ÜRETİM AJANI (Münazara ve İtiraz) ---
+        prompt_uretim = f"""
+        Sen hırslı bir Kıdemli Maden İşletme Müdürüsün. Sektör: {domain}.
+        Amacın üretimin durmasını engellemek, hedefleri tutturmak ve gereksiz duruş maliyetlerini önlemektir.
+        İSG Uzmanı az önce aşağıdaki raporu sundu. 
+        Argümanlarını oku ve işi TAMAMEN DURDURMAK YERİNE (bypass, alanı daraltma, yedek ekipman) üretimi nasıl güvenli sürdürebileceğinizi savun.
+        
+        İSG UZMANI RAPORU:
+        {res_isg}
+        """
+
+        res_uretim = self.client.chat.completions.create(
+            model="gpt-4o",
+            messages=[
+                {"role": "system", "content": "Üretim Müdürü Ajanı"},
+                {"role": "user", "content": prompt_uretim}
+            ],
+            temperature=0.3
+        ).choices[0].message.content
+
+        # --- TUR 3: BAŞMÜHENDİS (Karar Makamı) ---
+        prompt_basmuhendis = f"""
+        Sen maden sahasının tek yetkilisi olan Başmühendissin (Karar Makamı). Sektör: {domain}.
+        İSG Uzmanı mevzuat ve riskleri sundu, Üretim Müdürü ise operasyonu sürdürme planını anlattı.
+        
+        SAHADAKİ HAM BİLDİRİM: 
+        "{vardiya_raporu}"
+        
+        İSG DENETÇİSİ GÖRÜŞÜ:
+        {res_isg}
+        
+        ÜRETİM MÜDÜRÜ İTİRAZI:
+        {res_uretim}
+        
+        GÖREVLERİN:
+        Verilen bilgileri sentezleyerek tartışmaya kapalı nihai kararını ver. Gerekliyse zorunlu ekipmanlar {', '.join(domain_context['loto_ekipmanlari'])} için LOTO talimatı oluştur. Çıktını ŞU BAŞLIKLARLA hazırla:
+        
+        ### ⚖️ Operasyonel Değerlendirme (İSG vs. Üretim)
+        ### 🛡️ Başmühendis Nihai Kararı ([ÜRETİM ACİL DURDURULMALI] / [ŞARTLI DEVAM] / [GÜVENLİ])
+        ### 📋 Acil Aksiyon Planı ve LOTO Talimatları
+        """
+
+        res_final = self.client.chat.completions.create(
+            model="gpt-4o",
+            messages=[
+                {"role": "system", "content": "Başmühendis Ajanı"},
+                {"role": "user", "content": prompt_basmuhendis}
+            ],
+            temperature=0.2
+        ).choices[0].message.content
+        
+        self.save_to_memory(domain, vardiya_raporu, ch4_level)
+
+        return {
+            "location": {"title": domain},
+            "isg_agent": res_isg,
+            "uretim_agent": res_uretim,
+            "final_decision": res_final,
+            "rag_sources": birlesik_rag
+        }
+
+    # ==========================================
+    # 3. YARDIMCI / ASİSTAN FONKSİYONLARI
+    # ==========================================
+    def _llm_ozetle(self, ham_metin: str, veri_tipi: str, sorgu: str = "", mod: str = "analiz") -> str:
+        if not self.client.api_key: return f"⚠️ API Anahtarı Eksik."
+        
+        prompt = f"""
+        KULLANICI SORUSU: "{sorgu}"
+        VERİTABANI KESİTLERİ:\n---\n{ham_metin}\n---
+        GÖREVİN: Sağlanan veritabanı kesitlerini öncelikli baz alarak soruyu net bir şekilde yanıtla.
+        """
         try:
-            response = client.chat.completions.create(
+            response = self.client.chat.completions.create(
                 model="gpt-4o-mini",
                 messages=[{"role": "user", "content": prompt}],
                 temperature=0.2
@@ -424,21 +411,11 @@ GÖREVİN: Sağlanan veritabanı/canlı arama kesitlerini öncelikli baz alarak 
             return f"⚠️ LLM Hatası ({e})."
 
     def mevzuat_ara_ozetli(self, sorgu: str, k: int = 8) -> str:
-        ham_sonuc = self.mevzuat_ara(sorgu, k=k, score_threshold=0.75)
-        return self._llm_ozetle(ham_sonuc, "maden mevzuatı", sorgu=sorgu, mod="mevzuat")
-
-    def kaza_raporu_ara_ozetli(self, sorgu: str, k: int = 6) -> str:
-        ham_sonuc = self.kaza_raporu_ara(sorgu, k=k)
-        return self._llm_ozetle(ham_sonuc, "kaza raporu", sorgu=sorgu, mod="kaza")
-
-    def jeoloji_ara_ozetli(self, sorgu: str, k: int = 6) -> str:
-        ham_sonuc = self.jeoloji_ara(sorgu, k=k)
-        return self._llm_ozetle(ham_sonuc, "jeoloji ve maden verisi", sorgu=sorgu, mod="jeoloji")
+        return self._llm_ozetle(self.mevzuat_ara(sorgu, k=k), "maden mevzuatı", sorgu=sorgu)
+        
     def soru_cevapla(self, user_q: str) -> str:
-        """Asistan sekmesinden gelen soruları RAG ve LLM ile yanıtlar."""
         try:
-            # Hazırda olan mevzuat RAG altyapını doğrudan kullanıyoruz
             return self.mevzuat_ara_ozetli(sorgu=user_q, k=6)
         except Exception as e:
             logger.error(f"Soru yanıtlama hatası: {e}")
-            return f"Üzgünüm, sorunuzu yanıtlarken bir hata oluştu: {e}"
+            return f"Hata oluştu: {e}"

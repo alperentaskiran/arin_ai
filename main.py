@@ -8,6 +8,7 @@ from datetime import datetime
 import random
 import sqlite3
 import hashlib
+import tempfile
 
 # ==========================================
 # CHROMA VE RUST KİLİTLENMELERİNİ ENGELLEYEN AYARLAR
@@ -383,46 +384,35 @@ def extract_text_from_audio(file_bytes, file_name):
         if os.path.exists(temp_filename): os.remove(temp_filename)
 
 def rapor_pdf_olustur(rapor_metni):
-    """
-    Roboto-Regular ve Roboto-Bold fontlarını kullanan,
-    tamamen bellekte (BytesIO/Byte Streams) çalışan hatasız PDF üreticisi.
-    """
     try:
         from fpdf import FPDF
     except ImportError:
-        return b"Lutfen terminalden su kutuphaneyi yukleyin: pip install fpdf2"
+        return b"Lutfen terminalden su kutuphaneyi yukleyin: pip install fpdf"
         
     pdf = FPDF()
     pdf.add_page()
-    
-    try:
-        pdf.add_font('Roboto', '', 'Roboto-Regular.ttf', uni=True)
-        pdf.add_font('Roboto', 'B', 'Roboto-Bold.ttf', uni=True)
-        pdf.set_font('Roboto', 'B', 14)
-    except Exception:
-        pdf.set_font('Arial', 'B', 14)
+    pdf.set_font('Arial', 'B', 14) # Standart Arial daha stabildir
     
     pdf.cell(0, 10, "Arin AI Enterprise - Kurumsal Rapor", ln=True, align='L')
     pdf.ln(5)
-    
-    try:
-        pdf.set_font('Roboto', '', 11)
-    except Exception:
-        pdf.set_font('Arial', '', 11)
+    pdf.set_font('Arial', '', 11)
         
-    # 1. ADIM: Markdown işaretlerini temizle
+    # Markdown ve Türkçe karakter temizliği
     temiz_metin = str(rapor_metni).replace('**', '').replace('### ', '').replace('## ', '')
-    
-    # 2. ADIM: Emojileri temizle (Türkçe karakterleri korur)
-    temiz_metin = re.sub(r'[^\w\s.,!?:;\'"()\[\]{}+-*/=%₺$€@&]', '', temiz_metin, flags=re.UNICODE)
+    temiz_metin = temiz_metin.replace('ı', 'i').replace('İ', 'I').replace('ğ', 'g').replace('Ğ', 'G')
+    temiz_metin = temiz_metin.replace('ü', 'u').replace('Ü', 'U').replace('ş', 's').replace('Ş', 'S')
+    temiz_metin = temiz_metin.replace('ö', 'o').replace('Ö', 'O').replace('ç', 'c').replace('Ç', 'C')
     
     pdf.multi_cell(0, 8, temiz_metin)
     
-    # --- DOĞRUDAN BELLEKTEN YAZDIRMA (KİLİTLENME VE CORRUPTED PDF ÇÖZÜMÜ) ---
-    pdf_output = pdf.output(dest='S')
-    if isinstance(pdf_output, str):
-        return pdf_output.encode('latin1', errors='replace')
-    return bytes(pdf_output)
+    # Geçici dosyaya yazıp byte olarak geri okuma (Streamlit için en güvenlisi)
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp:
+        pdf.output(tmp.name, 'F')
+        with open(tmp.name, "rb") as f:
+            pdf_bytes = f.read()
+            
+    os.remove(tmp.name) # Temizlik
+    return pdf_bytes
 
 def form_doldur_llm(vardiya_notu, form_tipi):
     from openai import OpenAI
@@ -586,11 +576,10 @@ else:
                         st.success("Ses deşifre edildi! İçeriği aşağıdaki kutuya aktarıldı.")
             
             if st.button("📥 Canlı IoT Sensör Akışını Analize Ekle"):
-                iot_text_summary = f"[CANLI SENSÖR VERİSİ - {datetime.now().strftime('%H:%M:%S')}]:\n- Metan (CH4): %{iot_data['ch4_percent']}\n- Karbonmonoksit (CO): {iot_data['co_ppm']} ppm\n- Oksijen (O2): %{iot_data['o2_percent']}\n- Sıcaklık: {iot_data['temp_c']} C\n- Personel Nabız: {iot_data['wearable_heart_rate']} BPM\n- Düşme Sensörü: {'DÜŞME TESPİT EDİLDİ!' if iot_data['wearable_fall_detected'] else 'Normal'}"
-                st.session_state.analiz_verisi = iot_text_summary
+                iot_text_summary = f"\n\n[CANLI SENSÖR VERİSİ - {datetime.now().strftime('%H:%M:%S')}]:\n- Metan (CH4): %{iot_data['ch4_percent']}\n- Karbonmonoksit (CO): {iot_data['co_ppm']} ppm\n- Oksijen (O2): %{iot_data['o2_percent']}\n- Sıcaklık: {iot_data['temp_c']} C\n- Personel Nabız: {iot_data['wearable_heart_rate']} BPM\n- Düşme Sensörü: {'DÜŞME TESPİT EDİLDİ!' if iot_data['wearable_fall_detected'] else 'Normal'}"
+                st.session_state.analiz_verisi += iot_text_summary
 
-            saha_metni = st.text_area("İncelenecek Vardiya/Saha Notu:", value=st.session_state.analiz_verisi, height=200)
-            st.session_state.analiz_verisi = saha_metni
+            st.text_area("İncelenecek Vardiya/Saha Notu:", key="analiz_verisi", height=200)
             
             if st.button("🚀 MULTI-AGENT ANALİZİ BAŞLAT", type="primary", use_container_width=True):
                 hafiza_df = kurumsal_hafiza_getir()
