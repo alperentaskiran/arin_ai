@@ -186,6 +186,8 @@ def init_db():
     conn.commit()
     conn.close()
 
+init_db()
+
 # --- BULUT İLK KURULUM ---
 def check_db_validity(path):
     return os.path.exists(os.path.join(path, "chroma.sqlite3"))
@@ -496,7 +498,7 @@ def rapor_pdf_olustur(rapor_metni):
             continue
         
         # Başlık benzeri satırları koyu yap
-        if satir.startswith(('1.', '2.', '3.', '4.', '5.', '⚖️', '🛡️', '📋', '📍', 'FINAL', 'KARAR')):
+        if satir.startswith(('1.', '2.', '3.', '4.', '5.', '⚖️', '🛡️', '📋', '📍', 'FINAL', 'KARAR', '🧮')):
             pdf.set_font('Helvetica', 'B', 10)
             pdf.multi_cell(0, 6, satir.encode('latin-1', 'replace').decode('latin-1'))
             pdf.set_font('Helvetica', '', 10)
@@ -504,12 +506,9 @@ def rapor_pdf_olustur(rapor_metni):
             pdf.multi_cell(0, 5, satir.encode('latin-1', 'replace').decode('latin-1'))
         pdf.ln(1)
     
-    # Geçici dosya kilidine girmeden doğrudan RAM (byte) üzerinden çıktı alma
     try:
-        # fpdf2 için:
         pdf_bytes = bytes(pdf.output())
     except TypeError:
-        # Eski pyfpdf için fallback:
         pdf_bytes = pdf.output(dest='S').encode('latin-1')
         
     return pdf_bytes
@@ -735,7 +734,10 @@ else:
                 if isinstance(res, dict):
                     loc_info = res.get("location", {})
                     st.subheader(f"📍 Saha Alanı: {loc_info.get('title', 'Belirtilmedi')}")
-                    st.info(f"**Final Kararı:** {res.get('final_decision', '')}")
+                    
+                    # --- ŞIK VE GENİŞ KART ÇIKTISI ---
+                    with st.container(border=True):
+                        st.markdown(res.get('final_decision', ''))
                     
                     st.markdown("<div class='feedback-card'>", unsafe_allow_html=True)
                     st.markdown("### 🎓 Human-in-the-Loop: Bu Kararı Kurumsal Hafızaya Öğret")
@@ -752,9 +754,9 @@ else:
                     c_btn1, c_btn2 = st.columns(2)
                     with c_btn1:
                         pdf_data = rapor_pdf_olustur(res.get("final_decision", ""))
-                        st.download_button("📥 PDF İndir", data=pdf_data, file_name="ArinAI_Karar.pdf", mime="application/pdf", use_container_width=True)
+                        st.download_button("📥 PDF İndir", data=pdf_data, file_name="ArinAI_Karar.pdf", mime="application/pdf", use_container_width=True, key="btn_download_final_pdf")
                     with c_btn2:
-                        if st.button("📡 DÖF PLANINI SAHAYA SEVK ET", type="primary", use_container_width=True):
+                        if st.button("📡 DÖF PLANINI SAHAYA SEVK ET", type="primary", use_container_width=True, key="btn_sevk_dof"):
                             if gorev_sevk_et(res.get("final_decision", ""), "Başmühendis Karar Raporu"):
                                 st.success("✅ DÖF Planı Canlı Takip Panosuna sevk edildi!")
                                 time.sleep(1)
@@ -891,7 +893,7 @@ else:
                     st.success("Taşeron eklendi!")
                     st.rerun()
 
-# TAB 7: RİSK & FORMLAR
+    # TAB 7: RİSK & FORMLAR
     with tab_engine:
         st.header("🧮 Risk Hesaplayıcıları & Form Hazırlayıcı")
         
@@ -900,7 +902,7 @@ else:
             st.markdown("**5x5 L Tipi Risk Matrisi**")
             ihtimal_l = st.slider("İhtimal", 1, 5, 3, key="l_ihtimal")
             siddet_l = st.slider("Şiddet", 1, 5, 3, key="l_siddet")
-            if st.button("L Tipi Skor Hesapla", type="primary", use_container_width=True):
+            if st.button("L Tipi Skor Hesapla", type="primary", use_container_width=True, key="btn_l_tipi"):
                 res = ISGRiskEngine.l_tipi_matris(ihtimal_l, siddet_l)
                 st.metric("Risk Skoru", res["risk_skoru"], delta=res["kategori"])
                 
@@ -914,7 +916,7 @@ else:
                 (3.0, "3.0 - Mümkün / Nadir"),
                 (6.0, "6.0 - Kuvvetle Muhtemel"),
                 (10.0, "10.0 - Kaçınılmaz / Çok Yüksek")
-            ], format_func=lambda x: x[1], index=3)
+            ], format_func=lambda x: x[1], index=3, key="select_fk_ihtimal")
             
             fk_frekans_secim = st.selectbox("Frekans (F)", [
                 (0.5, "0.5 - Çok Nadir (Yılda Bir)"),
@@ -923,7 +925,7 @@ else:
                 (3.0, "3.0 - Ara Sıra (Haftada Bir)"),
                 (6.0, "6.0 - Sık (Günlük)"),
                 (10.0, "10.0 - Sürekli / Kesintisiz")
-            ], format_func=lambda x: x[1], index=4)
+            ], format_func=lambda x: x[1], index=4, key="select_fk_frekans")
             
             fk_derece_secim = st.selectbox("Derece / Şiddet (D)", [
                 (1.0, "1 - Hafif Yaralanma / İlk Yardım"),
@@ -932,9 +934,9 @@ else:
                 (15.0, "15 - Çok Ciddi / Tekli Ölüm"),
                 (40.0, "40 - Felaket / Birden Fazla Ölüm"),
                 (100.0, "100 - Büyük Felaket / Çok Sayıda Ölüm")
-            ], format_func=lambda x: x[1], index=2)
+            ], format_func=lambda x: x[1], index=2, key="select_fk_derece")
             
-            if st.button("Fine-Kinney Skor Hesapla", type="primary", use_container_width=True):
+            if st.button("Fine-Kinney Skor Hesapla", type="primary", use_container_width=True, key="btn_fine_kinney"):
                 res_fk = ISGRiskEngine.fine_kinney(fk_ihtimal_secim[0], fk_frekans_secim[0], fk_derece_secim[0])
                 st.metric("Risk Değeri (R = İ x F x D)", f"{res_fk['risk_degeri']} ({res_fk['durum_kodu']})", delta=res_fk['kategori'])
                 
@@ -949,7 +951,6 @@ else:
             "Günlük Saha Denetim Listesi"
         ], key="select_isg_belge_tipi")
         
-        # Benzersiz key eklendi (Çakışmayı engeller)
         if st.button(f"✨ {secilen_form} Üret", key="btn_form_uret_isg"):
             with st.spinner("Yapay Zeka Formu Dolduruyor..."):
                 st.session_state[f"form_cache_{secilen_form}"] = form_doldur_llm(st.session_state.analiz_verisi, secilen_form)
@@ -959,7 +960,6 @@ else:
             st.markdown(st.session_state[cache_key])
             st.markdown("---")
             
-            # PDF Çıktı Butonuna da benzersiz key eklendi
             pdf_data = rapor_pdf_olustur(st.session_state[cache_key])
             st.download_button(
                 label="📄 PDF Olarak İndir",

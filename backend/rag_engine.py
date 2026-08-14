@@ -380,31 +380,18 @@ class RagEngine:
         {res_uretim}
         
         GÖREVLERİN:
-        Verilen bilgileri sentezleyerek tartışmaya kapalı nihai kararını ver. Gerekliyse zorunlu ekipmanlar {', '.join(domain_context['loto_ekipmanlari'])} için LOTO talimatı oluştur. Çıktını ŞU BAŞLIKLARLA hazırla:
+        Verilen bilgileri sentezleyerek tartışmaya kapalı nihai kararını ver. 
+        Gerekliyse zorunlu ekipmanlar ({', '.join(domain_context['loto_ekipmanlari'])}) için LOTO talimatı oluştur.
+        
+        Çıktını EKSİKSİZ OLARAK ŞU BAŞLIKLARLA hazırla:
         
         ### ⚖️ Operasyonel Değerlendirme (İSG vs. Üretim)
+        ### 🧮 Matematiksel Risk Skoru (Fine-Kinney & 5x5 Matris)
+        - **Fine-Kinney Değeri:** [İhtimal (İ) x Frekans (F) x Derece (D) = Risk Skoru | Kategori (Örn: Kabul Edilebilir / Önemli / Yüksek Risk)]
+        - **5x5 L-Tipi Matris:** [Olasılık x Şiddet = Skor | Renk / Seviye]
         ### 🛡️ Başmühendis Nihai Kararı ([ÜRETİM ACİL DURDURULMALI] / [ŞARTLI DEVAM] / [GÜVENLİ])
         ### 📋 Acil Aksiyon Planı ve LOTO Talimatları
         """
-
-        res_final = self.client.chat.completions.create(
-            model="gpt-4o",
-            messages=[
-                {"role": "system", "content": "Başmühendis Ajanı"},
-                {"role": "user", "content": prompt_basmuhendis}
-            ],
-            temperature=0.2
-        ).choices[0].message.content
-        
-        self.save_to_memory(domain, vardiya_raporu, ch4_level)
-
-        return {
-            "location": {"title": domain},
-            "isg_agent": res_isg,
-            "uretim_agent": res_uretim,
-            "final_decision": res_final,
-            "rag_sources": birlesik_rag
-        }
 
     # ==========================================
     # 3. YARDIMCI / ASİSTAN FONKSİYONLARI
