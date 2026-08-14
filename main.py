@@ -161,21 +161,18 @@ def init_db():
         )
     """)
     
-    # Kullanıcılar
-    cursor.execute("SELECT COUNT(*) FROM kullanicilar WHERE kullanici_adi = 'alperen.taskiran'")
-    if cursor.fetchone()[0] == 0:
-        cursor.execute("""
-            INSERT OR IGNORE INTO kullanicilar (kullanici_adi, sifre, ad_soyad, sicil_no, rol) 
-            VALUES (?, ?, ?, ?, ?)
-        """, ("alperen.taskiran", "Aethel2026!", "Alperen Taşkıran", "SICIL-001", "Başmühendis"))
-        
-        varsayilan_kullanicilar = [
-            ("demo", "arin2026", "Misafir Araştırmacı", "DEMO-001", "İSG Denetçisi (Demo)"),
-            ("isg_uzmani", "1234", "Aylin Yılmaz", "SICIL-002", "İSG Uzmanı"),
-            ("vardiya1", "1234", "Ahmet Demir", "SICIL-003", "Vardiya Amiri"),
-            ("elif.sila.akcay", "Aethel2026!", "Elif Sıla Akçay", "SICIL-000", "Başmühendis")
-        ]
-        cursor.executemany("INSERT OR IGNORE INTO kullanicilar (kullanici_adi, sifre, ad_soyad, sicil_no, rol) VALUES (?, ?, ?, ?, ?)", varsayilan_kullanicilar)
+    # Kullanıcıları tek tek INSERT OR IGNORE ile ekle (Şarta bağlı kalmadan)
+    varsayilan_kullanicilar = [
+        ("alperen.taskiran", "Aethel2026!", "Alperen Taşkıran", "SICIL-001", "Başmühendis"),
+        ("demo", "arin2026", "Misafir Araştırmacı", "DEMO-001", "İSG Denetçisi (Demo)"),
+        ("isg_uzmani", "1234", "Aylin Yılmaz", "SICIL-002", "İSG Uzmanı"),
+        ("vardiya1", "1234", "Ahmet Demir", "SICIL-003", "Vardiya Amiri"),
+        ("elif.sila.akcay", "Aethel2026!", "Elif Sıla Akçay", "SICIL-000", "Başmühendis")
+    ]
+    cursor.executemany("""
+        INSERT OR IGNORE INTO kullanicilar (kullanici_adi, sifre, ad_soyad, sicil_no, rol) 
+        VALUES (?, ?, ?, ?, ?)
+    """, varsayilan_kullanicilar)
 
     cursor.execute("SELECT COUNT(*) FROM taseronlar")
     if cursor.fetchone()[0] == 0:
@@ -188,8 +185,6 @@ def init_db():
         
     conn.commit()
     conn.close()
-
-init_db()
 
 # --- BULUT İLK KURULUM ---
 def check_db_validity(path):
