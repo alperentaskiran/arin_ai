@@ -264,12 +264,27 @@ def get_live_iot_data(anomaly_mode=False, tesis_tipi="Kömür & Yeraltı Galeris
 
 # --- FONKSİYONLAR ---
 def kullanici_dogrula(kullanici_adi, sifre):
-    conn = sqlite3.connect("database/arin_ai_enterprise.db")
-    cursor = conn.cursor()
-    cursor.execute("SELECT ad_soyad, rol, sicil_no FROM kullanicilar WHERE kullanici_adi = ? AND sifre = ?", (kullanici_adi, sifre))
-    user = cursor.fetchone()
-    conn.close()
-    return user
+    if not kullanici_adi or not sifre:
+        return None
+        
+    kullanici_adi = str(kullanici_adi).strip()
+    sifre = str(sifre).strip()
+    
+    # 1. Demo Kullanıcı için Doğrudan Garantili Giriş
+    if kullanici_adi.lower() == "demo" and sifre == "arin2026":
+        return ("Misafir Araştırmacı", "İSG Denetçisi (Demo)", "DEMO-001")
+        
+    # 2. Veritabanı Kontrolü (Diğer kullanıcılar için)
+    try:
+        conn = sqlite3.connect("database/arin_ai_enterprise.db")
+        cursor = conn.cursor()
+        cursor.execute("SELECT ad_soyad, rol, sicil_no FROM kullanicilar WHERE LOWER(kullanici_adi) = LOWER(?) AND sifre = ?", (kullanici_adi, sifre))
+        user = cursor.fetchone()
+        conn.close()
+        return user
+    except Exception as e:
+        print(f"Giriş hatası: {e}")
+        return None
 
 def sifre_guncelle(kullanici_adi, sicil_no, yeni_sifre):
     conn = sqlite3.connect("database/arin_ai_enterprise.db")
