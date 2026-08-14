@@ -947,8 +947,10 @@ else:
             "Ramak Kala Raporu",
             "Kök Neden Analizi (5 Neden)",
             "Günlük Saha Denetim Listesi"
-        ])
-        if st.button(f"✨ {secilen_form} Üret"):
+        ], key="select_isg_belge_tipi")
+        
+        # Benzersiz key eklendi (Çakışmayı engeller)
+        if st.button(f"✨ {secilen_form} Üret", key="btn_form_uret_isg"):
             with st.spinner("Yapay Zeka Formu Dolduruyor..."):
                 st.session_state[f"form_cache_{secilen_form}"] = form_doldur_llm(st.session_state.analiz_verisi, secilen_form)
         
@@ -957,31 +959,15 @@ else:
             st.markdown(st.session_state[cache_key])
             st.markdown("---")
             
-            # PDF Çıktı Butonu
+            # PDF Çıktı Butonuna da benzersiz key eklendi
             pdf_data = rapor_pdf_olustur(st.session_state[cache_key])
             st.download_button(
                 label="📄 PDF Olarak İndir",
                 data=pdf_data,
                 file_name=f"{secilen_form.replace(' ', '_').lower()}.pdf",
                 mime="application/pdf",
-                use_container_width=True
-            )
-        if st.button(f"✨ {secilen_form} Üret"):
-            with st.spinner("Yapay Zeka Formu Dolduruyor..."):
-                st.session_state[f"form_cache_{secilen_form}"] = form_doldur_llm(st.session_state.analiz_verisi, secilen_form)
-        
-        cache_key = f"form_cache_{secilen_form}"
-        if cache_key in st.session_state: 
-            st.markdown(st.session_state[cache_key])
-            st.markdown("---")
-            
-            pdf_data = rapor_pdf_olustur(st.session_state[cache_key])
-            st.download_button(
-                label="📄 PDF Olarak İndir",
-                data=pdf_data,
-                file_name=f"{secilen_form.replace(' ', '_').lower()}.pdf",
-                mime="application/pdf",
-                use_container_width=True
+                use_container_width=True,
+                key=f"download_pdf_{secilen_form.replace(' ', '_').lower()}"
             )
 
     # TAB 8: GÖREV & KULLANICI YÖNETİMİ
