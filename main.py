@@ -71,6 +71,44 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
+# --- ÖRNEK VARDIYA RAPORLARI SÖZLÜĞÜ ---
+ORNEK_RAPORLAR = {
+    "Değerli Metal (Altın, Gümüş - Siyanür / Atık Barajı)": """[VARDİYA RAPORU - ALTIN & GÜMÜŞ İŞLETME]
+Tarih: 14.08.2026 | Vardiya: 08:00 - 16:00
+Bölge: Liç Sahası ve Atık Barajı 2. Terfi Merkezi
+1. Atık barajı savak seviyesi kot 412.50 m olarak ölçüldü, kritik doluluk eşiğinin 30 cm altında.
+2. Liç pompaları çevresindeki sabit HCN (Hidrojen Siyanür) dedektörleri 3 ppm seviyesinde stabil.
+3. 2 No'lu kostik yıkama tankı çevresinde göz duşu su basıncı düşük bulundu, bakım ekibine bildirim yapıldı.""",
+
+    "Mermer & Doğaltaş (Şev Stabilitesi & Tel Kesme)": """[VARDİYA RAPORU - DOĞALTAŞ & MERMER OCAĞI]
+Tarih: 14.08.2026 | Vardiya: 08:00 - 16:00
+Bölge: Doğu Ayna - 3. Basamak Tel Kesme Alanı
+1. Elmas tel kesme makinesinin koruma kafesinde gevşeme tespit edildi, operatör uyarılarak sabitlendi.
+2. Ayna arkası şev çatlağında inklinometre hareketi 0.4 mm/gün (stabil aralıkta).
+3. L90 yükleyici iş makinesinin geri vites sesli ikaz sistemi kontrol edildi, faal durumda.""",
+
+    "Kömür & Yeraltı Galerisi (Grizu / Havalandırma)": """[VARDİYA RAPORU - YERALTI KÖMÜR OCAĞI]
+Tarih: 14.08.2026 | Vardiya: 08:00 - 16:00
+Bölge: -150 Kotu Ana Nakliyat Galerisi
+1. Ana emici havalandırma fanı debisi 42 m³/sn olarak kaydedildi.
+2. CH4 (Metan) arın seviyesinde %0.3, nakliyat bandında CO 12 ppm seviyesinde ölçüldü.
+3. Tahkimat arkası hava kaçağı giderildi, personel giyilebilir baret sensörleri aktif sinyal iletiyor.""",
+
+    "Metalik Madencilik (Bakır, Demir - Patlatma & Ağır Metal)": """[VARDİYA RAPORU - AÇIK OCAK BAKIR İŞLETMESİ]
+Tarih: 14.08.2026 | Vardiya: 08:00 - 16:00
+Bölge: Batı Pano Patlatma ve Yükleme Sahası
+1. Delik delme tamamlandı, 18 No'lu patlatma basamağında emniyet şeridi 500 m yarıçapa çekildi.
+2. Toz bastırma arazözleri yükleme güzergahında periyodik olarak çalıştırıldı (PM10: 42 µg/m³).
+3. Yükleyici ekskavatör basamak altı tavan kontrolü yapıldı, askıda kaya parçası düşürüldü.""",
+
+    "Nadir Toprak Elementleri & Endüstriyel (Kimyasal Risk)": """[VARDİYA RAPORU - KİMYASAL İŞLEME & AYRIŞTIRMA]
+Tarih: 14.08.2026 | Vardiya: 08:00 - 16:00
+Bölge: Asit Liçi ve Çözücü Ekstraksiyon Tesisi
+1. Sülfürik asit besleme hattı sızdırmazlık contaları kontrol edildi, sızıntı tespit edilmedi.
+2. Tesis içi ortam radyasyon dozu 0.18 µSv/h (doğal arka plan seviyesinde).
+3. Havalandırma kuleleri gaz yıkayıcı (scrubber) pH değeri 8.2 olarak nötralize edildi."""
+}
+
 # --- SQLITE VERİTABANI BAŞLATMA ---
 def init_db():
     os.makedirs("database", exist_ok=True)
@@ -123,6 +161,7 @@ def init_db():
         )
     """)
     
+    # Kullanıcılar
     cursor.execute("SELECT COUNT(*) FROM kullanicilar WHERE kullanici_adi = 'alperen.taskiran'")
     if cursor.fetchone()[0] == 0:
         cursor.execute("""
@@ -130,12 +169,13 @@ def init_db():
             VALUES (?, ?, ?, ?, ?)
         """, ("alperen.taskiran", "Aethel2026!", "Alperen Taşkıran", "SICIL-001", "Başmühendis"))
         
-        varsayilan_saha = [
+        varsayilan_kullanicilar = [
+            ("demo", "arin2026", "Misafir Araştırmacı", "DEMO-001", "İSG Denetçisi (Demo)"),
             ("isg_uzmani", "1234", "Aylin Yılmaz", "SICIL-002", "İSG Uzmanı"),
             ("vardiya1", "1234", "Ahmet Demir", "SICIL-003", "Vardiya Amiri"),
             ("elif.sila.akcay", "Aethel2026!", "Elif Sıla Akçay", "SICIL-000", "Başmühendis")
         ]
-        cursor.executemany("INSERT OR IGNORE INTO kullanicilar (kullanici_adi, sifre, ad_soyad, sicil_no, rol) VALUES (?, ?, ?, ?, ?)", varsayilan_saha)
+        cursor.executemany("INSERT OR IGNORE INTO kullanicilar (kullanici_adi, sifre, ad_soyad, sicil_no, rol) VALUES (?, ?, ?, ?, ?)", varsayilan_kullanicilar)
 
     cursor.execute("SELECT COUNT(*) FROM taseronlar")
     if cursor.fetchone()[0] == 0:
@@ -170,6 +210,7 @@ if not (check_db_validity("database/mevzuat") and check_db_validity("database/ka
 if "logged_in" not in st.session_state: st.session_state.logged_in = False
 if "user_role" not in st.session_state: st.session_state.user_role = None
 if "user_name" not in st.session_state: st.session_state.user_name = None
+if "sicil_no" not in st.session_state: st.session_state.sicil_no = None
 if "analiz_basladi" not in st.session_state: st.session_state.analiz_basladi = False
 if "splash_shown" not in st.session_state: st.session_state.splash_shown = False 
 
@@ -180,34 +221,57 @@ if "canli_gorevler" not in st.session_state:
         "Termin": "Tamamlandı", "Durum": "🟢 Aktif / Takipte"
     }]
 
-# --- IoT CANLI SENSÖR SİMÜLATÖRÜ ---
-def get_live_iot_data(anomaly_mode=False):
-    if anomaly_mode:
-        return {
-            "ch4_percent": round(random.uniform(1.6, 2.4), 2),
-            "co_ppm": random.randint(55, 120),
-            "o2_percent": round(random.uniform(18.0, 19.2), 1),
-            "temp_c": round(random.uniform(32.0, 38.5), 1),
-            "humidity": random.randint(75, 95),
-            "wearable_heart_rate": random.randint(115, 150),
-            "wearable_fall_detected": random.choice([True, False])
-        }
+# --- DİNAMİK TESİS TİPİ IOT SENSÖR SİMÜLATÖRÜ ---
+def get_live_iot_data(anomaly_mode=False, tesis_tipi="Kömür & Yeraltı Galerisi (Grizu / Havalandırma)"):
+    base_data = {
+        "ch4_percent": round(random.uniform(1.6, 2.4) if anomaly_mode else random.uniform(0.1, 0.4), 2),
+        "co_ppm": random.randint(55, 120) if anomaly_mode else random.randint(5, 25),
+        "o2_percent": round(random.uniform(18.0, 19.2) if anomaly_mode else random.uniform(20.5, 20.9), 1),
+        "temp_c": round(random.uniform(32.0, 38.5) if anomaly_mode else random.uniform(21.0, 25.5), 1),
+        "humidity": random.randint(75, 95) if anomaly_mode else random.randint(45, 65)
+    }
+
+    if "Mermer" in tesis_tipi:
+        base_data["custom_label"] = "📐 Şev İnklinometre (Kayma)"
+        base_data["custom_value"] = f"{random.uniform(4.5, 8.2):.1f} mm/gün" if anomaly_mode else f"{random.uniform(0.1, 0.6):.1f} mm/gün"
+        base_data["custom_delta"] = "Kritik Deformasyon!" if anomaly_mode else "Stabil"
+        base_data["scada_title"] = "📐 Şev Stabilitesi ve Tel Gerilimi"
+        base_data["scada_detail"] = f"Elmas Tel Titreşim İvmesi: {'7.8 m/s² (AŞIRI)' if anomaly_mode else '1.2 m/s² (Normal)'}"
+    elif "Değerli Metal" in tesis_tipi:
+        base_data["custom_label"] = "🧪 HCN Siyanür Gazı"
+        base_data["custom_value"] = f"{random.randint(14, 28)} ppm" if anomaly_mode else f"{random.randint(1, 4)} ppm"
+        base_data["custom_delta"] = "Eşik Aşıldı!" if anomaly_mode else "Güvenli"
+        base_data["scada_title"] = "🧪 Liç ve Atık Barajı İzleme"
+        base_data["scada_detail"] = f"Atık Barajı Piezometre Basıncı: {'4.2 Bar (YÜKSEK)' if anomaly_mode else '1.8 Bar (Stabil)'}"
+    elif "Metalik" in tesis_tipi:
+        base_data["custom_label"] = "💨 PM10 Toz Yoğunluğu"
+        base_data["custom_value"] = f"{random.randint(180, 320)} µg/m³" if anomaly_mode else f"{random.randint(35, 65)} µg/m³"
+        base_data["custom_delta"] = "Toz Eşiği Aşıldı!" if anomaly_mode else "Normal"
+        base_data["scada_title"] = "💥 Patlatma Sismik & Toz Analizi"
+        base_data["scada_detail"] = f"Sismik Titreşim (PPV): {'18.4 mm/s (KRİTİK)' if anomaly_mode else '3.1 mm/s (Güvenli)'}"
+    elif "Nadir Toprak" in tesis_tipi:
+        base_data["custom_label"] = "☢️ Radyasyon Dozu"
+        base_data["custom_value"] = f"{random.uniform(2.5, 5.0):.2f} µSv/h" if anomaly_mode else f"{random.uniform(0.12, 0.22):.2f} µSv/h"
+        base_data["custom_delta"] = "Doz Limiti Aşıldı!" if anomaly_mode else "Normal"
+        base_data["scada_title"] = "☢️ Radyolojik & Asit Reaktör Takibi"
+        base_data["scada_detail"] = f"Asit Buharı Skrubber Basıncı: {'350 Pa (Tıkalı)' if anomaly_mode else '120 Pa (Normal)'}"
     else:
-        return {
-            "ch4_percent": round(random.uniform(0.1, 0.4), 2),
-            "co_ppm": random.randint(5, 25),
-            "o2_percent": round(random.uniform(20.5, 20.9), 1),
-            "temp_c": round(random.uniform(21.0, 25.5), 1),
-            "humidity": random.randint(45, 65),
-            "wearable_heart_rate": random.randint(68, 88),
-            "wearable_fall_detected": False
-        }
+        # Kömür & Yeraltı Varsayılan
+        base_data["wearable_heart_rate"] = random.randint(115, 150) if anomaly_mode else random.randint(68, 88)
+        base_data["wearable_fall_detected"] = random.choice([True, False]) if anomaly_mode else False
+        base_data["custom_label"] = "⌚ Giyilebilir Baret / Nabız"
+        base_data["custom_value"] = f"{base_data['wearable_heart_rate']} BPM"
+        base_data["custom_delta"] = "Düşme Algılandı!" if base_data["wearable_fall_detected"] else "Normal"
+        base_data["scada_title"] = "⌚ Personel Giyilebilir Teknoloji"
+        base_data["scada_detail"] = f"Personel Nabız: {base_data['wearable_heart_rate']} BPM | {'🚨 Düşme Alarmı!' if base_data['wearable_fall_detected'] else 'Hareket Normal'}"
+
+    return base_data
 
 # --- FONKSİYONLAR ---
 def kullanici_dogrula(kullanici_adi, sifre):
     conn = sqlite3.connect("database/arin_ai_enterprise.db")
     cursor = conn.cursor()
-    cursor.execute("SELECT ad_soyad, rol FROM kullanicilar WHERE kullanici_adi = ? AND sifre = ?", (kullanici_adi, sifre))
+    cursor.execute("SELECT ad_soyad, rol, sicil_no FROM kullanicilar WHERE kullanici_adi = ? AND sifre = ?", (kullanici_adi, sifre))
     user = cursor.fetchone()
     conn.close()
     return user
@@ -223,16 +287,6 @@ def sifre_guncelle(kullanici_adi, sicil_no, yeni_sifre):
         return True
     conn.close()
     return False
-
-def yeni_kullanici_ekle(kullanici_adi, sifre, ad_soyad, sicil_no, rol):
-    conn = sqlite3.connect("database/arin_ai_enterprise.db")
-    cursor = conn.cursor()
-    try:
-        cursor.execute("INSERT INTO kullanicilar (kullanici_adi, sifre, ad_soyad, sicil_no, rol) VALUES (?, ?, ?, ?, ?)", (kullanici_adi, sifre, ad_soyad, sicil_no, rol))
-        conn.commit()
-        return True
-    except Exception: return False
-    finally: conn.close()
 
 def kullanici_listesi_getir():
     conn = sqlite3.connect("database/arin_ai_enterprise.db")
@@ -291,6 +345,8 @@ if not st.session_state.logged_in:
             st.markdown("<h1 style='text-align: center;'>🛡️ Arın AI Giriş Portalı</h1>", unsafe_allow_html=True)
             st.markdown("<p style='text-align: center; color: #06B6D4;'>Aethel Technologies Kurumsal Karar Destek Mimarisi</p>", unsafe_allow_html=True)
             
+            st.info("💡 **Hızlı Test / Demo Girişi:**\n* **Kullanıcı Adı:** `demo`\n* **Şifre:** `arin2026`")
+            
             tab_login, tab_reset = st.tabs(["🔑 Giriş Yap", "🔄 Şifremi Unuttum"])
             
             with tab_login:
@@ -305,11 +361,12 @@ if not st.session_state.logged_in:
                             st.session_state.logged_in = True
                             st.session_state.user_name = user_data[0]
                             st.session_state.user_role = user_data[1]
+                            st.session_state.sicil_no = user_data[2]
                             st.success(f"Giriş başarılı! Hoş geldiniz, {user_data[0]}...")
-                         
-                            time.sleep(1.5)
+                            time.sleep(1.2)
                             st.rerun()
-                        else: st.error("Hatalı kullanıcı adı veya şifre!")
+                        else: 
+                            st.error("Hatalı kullanıcı adı veya şifre!")
 
             with tab_reset:
                 with st.form("reset_form"):
@@ -318,8 +375,10 @@ if not st.session_state.logged_in:
                     r_new_pass = st.text_input("Yeni Şifreniz", type="password")
                     reset_button = st.form_submit_button("Şifreyi Sıfırla", use_container_width=True)
                     if reset_button:
-                        if sifre_guncelle(r_username, r_sicil, r_new_pass): st.success("✅ Şifreniz değiştirildi!")
-                        else: st.error("❌ Eşleşme başarısız.")
+                        if sifre_guncelle(r_username, r_sicil, r_new_pass): 
+                            st.success("✅ Şifreniz başarıyla değiştirildi!")
+                        else: 
+                            st.error("❌ Bilgiler eşleşmedi.")
         st.stop() 
 
 # ==========================================
@@ -391,13 +450,12 @@ def rapor_pdf_olustur(rapor_metni):
         
     pdf = FPDF()
     pdf.add_page()
-    pdf.set_font('Arial', 'B', 14) # Standart Arial daha stabildir
+    pdf.set_font('Arial', 'B', 14)
     
     pdf.cell(0, 10, "Arin AI Enterprise - Kurumsal Rapor", ln=True, align='L')
     pdf.ln(5)
     pdf.set_font('Arial', '', 11)
         
-    # Markdown ve Türkçe karakter temizliği
     temiz_metin = str(rapor_metni).replace('**', '').replace('### ', '').replace('## ', '')
     temiz_metin = temiz_metin.replace('ı', 'i').replace('İ', 'I').replace('ğ', 'g').replace('Ğ', 'G')
     temiz_metin = temiz_metin.replace('ü', 'u').replace('Ü', 'U').replace('ş', 's').replace('Ş', 'S')
@@ -405,13 +463,12 @@ def rapor_pdf_olustur(rapor_metni):
     
     pdf.multi_cell(0, 8, temiz_metin)
     
-    # Geçici dosyaya yazıp byte olarak geri okuma (Streamlit için en güvenlisi)
     with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp:
         pdf.output(tmp.name, 'F')
         with open(tmp.name, "rb") as f:
             pdf_bytes = f.read()
             
-    os.remove(tmp.name) # Temizlik
+    os.remove(tmp.name)
     return pdf_bytes
 
 def form_doldur_llm(vardiya_notu, form_tipi):
@@ -453,7 +510,7 @@ with st.sidebar:
         pass
         
     st.success(f"👤 **{st.session_state.user_name}**")
-    st.caption(f"YETKİ: {st.session_state.user_role}")
+    st.caption(f"YETKİ: {st.session_state.user_role} | {st.session_state.get('sicil_no', '')}")
     
     if st.button("🚪 Sistemden Çıkış Yap", use_container_width=True):
         st.session_state.logged_in = False
@@ -462,16 +519,16 @@ with st.sidebar:
     st.markdown("---")
     st.title("🛡️ Arın AI Enterprise")
     
-    # --- ULUSLARARASI İSG STANDARDI ---
+    # --- ULUSLARARASI İSG STANDARDI & TESİS TİPİ ---
     st.subheader("🌐 Uluslararası İSG Standardı & Tesis Tipi")
     st.info("✅ **MSHA & ISO 45001** denetimi daimi olarak aktiftir.", icon="🛡️")
     
     maden_tipi = st.selectbox("Çalışılan Tesis Tipi:", [
+        "Kömür & Yeraltı Galerisi (Grizu / Havalandırma)",
+        "Mermer & Doğaltaş (Şev Stabilitesi & Tel Kesme)",
         "Değerli Metal (Altın, Gümüş - Siyanür / Atık Barajı)",
         "Metalik Madencilik (Bakır, Demir - Patlatma & Ağır Metal)",
-        "Nadir Toprak Elementleri & Endüstriyel (Kimyasal Risk)",
-        "Mermer & Doğaltaş (Şev Stabilitesi & Tel Kesme)",
-        "Kömür & Yeraltı Galerisi (Grizu / Havalandırma)"
+        "Nadir Toprak Elementleri & Endüstriyel (Kimyasal Risk)"
     ])
     
     domain_prompt = f"Çalışılan Alan: {maden_tipi}. Ayrıca Türkiye İSG Mevzuatına ek olarak ABD MSHA standartlarına ve ISO 45001 maddelerine paralel kıyaslama yap."
@@ -483,17 +540,17 @@ with st.sidebar:
     st.subheader("🔴 IoT Sensör Simülasyonu")
     with st.container(border=True):
         st.caption("Sistemin risk tepkisini test etmek için canlı veri akışında yapay bir anomali oluşturun.")
-        sim_anomali = st.toggle("🚨 Yapay Anomali / Gaz Sızıntısı Simüle Et", value=False)
+        sim_anomali = st.toggle("🚨 Yapay Anomali / Risk Simüle Et", value=False)
         
         if sim_anomali:
-            st.warning("⚠️ Anomali Devrede! Metan (CH4) ve Karbonmonoksit (CO) seviyeleri riskli sınırlarda üretiliyor.")
+            st.warning("⚠️ Anomali Devrede! Sensör değerleri tehlikeli eşiklerde üretiliyor.")
     
     if "analiz_verisi" not in st.session_state: 
         st.session_state.analiz_verisi = ""
 
 # --- ANA EKRAN ---
 st.title("🛡️ Arın AI Enterprise: Proaktif Maden İSG Platformu")
-st.caption(f"Aethel Technologies — Oturum: {st.session_state.user_name} ({st.session_state.user_role})")
+st.caption(f"Aethel Technologies — Aktif Oturum: {st.session_state.user_name} ({st.session_state.user_role})")
 
 if st.session_state.user_role == "Vardiya Amiri":
     st.warning("📱 **Saha Tablet Modu Aktif**")
@@ -528,20 +585,25 @@ else:
         "📡 Görev Sevk Merkezi"
     ])
 
+    # Canlı Dinamik Sensör Verilerini Çek
+    iot_data = get_live_iot_data(sim_anomali, maden_tipi)
+
     # TAB 1: ANALİZ
     with tab_dashboard:
         if "analiz_sonucu" not in st.session_state: st.session_state.analiz_sonucu = None
-        iot_data = get_live_iot_data(sim_anomali)
 
         kpi1, kpi2, kpi3, kpi4 = st.columns(4)
         with kpi1: 
-            if iot_data["ch4_percent"] > 1.5 or iot_data["co_ppm"] > 50:
+            if sim_anomali or iot_data["ch4_percent"] > 1.5 or iot_data["co_ppm"] > 50:
                 st.metric(label="🚨 Anlık Saha Risk Skoru", value="%95 (KRİTİK)", delta="Acil Durum")
             else:
                 st.metric(label="🚨 Anlık Saha Risk Skoru", value="%22 (DÜŞÜK)", delta="Normal")
-        with kpi2: st.metric(label="🧪 CH4 Metan Gazı", value=f"%{iot_data['ch4_percent']}", delta="Kritik!" if iot_data["ch4_percent"]>1.5 else "Güvenli")
-        with kpi3: st.metric(label="💨 CO Karbonmonoksit", value=f"{iot_data['co_ppm']} ppm", delta="Tehlike!" if iot_data["co_ppm"]>50 else "Normal")
-        with kpi4: st.metric(label="⌚ Giyilebilir Baret / Nabız", value=f"{iot_data['wearable_heart_rate']} BPM", delta="Düşme Algılandı!" if iot_data["wearable_fall_detected"] else "Normal")
+        with kpi2: 
+            st.metric(label="🧪 CH4 Metan Gazı", value=f"%{iot_data['ch4_percent']}", delta="Kritik!" if iot_data["ch4_percent"]>1.5 else "Güvenli")
+        with kpi3: 
+            st.metric(label="💨 CO Karbonmonoksit", value=f"{iot_data['co_ppm']} ppm", delta="Tehlike!" if iot_data["co_ppm"]>50 else "Normal")
+        with kpi4: 
+            st.metric(label=iot_data["custom_label"], value=iot_data["custom_value"], delta=iot_data["custom_delta"])
         
         if iot_data["ch4_percent"] > 1.5:
             st.error(f"🚨 **KRİTİK YERALTI GAZ UYARISI:** Metan seviyesi %{iot_data['ch4_percent']} değerine ulaştı! Grizu patlama eşiği aşıldı.")
@@ -552,6 +614,11 @@ else:
         with col_in:
             st.markdown("### ✍️ Saha & Sensör Verisi İnceleme")
             
+            # --- ÖRNEK RAPOR DOLDURMA BUTONU ---
+            if st.button("📋 Seçili Tesise Uygun Örnek Raporu Doldur", use_container_width=True):
+                st.session_state.analiz_verisi = ORNEK_RAPORLAR.get(maden_tipi, "")
+                st.rerun()
+
             uploaded_file = st.file_uploader("📂 Çoklu Dosya Yükle (Fotoğraf, PDF, TXT, Ses)", type=["png", "jpg", "jpeg", "pdf", "txt", "mp3", "wav"])
             if uploaded_file:
                 if uploaded_file.name.endswith(("png", "jpg", "jpeg")):
@@ -566,17 +633,17 @@ else:
                 elif uploaded_file.name.endswith("pdf"):
                     pdf_reader = PdfReader(uploaded_file)
                     st.session_state.analiz_verisi = "\n".join([page.extract_text() for page in pdf_reader.pages])
-                    st.success("PDF Başarıyla Okundu! İçeriği aşağıdaki kutuya aktarıldı.")
+                    st.success("PDF Başarıyla Okundu!")
                 elif uploaded_file.name.endswith("txt"):
                     st.session_state.analiz_verisi = uploaded_file.getvalue().decode("utf-8")
-                    st.success("TXT Başarıyla Okundu! İçeriği aşağıdaki kutuya aktarıldı.")
+                    st.success("TXT Başarıyla Okundu!")
                 elif uploaded_file.name.endswith(("mp3", "wav")):
                     if st.button("🎙️ Sesi Metne Çevir"):
                         st.session_state.analiz_verisi = extract_text_from_audio(uploaded_file.read(), uploaded_file.name)
-                        st.success("Ses deşifre edildi! İçeriği aşağıdaki kutuya aktarıldı.")
+                        st.success("Ses deşifre edildi!")
             
             if st.button("📥 Canlı IoT Sensör Akışını Analize Ekle"):
-                iot_text_summary = f"\n\n[CANLI SENSÖR VERİSİ - {datetime.now().strftime('%H:%M:%S')}]:\n- Metan (CH4): %{iot_data['ch4_percent']}\n- Karbonmonoksit (CO): {iot_data['co_ppm']} ppm\n- Oksijen (O2): %{iot_data['o2_percent']}\n- Sıcaklık: {iot_data['temp_c']} C\n- Personel Nabız: {iot_data['wearable_heart_rate']} BPM\n- Düşme Sensörü: {'DÜŞME TESPİT EDİLDİ!' if iot_data['wearable_fall_detected'] else 'Normal'}"
+                iot_text_summary = f"\n\n[CANLI SENSÖR VERİSİ - {datetime.now().strftime('%H:%M:%S')}]:\n- Tesis Tipi: {maden_tipi}\n- Metan (CH4): %{iot_data['ch4_percent']}\n- Karbonmonoksit (CO): {iot_data['co_ppm']} ppm\n- Oksijen (O2): %{iot_data['o2_percent']}\n- Sıcaklık: {iot_data['temp_c']} °C\n- {iot_data['custom_label']}: {iot_data['custom_value']}"
                 st.session_state.analiz_verisi += iot_text_summary
 
             st.text_area("İncelenecek Vardiya/Saha Notu:", key="analiz_verisi", height=200)
@@ -596,7 +663,7 @@ else:
 [Talimat: {st.session_state.current_domain_prompt}]
 {hafiza_baglami}
 
-[SİSTEM EMRİ KESİN KURAL]: AŞAĞIDAKİ VARDİYA NOTU / SENSÖR VERİSİ SAHANIN GÜNCEL DURUMUDUR. SADECE BU DEĞERLERE ODAKLAN! EĞER DEĞERLER NORMAL LİMİTLER İÇİNDEYSE (Örn: Metan < %1, CO < 30ppm vb.) DURUMUN GÜVENLİ OLDUĞUNU BELİRT. ASLA GEÇMİŞ KAZALARI VEYA LOTO GİBİ İLGİSİZ ARIZA SENARYOLARINI UYDURMA. SADECE SANA VERİLEN RAKAMLARI YORUMLA!
+[SİSTEM EMRİ KESİN KURAL]: AŞAĞIDAKİ VARDİYA NOTU / SENSÖR VERİSİ SAHANIN GÜNCEL DURUMUDUR. SADECE BU DEĞERLERE ODAKLAN! EĞER DEĞERLER NORMAL LİMİTLER İÇİNDEYSE DURUMUN GÜVENLİ OLDUĞUNU BELİRT. ASLA GEÇMİŞ KAZALARI VEYA İLGİSİZ ARIZA SENARYOLARINI UYDURMA.
 
 [VARDİYA NOTU]:
 {st.session_state.analiz_verisi}{ek_baglam}
@@ -693,7 +760,7 @@ else:
                             st.markdown(cevap)
                             st.session_state.chat_history.append({"role": "assistant", "content": cevap})
                         else:
-                            st.error("RAG Motoru aktif değil. Lütfen arkaplan servislerini kontrol edin.")
+                            st.error("RAG Motoru aktif değil.")
 
     # TAB 3: HAFIZA
     with tab_hafiza:
@@ -703,10 +770,10 @@ else:
 
     # TAB 4: SCADA / IoT
     with tab_scada:
-        st.header("🔴 Canlı SCADA / IoT Sensör & Akıllı Baret Panosu")
+        st.header("🔴 Canlı SCADA / IoT Sensör Paneli")
         c_scada1, c_scada2 = st.columns(2)
         with c_scada1:
-            st.subheader("📊 Yeraltı Galeri Sensörleri")
+            st.subheader("📊 Ortam & Gaz Sensörleri")
             if iot_data["ch4_percent"] > 1.5:
                 st.markdown(f"<div class='sensor-critical'>🚨 <b>CH4 Metan Gazı: %{iot_data['ch4_percent']}</b><br>DURUM: KRİTİK / GRİZU RİSKİ</div>", unsafe_allow_html=True)
             else:
@@ -718,14 +785,10 @@ else:
                 st.markdown(f"<div class='sensor-normal'>✅ <b>CO Karbonmonoksit: {iot_data['co_ppm']} ppm</b><br>DURUM: Güvenli Limit</div>", unsafe_allow_html=True)
 
         with c_scada2:
-            st.subheader("⌚ Personel Giyilebilir Teknoloji")
-            st.write(f"**Personel Nabız:** {iot_data['wearable_heart_rate']} BPM")
-            st.write(f"**Galeri Sıcaklığı:** {iot_data['temp_c']} °C")
+            st.subheader(iot_data["scada_title"])
+            st.write(f"**Ortam Sıcaklığı:** {iot_data['temp_c']} °C")
             st.write(f"**Nem Oranı:** %{iot_data['humidity']}")
-            if iot_data['wearable_fall_detected']:
-                st.error("🚨 **AKILLI BARET ALARMI:** Personelde ani darbe/düşme tespit edildi! Konum: Galeri 3-B.")
-            else:
-                st.success("✅ Personel İvmeölçer: Hareket Normal")
+            st.write(f"**Özel Parametre:** {iot_data['scada_detail']}")
 
     # TAB 5: FİNANSAL ROI & RİSK SİMÜLATÖRÜ
     with tab_roi:
@@ -740,7 +803,6 @@ else:
             ortalama_is_gunu_kaybi = st.number_input("Olası Kaza Başına Gün Kaybı:", value=15, step=1)
             gunluk_isgucu_maliyeti = st.number_input("Çalışan Günlük Maliyeti (TL):", value=1500, step=100)
             
-            # ROI HESABI
             engellenen_kaza_maliyeti = yillik_dof_sayisi * ortalama_is_gunu_kaybi * gunluk_isgucu_maliyeti
             tazminat_tasarrufu = yillik_dof_sayisi * 85000 
             toplam_finansal_kazanc = engellenen_kaza_maliyeti + tazminat_tasarrufu
@@ -754,7 +816,6 @@ else:
             st.markdown(f"* **Önlenen Tazminat / Ceza Risk Tasarrufu:** {tazminat_tasarrufu:,.0f} TL")
             st.markdown(f"## 💵 Net Tahmini Finansal Tasarruf: {toplam_finansal_kazanc:,.0f} TL / Yıl")
             st.markdown("</div>", unsafe_allow_html=True)
-            
             st.markdown("<br>", unsafe_allow_html=True)
             st.info("💡 **Yönetim Kurulu Notu:** Bu simülasyon, proaktif yapay zeka denetimlerinin sahada duruş sürelerini ve mevzuat cezalarını minimize etmesiyle hesaplanan net tasarrufu temsil eder.")
 
@@ -825,7 +886,6 @@ else:
             st.markdown(st.session_state[cache_key])
             st.markdown("---")
             
-            # PDF Çıktı Butonu
             pdf_data = rapor_pdf_olustur(st.session_state[cache_key])
             st.download_button(
                 label="📄 PDF Olarak İndir",

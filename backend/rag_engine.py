@@ -12,7 +12,6 @@ from datetime import datetime
 
 # ==========================================
 # CHROMA VE RUST KİLİTLENMELERİNİ ENGELLEYEN AYARLAR
-# (Importlardan önce tanımlanması zorunludur)
 # ==========================================
 os.environ["ANONYMIZED_TELEMETRY"] = "False"
 os.environ["CHROMA_SERVER_NOFILE"] = "1"
@@ -20,6 +19,9 @@ os.environ["CHROMA_SERVER_NOFILE"] = "1"
 from openai import OpenAI
 from langchain_openai import OpenAIEmbeddings
 from langchain_chroma import Chroma
+
+# İSG Deterministik Motoru ve Araç Tanımları Entegrasyonu
+from isg_engine import ISGRiskEngine, ARIN_TOOLS
 
 # Logging Yapılandırması
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
@@ -240,7 +242,7 @@ class RagEngine:
         
         birlesik_rag = f"--- MEVZUAT BİLGİLERİ ---\n{mevzuat_bg}\n\n--- JEOLOJİ VE MTA ---\n{jeoloji_bg}\n\n--- GEÇMİŞ KAZALAR ---\n{kaza_bg}"
 
-        # --- ARAÇLARIN TANIMLANMASI (Function Calling) ---
+        # --- ARAÇLARIN TANIMLANMASI (Function Calling + ISG Engine Araçları) ---
         tools = [
             {
                 "type": "function",
@@ -270,7 +272,7 @@ class RagEngine:
                     }
                 }
             }
-        ]
+        ] + ARIN_TOOLS  # isg_engine.py içerisindeki l_tipi_matris, fine_kinney ve gurultu araçları dahil edildi
 
         # --- TUR 1: İSG AJANI (Araç Kullanma Yetkisiyle) ---
         prompt_isg = f"""
@@ -286,11 +288,14 @@ class RagEngine:
         SAHA NOTU / SENSÖR VERİSİ:
         {vardiya_raporu}
         
-        GÖREVİN: Güvenlik açısından en kötü senaryolara odaklan. Açık ocak (Mermer vb.) ise şev stabilitesi için hava durumunu (Özellikle sahanın bulunduğu lokasyonu) sorgulamaktan çekinme. Gerekirse işi durdurma talebini yaz.
+        GÖREVİN: Güvenlik açısından en kötü senaryolara odaklan. 
+        - Açık ocak (Mermer vb.) ise şev stabilitesi için hava durumu aracını tetikle.
+        - Raporda desibel (dB), olasılık-şiddet veya frekans parametreleri varsa deterministik matematiksel araçları (l_tipi_matris, fine_kinney, gurultu_logaritmik_toplam) çağırarak kesin hesaplama yap.
+        - Gerekirse işi durdurma talebini açıkça belirt.
         """
 
         messages_isg = [
-            {"role": "system", "content": f"Sen tavizsiz bir Maden İSG Başdenetçisisin. Sektör: {domain}. Gerekirse mevzuat taraması yapabilir veya açık ocak operasyonları için hava durumu aracını tetikleyebilirsin."},
+            {"role": "system", "content": f"Sen tavizsiz bir Maden İSG Başdenetçisisin. Sektör: {domain}. Gerekirse mevzuat taraması, hava durumu veya matematiksel risk hesaplayıcı araçlarını tetikleyebilirsin."},
             {"role": "user", "content": prompt_isg}
         ]
 
@@ -304,7 +309,7 @@ class RagEngine:
 
         isg_message = response_isg_initial.choices[0].message
 
-        # Araç Çağrısı Kontrolü
+        # Araç Çağrısı Kontrolü ve Yürütme Döngüsü
         if isg_message.tool_calls:
             messages_isg.append(isg_message)
             for tool_call in isg_message.tool_calls:
@@ -313,11 +318,23 @@ class RagEngine:
                 
                 if func_name == "canli_web_ara":
                     sonuc = self.canli_web_ara(func_args.get("sorgu"))
-                    messages_isg.append({"role": "tool", "tool_call_id": tool_call.id, "name": func_name, "content": sonuc})
-                
                 elif func_name == "hava_durumu_getir":
                     sonuc = self.hava_durumu_getir(func_args.get("lokasyon"))
-                    messages_isg.append({"role": "tool", "tool_call_id": tool_call.id, "name": func_name, "content": sonuc})
+                elif func_name == "l_tipi_matris":
+                    sonuc = json.dumps(ISGRiskEngine.l_tipi_matris(func_args.get("ihtimal"), func_args.get("siddet")), ensure_ascii=False)
+                elif func_name == "fine_kinney":
+                    sonuc = json.dumps(ISGRiskEngine.fine_kinney(func_args.get("ihtimal"), func_args.get("frekans"), func_args.get("derece")), ensure_ascii=False)
+                elif func_name == "gurultu_logaritmik_toplam":
+                    sonuc = json.dumps(ISGRiskEngine.gurultu_logaritmik_toplam(func_args.get("db_degerleri")), ensure_ascii=False)
+                else:
+                    sonuc = "Fonksiyon bulunamadı veya geçersiz parametre."
+                
+                messages_isg.append({
+                    "role": "tool", 
+                    "tool_call_id": tool_call.id, 
+                    "name": func_name, 
+                    "content": str(sonuc)
+                })
             
             # Araç sonuçlarıyla birlikte nihai İSG Raporunu oluştur
             res_isg = self.client.chat.completions.create(
@@ -393,7 +410,7 @@ class RagEngine:
     # 3. YARDIMCI / ASİSTAN FONKSİYONLARI
     # ==========================================
     def _llm_ozetle(self, ham_metin: str, veri_tipi: str, sorgu: str = "", mod: str = "analiz") -> str:
-        if not self.client.api_key: return f"⚠️ API Anahtarı Eksik."
+        if not self.client.api_key: return "⚠️ API Anahtarı Eksik."
         
         prompt = f"""
         KULLANICI SORUSU: "{sorgu}"
