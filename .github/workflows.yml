@@ -1,0 +1,47 @@
+name: Arin AI Otonom Veri Besleme Pipeline
+
+on:
+  schedule:
+    # Günde 2 kez çalışır: UTC 05:00 ve UTC 17:00 (Türkiye saatiyle 08:00 ve 20:00)
+    - cron: '0 5,17 * * *'
+  workflow_dispatch: # İstediğin zaman GitHub panelinden manuel butonla tetikleme imkanı verir
+
+jobs:
+  run-scraper-and-update-db:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write # Repoya yeni DB verilerini pushlamak için yazma izni
+
+    steps:
+      - name: Repoyu Klonla
+        uses: actions/checkout@v4
+
+      - name: Python Kurulumu
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Bağımlılıkları Yükle
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Otonom Scraper & Ingestion Pipeline'ı Çalıştır
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          python backend/arin_ai_scraper_pipeline.py
+
+      - name: Güncellenen Vektör Veritabanını Git'e Kaydet ve Pushla
+        run: |
+          git config --global user.name 'ArinAI Bot'
+          git config --global user.email 'bot@aetheltechnologies.com'
+          git add database/
+          if git diff --staged --quiet; then
+            echo "Yeni veri bulunamadı, commit atlanıyor."
+          else
+            git commit -m "chore(db): Otonom veri besleme ve ChromaDB güncellemesi [skip ci]"
+            git push origin main
+          fi
