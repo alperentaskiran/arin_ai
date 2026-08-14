@@ -9,7 +9,9 @@ import logging
 import requests
 import urllib3
 import hashlib
+import tempfile
 import feedparser
+from bs4 import BeautifulSoup
 from typing import List, Dict, Any
 from datetime import datetime
 from dotenv import load_dotenv
@@ -17,18 +19,13 @@ from dotenv import load_dotenv
 # SSL Uyarılarını Bastır
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
-# Environment değişkenlerini yükle
 load_dotenv()
-
-# User-Agent ve Deprecation uyarılarını engellemek için ortam değişkeni
 os.environ["USER_AGENT"] = "ArinAI_Bot/1.0"
 
-# Logging yapılandırması
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger("ArinAI_Ingestion")
 
-from langchain_community.document_loaders import PyPDFLoader, PyPDFDirectoryLoader, WebBaseLoader, DirectoryLoader, TextLoader
-from langchain_community.document_loaders import PlaywrightURLLoader
+from langchain_community.document_loaders import PyPDFLoader, PyPDFDirectoryLoader, DirectoryLoader, TextLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_chroma import Chroma
 from langchain_openai import OpenAIEmbeddings
@@ -41,76 +38,56 @@ PIPELINE_CONFIGS = [
         "local_dir": "./data/mevzuat",
         "db_path": "database/mevzuat",
         "category": "Mevzuat/Yönetmelik",
-        "sources": [
-            {
-                "id": "isg_kanunu_6331",
-                "name": "6331 Sayılı İş Sağlığı ve Güvenliği Kanunu",
-                "category": "Mevzuat/Kanun",
-                "type": "pdf",
-                "url": "https://www.mevzuat.gov.tr/MevzuatMetin/1.5.6331.pdf"
-            }
-        ]
+        "sources": []  # Yerel ./data/mevzuat klasörüne PDF atılması önerilir
     },
     {
         "domain": "kazalar",
         "local_dir": "./data/kazalar",
         "db_path": "database/kazalar",
         "category": "Kaza/İnceleme",
-        "sources": []  # İhtiyaç halinde geçmiş kaza raporu PDF bağlantıları eklenebilir
+        "sources": []  # ./data/kazalar klasörüne geçmiş kaza raporları eklenebilir
     },
     {
         "domain": "jeoloji",
         "local_dir": "./data/jeoloji",
         "db_path": "database/jeoloji",
         "category": "MTA/Jeoloji",
-        "sources": []  # İhtiyaç halinde MTA doğrudan bülten PDF/HTML bağlantıları eklenebilir
+        "sources": []  # ./data/jeoloji klasörüne şev/kaya mekaniği dokümanları eklenebilir
     }
 ]
 
-# --- OTONOM TARAMA ---
-def get_dynamic_mevzuat_sources():
-    """
-    İlgili kurumların RSS/Duyuru akışlarını tarayarak 
-    sisteme eklenecek yeni bağlantıları otomatik keşfeder.
-    """
-    # Not: Aşağıdakiler temsilidir. Kurumların aktif RSS linkleri veya duyuru XML'leri eklenebilir.
+# --- 2. OTONOM TARAMA (RSS) ---
+def get_dynamic_mevzuat_sources() -> List[Dict[str, Any]]:
+    """Resmi Gazete ve İSG duyurularını hafif yapıyla tarar."""
     rss_feeds = [
-        "https://www.resmigazete.gov.tr/rss",  # Resmî Gazete RSS
-        "https://www.csgb.gov.tr/rss.xml"      # ÇSGB Duyuruları
+        "https://www.resmigazete.gov.tr/rss.xml",
     ]
-    
-    # Sistemin ilgileneceği anahtar kelimeler
-    keywords = ["maden", "iş sağlığı", "güvenliği", "yönetmelik", "tebliğ", "isg", "tahkimat", "grizu"]
+    keywords = ["maden", "iş sağlığı", "güvenliği", "yönetmelik", "tebliğ", "isg", "tahkimat", "grizu", "şev"]
     dynamic_sources = []
     
     for feed_url in rss_feeds:
         try:
-            logger.info(f"Otonom Tarama: {feed_url} dinleniyor...")
             feed = feedparser.parse(feed_url)
-            
             for entry in feed.entries:
-                title = entry.title.lower()
-                
-                # Eğer başlıkta madencilik ve İSG ile ilgili bir terim geçiyorsa
-                if any(kw in title for kw in keywords):
-                    # Linki hash'leyerek benzersiz bir ID oluştur
-                    source_id = hashlib.md5(entry.link.encode()).hexdigest()[:10]
-                    
+                title = getattr(entry, "title", "").lower()
+                link = getattr(entry, "link", "")
+                if any(kw in title for kw in keywords) and link:
+                    source_id = hashlib.md5(link.encode()).hexdigest()[:10]
                     dynamic_sources.append({
                         "id": f"dinamik_{source_id}",
                         "name": entry.title,
-                        "category": "Dinamik/RSS Kesif",
-                        "type": "html", # İlk etapta web sayfası olarak alıyoruz
-                        "url": entry.link
+                        "category": "Dinamik/RSS Keşif",
+                        "type": "html",
+                        "url": link
                     })
         except Exception as e:
-            logger.error(f"RSS Okuma Hatası ({feed_url}): {e}")
+            logger.warning(f"RSS Okuma Atlandı ({feed_url}): {e}")
             
     return dynamic_sources
 
-# --- 2. METİN TEMİZLEME ---
+# --- 3. METİN TEMİZLEME ---
 def clean_isg_text(text: str) -> str:
-    """İSG, kaza ve jeoloji metinlerindeki gereksiz boşlukları ve sayfa numaralarını temizler."""
+    """Metindeki gereksiz karakter ve boşlukları temizler."""
     if not text:
         return ""
     text = re.sub(r'\s+', ' ', text)
@@ -118,17 +95,15 @@ def clean_isg_text(text: str) -> str:
     text = text.replace("&nbsp;", " ").replace("&amp;", "&")
     return text.strip()
 
-
-# --- 3. SCRAPER & INGESTION PIPELINE ---
+# --- 4. SCRAPER & INGESTION PIPELINE ---
 class ArinAIIngestionPipeline:
-    def __init__(self, db_path: str, local_dir: str, category_name: str, chunk_size: int = 600, chunk_overlap: int = 120):
+    def __init__(self, db_path: str, local_dir: str, category_name: str, chunk_size: int = 800, chunk_overlap: int = 150):
         self.db_path = db_path
         self.local_dir = local_dir
         self.category_name = category_name
         self.chunk_size = chunk_size
         self.chunk_overlap = chunk_overlap
         
-        # Maddeler ve paragraf geçişleri için optimize splitter
         self.text_splitter = RecursiveCharacterTextSplitter(
             chunk_size=self.chunk_size,
             chunk_overlap=self.chunk_overlap,
@@ -137,23 +112,10 @@ class ArinAIIngestionPipeline:
         
         self.embeddings = OpenAIEmbeddings(model="text-embedding-3-small")
 
-    def download_pdf_safely(self, url: str, temp_filename: str = "temp_download.pdf") -> str:
-        """Güvenli HTTP isteği ile PDF indirir."""
-        headers = {
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
-        }
-        response = requests.get(url, headers=headers, timeout=25, verify=False)
-        if response.status_code == 200:
-            with open(temp_filename, "wb") as f:
-                f.write(response.content)
-            return temp_filename
-        raise Exception(f"HTTP Error {response.status_code}")
-
     def fetch_local_documents(self) -> List[Document]:
-        """Belirtilen yerel klasördeki PDF ve TXT dosyalarını okur."""
+        """Yerel klasördeki PDF ve TXT dosyalarını okur."""
         if not os.path.exists(self.local_dir):
             os.makedirs(self.local_dir, exist_ok=True)
-            logger.warning(f"'{self.local_dir}' klasörü oluşturuldu. Yerel dosya taranıyor...")
             return []
 
         logger.info(f"Yerel klasör taranıyor: {self.local_dir}")
@@ -185,7 +147,6 @@ class ArinAIIngestionPipeline:
         except Exception as e:
             logger.error(f"TXT yükleme hatası ({self.local_dir}): {e}")
 
-        # Metadata güncellemesi
         for doc in docs:
             doc.page_content = clean_isg_text(doc.page_content)
             file_name = os.path.basename(doc.metadata.get("source", "Yerel_Belge"))
@@ -199,35 +160,42 @@ class ArinAIIngestionPipeline:
         return docs
 
     def fetch_source_data(self, source: Dict[str, Any]) -> List[Document]:
-        """Uzak URL kaynaklarını indirip okur."""
-        logger.info(f"Uzak Kaynak Taranıyor: {source['name']} ({source['url']})")
+        """Uzak URL kaynaklarını (HTML / PDF) güvenle çeker."""
+        logger.info(f"Uzak Kaynak Çekiliyor: {source['name']}")
         documents = []
-        temp_file = None
+        headers = {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+        }
         
         try:
-            if source["type"] == "pdf":
-                temp_file = self.download_pdf_safely(source["url"])
-                loader = PyPDFLoader(temp_file)
-                documents = loader.load()
-            elif source["type"] == "html":
-                # Eski WebBaseLoader yerine Playwright kullanıyoruz
-                logger.info("Playwright ile JS tabanlı sayfa işleniyor...")
-                loader = PlaywrightURLLoader(
-                    urls=[source["url"]],
-                    remove_selectors=["nav", "footer", "header", "script", "style", "aside"], # Menü ve altbilgileri filtrele
-                    kwargs={"headless": True} # Arka planda sessiz çalış
-                )
-                documents = loader.load()
-                
-            for doc in documents:
-                doc.page_content = clean_isg_text(doc.page_content)
-                
-            logger.info(f"Uzak kaynaktan {len(documents)} sayfa çekildi.")
+            if source["type"] == "html":
+                resp = requests.get(source["url"], headers=headers, timeout=15, verify=False)
+                if resp.status_code == 200:
+                    soup = BeautifulSoup(resp.text, "html.parser")
+                    for script in soup(["script", "style", "nav", "footer", "header"]):
+                        script.decompose()
+                    text_content = clean_isg_text(soup.get_text())
+                    if len(text_content) > 100:
+                        doc = Document(
+                            page_content=text_content,
+                            metadata={"source": source["url"], "title": source["name"]}
+                        )
+                        documents.append(doc)
+
+            elif source["type"] == "pdf":
+                resp = requests.get(source["url"], headers=headers, timeout=25, verify=False)
+                if resp.status_code == 200:
+                    with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tf:
+                        tf.write(resp.content)
+                        temp_path = tf.name
+                    
+                    loader = PyPDFLoader(temp_path)
+                    documents = loader.load()
+                    if os.path.exists(temp_path):
+                        os.remove(temp_path)
+
         except Exception as e:
-            logger.error(f"Uzak kaynak yükleme hatası ({source['name']}): {str(e)}")
-        finally:
-            if temp_file and os.path.exists(temp_file):
-                os.remove(temp_file)
+            logger.warning(f"Uzak kaynak atlandı ({source['name']}): {e}")
             
         return documents
 
@@ -236,27 +204,24 @@ class ArinAIIngestionPipeline:
             return []
             
         chunks = self.text_splitter.split_documents(raw_documents)
-        
         if source_info:
             for chunk in chunks:
                 chunk.metadata.update({
-                    "source_id": source_info["id"],
-                    "source_name": source_info["name"],
-                    "category": source_info["category"],
-                    "url": source_info["url"],
+                    "source_id": source_info.get("id", "web_source"),
+                    "source_name": source_info.get("name", "Uzak Kaynak"),
+                    "category": source_info.get("category", self.category_name),
+                    "url": source_info.get("url", ""),
                     "ingested_at": datetime.now().isoformat()
                 })
-            
         return chunks
 
     def update_vector_store(self, chunks: List[Document]):
-        """Sadece yeni veya içeriği değişen belgeleri veritabanına ekler (SHA-256 Deduplication)."""
+        """ChromaDB'ye 50'şerli güvenli paketlerle (batching) veri yazar."""
         if not chunks:
-            logger.warning(f"[{self.db_path}] Eklenecek chunk bulunamadı, adım atlanıyor.")
+            logger.info(f"[{self.db_path}] Eklenecek yeni veri bulunamadı.")
             return
 
-        logger.info(f"Veritabanına bağlanılıyor ({self.db_path})...")
-        
+        os.makedirs(self.db_path, exist_ok=True)
         vectorstore = Chroma(
             persist_directory=self.db_path,
             embedding_function=self.embeddings
@@ -266,42 +231,41 @@ class ArinAIIngestionPipeline:
         new_ids_to_add = []
 
         for chunk in chunks:
-            source_name = chunk.metadata.get("source_name", chunk.metadata.get("file_name", "unknown_source"))
+            source_name = chunk.metadata.get("source_name", chunk.metadata.get("file_name", "doc"))
             content_to_hash = f"{source_name}::{chunk.page_content}"
             chunk_hash = hashlib.sha256(content_to_hash.encode("utf-8")).hexdigest()
-            
             chunk.metadata["chunk_hash"] = chunk_hash
+            
             new_docs_to_add.append(chunk)
             new_ids_to_add.append(chunk_hash)
 
-        # Tekilleştirme
-        unique_ids = []
-        unique_docs = []
-        seen_ids = set()
+        # Basit ID Tekilleştirme
+        unique_map = {doc_id: doc for doc_id, doc in zip(new_ids_to_add, new_docs_to_add)}
+        
+        # Mevcut ID'leri kontrol et
+        try:
+            existing_data = vectorstore.get()
+            existing_ids = set(existing_data["ids"]) if existing_data and "ids" in existing_data else set()
+        except Exception:
+            existing_ids = set()
 
-        for doc, doc_id in zip(new_docs_to_add, new_ids_to_add):
-            if doc_id not in seen_ids:
-                seen_ids.add(doc_id)
-                unique_ids.append(doc_id)
-                unique_docs.append(doc)
-
-        existing_data = vectorstore.get(ids=unique_ids)
-        existing_ids = set(existing_data["ids"]) if existing_data and "ids" in existing_data else set()
-
-        final_docs = []
-        final_ids = []
-
-        for doc, doc_id in zip(unique_docs, unique_ids):
-            if doc_id not in existing_ids:
-                final_docs.append(doc)
-                final_ids.append(doc_id)
+        final_docs = [doc for doc_id, doc in unique_map.items() if doc_id not in existing_ids]
+        final_ids = [doc_id for doc_id in unique_map.keys() if doc_id not in existing_ids]
 
         if final_docs:
-            logger.info(f"[{self.db_path}] {len(final_docs)} adet YENİ veri tespit edildi, ekleniyor...")
-            vectorstore.add_documents(documents=final_docs, ids=final_ids)
-            logger.info(f"✅ [{self.db_path}] Güncelleme tamamlandı.")
+            logger.info(f"[{self.db_path}] {len(final_docs)} adet YENİ chunk yükleniyor...")
+            
+            # API Token ve SQLite limitini korumak için 50'şerli paketleme
+            batch_size = 50
+            for i in range(0, len(final_docs), batch_size):
+                b_docs = final_docs[i:i + batch_size]
+                b_ids = final_ids[i:i + batch_size]
+                vectorstore.add_documents(documents=b_docs, ids=b_ids)
+                logger.info(f"  -> Paket {i // batch_size + 1} / {(len(final_docs) - 1) // batch_size + 1} eklendi.")
+                
+            logger.info(f"✅ [{self.db_path}] Başarıyla güncellendi.")
         else:
-            logger.info(f"[{self.db_path}] Tüm veriler GÜNCEL. Yeni kayıt eklenmedi.")
+            logger.info(f"[{self.db_path}] Tüm veriler zaten güncel.")
 
     def run_pipeline(self, target_sources: List[Dict[str, Any]]):
         all_chunks = []
@@ -309,36 +273,27 @@ class ArinAIIngestionPipeline:
         # 1. Yerel Dosyalar
         local_docs = self.fetch_local_documents()
         if local_docs:
-            local_chunks = self.process_and_chunk(local_docs)
-            all_chunks.extend(local_chunks)
+            all_chunks.extend(self.process_and_chunk(local_docs))
 
-        # 2. Uzak Web / PDF Kaynakları
+        # 2. Uzak Kaynaklar
         for source in target_sources:
             raw_docs = self.fetch_source_data(source)
-            chunks = self.process_and_chunk(raw_docs, source)
-            all_chunks.extend(chunks)
+            if raw_docs:
+                all_chunks.extend(self.process_and_chunk(raw_docs, source))
 
-        # 3. ChromaDB Güncelleme
+        # 3. Veritabanına Yaz
         self.update_vector_store(all_chunks)
 
 
 def run_full_arin_ai_ingestion():
-    logger.info("=== 🚀 ARIN AI TÜM VERİTABANI BESLEME DÖNGÜSÜ BAŞLADI ===")
+    logger.info("=== 🚀 ARIN AI VEKTÖR VERİTABANI BESLEME BAŞLADI ===")
     
-    # 1. Dinamik bağlantıları (RSS) keşfet
     yeni_dinamik_kaynaklar = get_dynamic_mevzuat_sources()
     
-    if yeni_dinamik_kaynaklar:
-        logger.info(f"Otonom Keşif: {len(yeni_dinamik_kaynaklar)} adet yeni mevzuat/duyuru linki bulundu.")
-    else:
-        logger.info("Otonom Keşif: Gündemde yeni bir İSG/Maden mevzuat duyurusu yok.")
-
-    # 2. Keşfedilen bağlantıları yapılandırmaya (PIPELINE_CONFIGS) dahil et
     for config in PIPELINE_CONFIGS:
         if config["domain"] == "mevzuat" and yeni_dinamik_kaynaklar:
             config["sources"].extend(yeni_dinamik_kaynaklar)
     
-    # 3. Klasik işleme döngüsü
     for config in PIPELINE_CONFIGS:
         logger.info(f"\n--- [{config['domain'].upper()}] Alanı İşleniyor ---")
         pipeline = ArinAIIngestionPipeline(
@@ -348,7 +303,7 @@ def run_full_arin_ai_ingestion():
         )
         pipeline.run_pipeline(target_sources=config["sources"])
         
-    logger.info("\n=== ✅ TÜM VERİTABANLARI GÜNCELLENDİ VE HAZIR ===")
+    logger.info("\n=== ✅ TÜM İŞLEM BAŞARIYLA TAMAMLANDI ===")
 
 
 if __name__ == "__main__":
