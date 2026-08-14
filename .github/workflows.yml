@@ -32,7 +32,7 @@ jobs:
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: |
-          python backend/arin_ai_scraper_pipeline.py
+          python arin_ai_scraper_pipeline.py
 
       - name: Güncellenen Vektör Veritabanını Git'e Kaydet ve Pushla
         run: |

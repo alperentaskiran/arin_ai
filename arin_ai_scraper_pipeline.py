@@ -4,6 +4,7 @@ Aethel Technologies - 2026
 """
 
 import os
+os.environ["ANONYMIZED_TELEMETRY"] = "False"
 import re
 import logging
 import requests
