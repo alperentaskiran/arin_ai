@@ -456,29 +456,62 @@ def rapor_pdf_olustur(rapor_metni):
     try:
         from fpdf import FPDF
     except ImportError:
-        return b"Lutfen terminalden su kutuphaneyi yukleyin: pip install fpdf"
+        return b"Lutfen terminalden su kutuphaneyi yukleyin: pip install fpdf2"
         
-    pdf = FPDF()
+    class PDFReport(FPDF):
+        def header(self):
+            self.set_font('Helvetica', 'B', 14)
+            self.cell(0, 10, 'Arin AI Enterprise - Karar Destek & Is Guvenligi Raporu', border=False, ln=True, align='C')
+            self.ln(3)
+            self.line(10, 22, 200, 22)
+            self.ln(5)
+
+        def footer(self):
+            self.set_y(-15)
+            self.set_font('Helvetica', 'I', 8)
+            self.cell(0, 10, f'Aethel Technologies - Dijital Kanit & Raporlama | Sayfa {self.page_no()}', align='C')
+
+    pdf = PDFReport()
     pdf.add_page()
-    pdf.set_font('Arial', 'B', 14)
+    pdf.set_auto_page_break(auto=True, margin=15)
+    pdf.set_font('Helvetica', '', 10)
     
-    pdf.cell(0, 10, "Arin AI Enterprise - Kurumsal Rapor", ln=True, align='L')
-    pdf.ln(5)
-    pdf.set_font('Arial', '', 11)
+    # Türkçe Karakter ve Markdown Temizliği (PDF bozulmasını kesin engeller)
+    metin = str(rapor_metni)
+    metin = metin.replace('**', '').replace('### ', '\n').replace('## ', '\n').replace('# ', '\n')
+    
+    tr_map = {
+        'ı': 'i', 'İ': 'I', 'ğ': 'g', 'Ğ': 'G',
+        'ü': 'u', 'Ü': 'U', 'ş': 's', 'Ş': 'S',
+        'ö': 'o', 'Ö': 'O', 'ç': 'c', 'Ç': 'C'
+    }
+    for tr_char, eng_char in tr_map.items():
+        metin = metin.replace(tr_char, eng_char)
+    
+    # Paragrafları düzgün ekle
+    for satir in metin.split('\n'):
+        satir = satir.strip()
+        if not satir:
+            pdf.ln(3)
+            continue
         
-    temiz_metin = str(rapor_metni).replace('**', '').replace('### ', '').replace('## ', '')
-    temiz_metin = temiz_metin.replace('ı', 'i').replace('İ', 'I').replace('ğ', 'g').replace('Ğ', 'G')
-    temiz_metin = temiz_metin.replace('ü', 'u').replace('Ü', 'U').replace('ş', 's').replace('Ş', 'S')
-    temiz_metin = temiz_metin.replace('ö', 'o').replace('Ö', 'O').replace('ç', 'c').replace('Ç', 'C')
+        # Başlık benzeri satırları koyu yap
+        if satir.startswith(('1.', '2.', '3.', '4.', '5.', '⚖️', '🛡️', '📋', '📍', 'FINAL', 'KARAR')):
+            pdf.set_font('Helvetica', 'B', 10)
+            pdf.multi_cell(0, 6, satir.encode('latin-1', 'replace').decode('latin-1'))
+            pdf.set_font('Helvetica', '', 10)
+        else:
+            pdf.multi_cell(0, 5, satir.encode('latin-1', 'replace').decode('latin-1'))
+        pdf.ln(1)
     
-    pdf.multi_cell(0, 8, temiz_metin)
-    
-    with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp:
-        pdf.output(tmp.name, 'F')
-        with open(tmp.name, "rb") as f:
-            pdf_bytes = f.read()
-            
-    os.remove(tmp.name)
+    # Geçici dosya kilidine girmeden doğrudan RAM (byte) üzerinden çıktı alma
+    try:
+        # fpdf2 için:
+        pdf_bytes = bytes(pdf.output())
+    except TypeError:
+        # Eski pyfpdf için fallback:
+        pdf_bytes = pdf.output(dest='S').encode('latin-1')
+        
     return pdf_bytes
 
 def form_doldur_llm(vardiya_notu, form_tipi):
@@ -858,24 +891,52 @@ else:
                     st.success("Taşeron eklendi!")
                     st.rerun()
 
-    # TAB 7: RİSK & FORMLAR
+# TAB 7: RİSK & FORMLAR
     with tab_engine:
         st.header("🧮 Risk Hesaplayıcıları & Form Hazırlayıcı")
         
         c1, c2 = st.columns(2)
         with c1:
+            st.markdown("**5x5 L Tipi Risk Matrisi**")
             ihtimal_l = st.slider("İhtimal", 1, 5, 3, key="l_ihtimal")
             siddet_l = st.slider("Şiddet", 1, 5, 3, key="l_siddet")
-            if st.button("L Tipi Skor Hesapla", type="primary"):
+            if st.button("L Tipi Skor Hesapla", type="primary", use_container_width=True):
                 res = ISGRiskEngine.l_tipi_matris(ihtimal_l, siddet_l)
-                st.metric("Risk Skoru", res["risk_skoru"])
+                st.metric("Risk Skoru", res["risk_skoru"], delta=res["kategori"])
+                
         with c2:
-            fk_ihtimal = st.number_input("İhtimal", 0.1, 10.0, 3.0, 0.5)
-            fk_frekans = st.number_input("Frekans", 0.5, 10.0, 6.0, 0.5)
-            fk_derece = st.number_input("Derece", 1.0, 100.0, 7.0, 1.0)
-            if st.button("Fine-Kinney Skor Hesapla", type="primary"):
-                res_fk = ISGRiskEngine.fine_kinney(fk_ihtimal, fk_frekans, fk_derece)
-                st.metric("Risk Değeri", res_fk["risk_degeri"])
+            st.markdown("**Fine-Kinney Risk Skalası**")
+            # Standart İSG Fine-Kinney Katsayıları
+            fk_ihtimal_secim = st.selectbox("İhtimal (İ)", [
+                (0.2, "0.2 - Pratik Olarak İmkânsız"),
+                (0.5, "0.5 - Zayıf İhtimal"),
+                (1.0, "1.0 - Beklenmeyen / Düşük"),
+                (3.0, "3.0 - Mümkün / Nadir"),
+                (6.0, "6.0 - Kuvvetle Muhtemel"),
+                (10.0, "10.0 - Kaçınılmaz / Çok Yüksek")
+            ], format_func=lambda x: x[1], index=3)
+            
+            fk_frekans_secim = st.selectbox("Frekans (F)", [
+                (0.5, "0.5 - Çok Nadir (Yılda Bir)"),
+                (1.0, "1.0 - Nadir (Yılda Birkaç)"),
+                (2.0, "2.0 - Bazen (Ayda Bir)"),
+                (3.0, "3.0 - Ara Sıra (Haftada Bir)"),
+                (6.0, "6.0 - Sık (Günlük)"),
+                (10.0, "10.0 - Sürekli / Kesintisiz")
+            ], format_func=lambda x: x[1], index=4)
+            
+            fk_derece_secim = st.selectbox("Derece / Şiddet (D)", [
+                (1.0, "1 - Hafif Yaralanma / İlk Yardım"),
+                (3.0, "3 - Önemli Yaralanma / İş Günü Kaybı"),
+                (7.0, "7 - Ciddi Yaralanma / Uzuv Kaybı"),
+                (15.0, "15 - Çok Ciddi / Tekli Ölüm"),
+                (40.0, "40 - Felaket / Birden Fazla Ölüm"),
+                (100.0, "100 - Büyük Felaket / Çok Sayıda Ölüm")
+            ], format_func=lambda x: x[1], index=2)
+            
+            if st.button("Fine-Kinney Skor Hesapla", type="primary", use_container_width=True):
+                res_fk = ISGRiskEngine.fine_kinney(fk_ihtimal_secim[0], fk_frekans_secim[0], fk_derece_secim[0])
+                st.metric("Risk Değeri (R = İ x F x D)", f"{res_fk['risk_degeri']} ({res_fk['durum_kodu']})", delta=res_fk['kategori'])
                 
         st.markdown("---")
         
@@ -887,6 +948,24 @@ else:
             "Kök Neden Analizi (5 Neden)",
             "Günlük Saha Denetim Listesi"
         ])
+        if st.button(f"✨ {secilen_form} Üret"):
+            with st.spinner("Yapay Zeka Formu Dolduruyor..."):
+                st.session_state[f"form_cache_{secilen_form}"] = form_doldur_llm(st.session_state.analiz_verisi, secilen_form)
+        
+        cache_key = f"form_cache_{secilen_form}"
+        if cache_key in st.session_state: 
+            st.markdown(st.session_state[cache_key])
+            st.markdown("---")
+            
+            # PDF Çıktı Butonu
+            pdf_data = rapor_pdf_olustur(st.session_state[cache_key])
+            st.download_button(
+                label="📄 PDF Olarak İndir",
+                data=pdf_data,
+                file_name=f"{secilen_form.replace(' ', '_').lower()}.pdf",
+                mime="application/pdf",
+                use_container_width=True
+            )
         if st.button(f"✨ {secilen_form} Üret"):
             with st.spinner("Yapay Zeka Formu Dolduruyor..."):
                 st.session_state[f"form_cache_{secilen_form}"] = form_doldur_llm(st.session_state.analiz_verisi, secilen_form)
