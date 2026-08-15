@@ -195,7 +195,7 @@ def check_db_validity(path):
 if not (check_db_validity("database/mevzuat") and check_db_validity("database/kazalar") and check_db_validity("database/jeoloji")):
     st.warning("⚠️ **Sistem Uyarısı: Vektör Veritabanları Hazırlanıyor...**")
     try:
-        from backend.arin_ai_scraper_pipeline import run_full_arin_ai_ingestion # type: ignore
+        from arin_ai_scraper_pipeline import run_full_arin_ai_ingestion # type: ignore
         run_full_arin_ai_ingestion()
         st.success("✅ Veritabanları oluşturuldu ve güncellendi!")
         st.rerun()
