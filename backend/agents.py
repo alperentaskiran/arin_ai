@@ -5,7 +5,7 @@ Aethel Technologies - 2026
 
 import os
 from dotenv import load_dotenv
-from crewai import Agent, LLM
+from crewai import Agent, LLM, Task
 from crewai.tools import tool
 
 load_dotenv()
@@ -81,13 +81,32 @@ class MiningSefAgents:
     def __init__(self):
         self.llm = LLM(model="openai/gpt-4o-mini", temperature=0.2)
 
+    def vardiya_denetim_muhendisi_ajan(self) -> Agent:
+        return Agent(
+            role="Kıdemli Vardiya ve İSG Saha Denetim Mühendisi",
+            goal=(
+                "Saha vardiya raporlarını, sensör loglarını ve operatör bildirimlerini inceleyerek olası "
+                "iş kazası risklerini 6331 sayılı İSG Kanunu ve Maden İşyerlerinde İSG Yönetmeliği kapsamında "
+                "somut olarak tespit etmek ve sahada hemen uygulanabilir acil önlemler üretmek."
+            ),
+            backstory=(
+                "Ağır sanayi, tünel açma, mermer ve açık/kapalı maden ocaklarında 15 yılı aşkın saha tecrübesine sahipsin. "
+                "Yalnızca teorik kuralları değil; toz konsantrasyonu, şev stabilitesi, tel kesme güvenliği, havalandırma debisi, "
+                "ekipman yorgunluğu ve vardiya devir teslimindeki insan faktörünü doğrudan analiz edersin. "
+                "Asla hayali kaza veya ilgisiz senaryolar uydurmaz, rapordaki reel verilere odaklanırsın."
+            ),
+            tools=[mevzuat_ara_tool, jeoloji_ara_tool],
+            llm=self.llm,
+            verbose=True
+        )
+
     def isg_mevzuat_uzmani_ajan(self) -> Agent:
         return Agent(
             role="Kıdemli Maden İSG ve Mevzuat Uzmanı",
             goal="Maden sahasından gelen verileri yasal mevzuata, yönetmeliklere ve 6331 sayılı kanuna göre denetleyip ihlalleri ilgili maddeleriyle birlikte tespit etmek. Yerel veritabanında bulamadığı durumlarda canlı internet aramasına başvurmak.",
             backstory=(
                 "Yıllarca Maden İşleri Genel Müdürlüğü ve Çalışma Bakanlığı bünyesinde baş müfettişlik "
-                "yapmış, Maden İşyerlerinde İSG Yönetmeliği'ni ezbere bilen bir teknik uzmansınız. "
+                "yapmış, Maden İşyerlerinde İSG Yönetmeliği'ni ve ISO 45001 / MSHA standartlarını çok iyi bilen bir teknik uzmansınız. "
                 "Öncelikle yerel mevzuat veritabanını tararsınız. Aradığınız madde yerelde yoksa "
                 "'Canlı İnternet Mevzuat Taraması' aracını kullanarak doğrudan mevzuat.gov.tr üzerinden güncel maddeleri çekersiniz."
             ),
@@ -99,9 +118,9 @@ class MiningSefAgents:
     def kaza_tahmin_ve_risk_ajani(self) -> Agent:
         return Agent(
             role="Maden Kök Neden ve 5x5 Risk Matrisi Analisti",
-            goal="Sahadaki riskleri geçmiş maden facialarıyla kıyaslamak, 5x5 Risk Matrisi metodolojisi ile nicel olarak puanlamak.",
+            goal="Sahadaki riskleri geçmiş maden vaka raporlarıyla kıyaslamak, 5x5 Risk Matrisi ve Fine-Kinney metodolojisi ile nicel olarak puanlamak.",
             backstory=(
-                "Büyük maden facialarının ardından kurulan bağımsız araştırma komisyonlarında görev almış "
+                "Büyük maden olaylarının ardından kurulan bağımsız teknik komisyonlarda görev almış "
                 "bir veri bilimci ve maden mühendisisiniz. Sahadaki her tehlikeye Olasılık ve Şiddet "
                 "değerleri vererek nicel bir risk değerlendirmesi yaparsınız."
             ),
@@ -113,7 +132,7 @@ class MiningSefAgents:
     def bas_muhendis_raportor_ajan(self) -> Agent:
         return Agent(
             role="Maden Sahası Baş Mühendisi ve Proaktif Karar Destek Lideri",
-            goal="Mevzuat uzmanı ve risk analistinden gelen verileri sentezleyerek; risk skorlarına göre önceliklendirilmiş, Düzeltici Önleyici Faaliyet (DÖF) içeren kararlı bir aksiyon raporu sunmak.",
+            goal="Mevzuat uzmanı, vardiya denetçisi ve risk analistinden gelen verileri sentezleyerek; risk skorlarına göre önceliklendirilmiş, Düzeltici Önleyici Faaliyet (DÖF) içeren kararlı bir aksiyon raporu sunmak.",
             backstory=(
                 "Maden sahalarında 20 yıldan fazla işletme müdürlüğü yapmış tecrübeli bir lider ve maden mühendisisiniz. "
                 "Karmaşık teknik raporları, vardiya amirlerinin sahada anında uygulayabileceği net önlemlere dönüştürürsünüz. "

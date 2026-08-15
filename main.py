@@ -9,7 +9,10 @@ import random
 import sqlite3
 import hashlib
 import tempfile
-
+try:
+    import games_module
+except ImportError:
+    games_module = None
 # ==========================================
 # CHROMA VE RUST KİLİTLENMELERİNİ ENGELLEYEN AYARLAR
 # ==========================================
@@ -35,6 +38,16 @@ from backend.rag_engine import RagEngine
 from backend.crew_manager import CrewManager
 from pypdf import PdfReader
 from docx import Document
+
+# Yeni Eklenen Modüller
+try:
+    from backend.pdf_generator import generate_isg_pdf_report
+except ImportError:
+    generate_isg_pdf_report = None
+try:
+    from news_feed import render_isg_news_sidebar
+except ImportError:
+    render_isg_news_sidebar = None
 
 st.set_page_config(layout="wide", page_title="Arın AI - Maden İSG & Karar Destek", page_icon="🛡️")
 
@@ -161,7 +174,6 @@ def init_db():
         )
     """)
     
-    # Kullanıcıları tek tek INSERT OR IGNORE ile ekle (Şarta bağlı kalmadan)
     varsayilan_kullanicilar = [
         ("alperen.taskiran", "Aethel2026!", "Alperen Taşkıran", "SICIL-001", "Başmühendis"),
         ("demo", "arin2026", "Misafir Araştırmacı", "DEMO-001", "İSG Denetçisi (Demo)"),
@@ -188,19 +200,13 @@ def init_db():
 
 init_db()
 
-import os
-import streamlit as st
-
 # --- BULUT İLK KURULUM & KONTROL ---
 def check_db_validity(path):
-    # Hem klasörün hem de sqlite dosyasının varlığını güvenle kontrol eder
     return os.path.exists(path) and os.path.exists(os.path.join(path, "chroma.sqlite3"))
 
-# Döngüyü kırmak için Session State kontrolü
 if "db_initialized" not in st.session_state:
     st.session_state["db_initialized"] = False
 
-# Eğer veritabanlarından biri eksikse ve daha önce bu oturumda denenmediyse çalıştır
 dbs_exist = (
     check_db_validity("database/mevzuat") and 
     check_db_validity("database/kazalar") and 
@@ -214,7 +220,6 @@ if not dbs_exist and not st.session_state["db_initialized"]:
             from arin_ai_scraper_pipeline import run_full_arin_ai_ingestion
             run_full_arin_ai_ingestion()
             
-            # Eksik kalan klasörler için boş placeholder sqlite oluşmasını garantiye alalım
             for domain in ["mevzuat", "kazalar", "jeoloji"]:
                 db_dir = f"database/{domain}"
                 os.makedirs(db_dir, exist_ok=True)
@@ -223,7 +228,7 @@ if not dbs_exist and not st.session_state["db_initialized"]:
             status.update(label="✅ Veritabanı kurulumu tamamlandı!", state="complete", expanded=False)
             st.rerun()
         except Exception as e:
-            st.session_state["db_initialized"] = True  # Hata verse bile sonsuz döngüye girmemesi için kilitliyoruz
+            st.session_state["db_initialized"] = True
             status.update(label="⚠️ Veritabanı başlatılırken uyarı oluştu", state="error")
             st.error(f"Veritabanı oluşturma hatası: {e}")
 
@@ -277,7 +282,6 @@ def get_live_iot_data(anomaly_mode=False, tesis_tipi="Kömür & Yeraltı Galeris
         base_data["scada_title"] = "☢️ Radyolojik & Asit Reaktör Takibi"
         base_data["scada_detail"] = f"Asit Buharı Skrubber Basıncı: {'350 Pa (Tıkalı)' if anomaly_mode else '120 Pa (Normal)'}"
     else:
-        # Kömür & Yeraltı Varsayılan
         base_data["wearable_heart_rate"] = random.randint(115, 150) if anomaly_mode else random.randint(68, 88)
         base_data["wearable_fall_detected"] = random.choice([True, False]) if anomaly_mode else False
         base_data["custom_label"] = "⌚ Giyilebilir Baret / Nabız"
@@ -288,7 +292,7 @@ def get_live_iot_data(anomaly_mode=False, tesis_tipi="Kömür & Yeraltı Galeris
 
     return base_data
 
-# --- FONKSİYONLAR ---
+# --- VERİTABANI VE YARDIMCI FONKSİYONLAR ---
 def kullanici_dogrula(kullanici_adi, sifre):
     if not kullanici_adi or not sifre:
         return None
@@ -296,11 +300,9 @@ def kullanici_dogrula(kullanici_adi, sifre):
     kullanici_adi = str(kullanici_adi).strip()
     sifre = str(sifre).strip()
     
-    # 1. Demo Kullanıcı için Doğrudan Garantili Giriş
     if kullanici_adi.lower() == "demo" and sifre == "arin2026":
         return ("Misafir Araştırmacı", "İSG Denetçisi (Demo)", "DEMO-001")
         
-    # 2. Veritabanı Kontrolü (Diğer kullanıcılar için)
     try:
         conn = sqlite3.connect("database/arin_ai_enterprise.db")
         cursor = conn.cursor()
@@ -478,7 +480,14 @@ def extract_text_from_audio(file_bytes, file_name):
     finally:
         if os.path.exists(temp_filename): os.remove(temp_filename)
 
-def rapor_pdf_olustur(rapor_metni):
+def rapor_pdf_olustur(rapor_metni, baslik="İSG Karar Destek Raporu"):
+    # Yeni WeasyPrint şablonunu kullan, hata alırsa geriye dönük FPDF'e dön
+    if generate_isg_pdf_report:
+        try:
+            return generate_isg_pdf_report(baslik, rapor_metni, author=st.session_state.get("user_name", "Arın AI"))
+        except Exception:
+            pass
+
     try:
         from fpdf import FPDF
     except ImportError:
@@ -502,26 +511,15 @@ def rapor_pdf_olustur(rapor_metni):
     pdf.set_auto_page_break(auto=True, margin=15)
     pdf.set_font('Helvetica', '', 10)
     
-    # Türkçe Karakter ve Markdown Temizliği (PDF bozulmasını kesin engeller)
-    metin = str(rapor_metni)
-    metin = metin.replace('**', '').replace('### ', '\n').replace('## ', '\n').replace('# ', '\n')
+    metin = str(rapor_metni).replace('**', '').replace('### ', '\n').replace('## ', '\n').replace('# ', '\n')
+    tr_map = {'ı': 'i', 'İ': 'I', 'ğ': 'g', 'Ğ': 'G', 'ü': 'u', 'Ü': 'U', 'ş': 's', 'Ş': 'S', 'ö': 'o', 'Ö': 'O', 'ç': 'c', 'Ç': 'C'}
+    for tr_char, eng_char in tr_map.items(): metin = metin.replace(tr_char, eng_char)
     
-    tr_map = {
-        'ı': 'i', 'İ': 'I', 'ğ': 'g', 'Ğ': 'G',
-        'ü': 'u', 'Ü': 'U', 'ş': 's', 'Ş': 'S',
-        'ö': 'o', 'Ö': 'O', 'ç': 'c', 'Ç': 'C'
-    }
-    for tr_char, eng_char in tr_map.items():
-        metin = metin.replace(tr_char, eng_char)
-    
-    # Paragrafları düzgün ekle
     for satir in metin.split('\n'):
         satir = satir.strip()
         if not satir:
             pdf.ln(3)
             continue
-        
-        # Başlık benzeri satırları koyu yap
         if satir.startswith(('1.', '2.', '3.', '4.', '5.', '⚖️', '🛡️', '📋', '📍', 'FINAL', 'KARAR', '🧮')):
             pdf.set_font('Helvetica', 'B', 10)
             pdf.multi_cell(0, 6, satir.encode('latin-1', 'replace').decode('latin-1'))
@@ -530,11 +528,8 @@ def rapor_pdf_olustur(rapor_metni):
             pdf.multi_cell(0, 5, satir.encode('latin-1', 'replace').decode('latin-1'))
         pdf.ln(1)
     
-    try:
-        pdf_bytes = bytes(pdf.output())
-    except TypeError:
-        pdf_bytes = pdf.output(dest='S').encode('latin-1')
-        
+    try: pdf_bytes = bytes(pdf.output())
+    except TypeError: pdf_bytes = pdf.output(dest='S').encode('latin-1')
     return pdf_bytes
 
 def form_doldur_llm(vardiya_notu, form_tipi):
@@ -611,6 +606,11 @@ with st.sidebar:
         if sim_anomali:
             st.warning("⚠️ Anomali Devrede! Sensör değerleri tehlikeli eşiklerde üretiliyor.")
     
+    st.markdown("---")
+    # --- CANLI HABER & MEVZUAT AKIŞI (NEWS FEED) ---
+    if render_isg_news_sidebar:
+        render_isg_news_sidebar()
+
     if "analiz_verisi" not in st.session_state: 
         st.session_state.analiz_verisi = ""
 
@@ -640,18 +640,18 @@ if st.session_state.user_role == "Vardiya Amiri":
         st.success("✅ Rapor Merkeze İletildi!")
 
 else:
-    tab_dashboard, tab_assistant, tab_hafiza, tab_scada, tab_roi, tab_taseron, tab_engine, tab_operations = st.tabs([
+    tab_dashboard, tab_assistant, tab_hafiza, tab_scada, tab_roi, tab_taseron, tab_engine, tab_games, tab_operations = st.tabs([
         "📊 Canlı İSG Analiz Paneli", 
         "💬 Veritabanı Asistanı",
         "🧠 Geri Bildirimli Kurumsal Hafıza",
         "🔴 SCADA / IoT Sensör",
         "💰 ROI Simülatörü",
         "🏗️ Taşeron & Tedarikçi",
-        "🧮 Risk Motoru & Formlar", 
+        "🧮 Risk Motoru & Formlar",
+        "🎮 İSG Akademi & Oyunlar", 
         "📡 Görev Sevk Merkezi"
     ])
 
-    # Canlı Dinamik Sensör Verilerini Çek
     iot_data = get_live_iot_data(sim_anomali, maden_tipi)
 
     # TAB 1: ANALİZ
@@ -680,7 +680,6 @@ else:
         with col_in:
             st.markdown("### ✍️ Saha & Sensör Verisi İnceleme")
             
-            # --- ÖRNEK RAPOR DOLDURMA BUTONU ---
             if st.button("📋 Seçili Tesise Uygun Örnek Raporu Doldur", use_container_width=True):
                 st.session_state.analiz_verisi = ORNEK_RAPORLAR.get(maden_tipi, "")
                 st.rerun()
@@ -759,7 +758,6 @@ else:
                     loc_info = res.get("location", {})
                     st.subheader(f"📍 Saha Alanı: {loc_info.get('title', 'Belirtilmedi')}")
                     
-                    # --- ŞIK VE GENİŞ KART ÇIKTISI ---
                     with st.container(border=True):
                         st.markdown(res.get('final_decision', ''))
                     
@@ -777,8 +775,8 @@ else:
                     st.markdown("<br>", unsafe_allow_html=True)
                     c_btn1, c_btn2 = st.columns(2)
                     with c_btn1:
-                        pdf_data = rapor_pdf_olustur(res.get("final_decision", ""))
-                        st.download_button("📥 PDF İndir", data=pdf_data, file_name="ArinAI_Karar.pdf", mime="application/pdf", use_container_width=True, key="btn_download_final_pdf")
+                        pdf_data = rapor_pdf_olustur(res.get("final_decision", ""), baslik=f"İSG Karar Raporu - {loc_info.get('title', 'Saha Analizi')}")
+                        st.download_button("📥 Resmi İSG PDF Raporunu İndir", data=pdf_data, file_name=f"ArinAI_Karar_{datetime.now().strftime('%Y%m%d_%H%M')}.pdf", mime="application/pdf", use_container_width=True, key="btn_download_final_pdf")
                     with c_btn2:
                         if st.button("📡 DÖF PLANINI SAHAYA SEVK ET", type="primary", use_container_width=True, key="btn_sevk_dof"):
                             if gorev_sevk_et(res.get("final_decision", ""), "Başmühendis Karar Raporu"):
@@ -932,7 +930,6 @@ else:
                 
         with c2:
             st.markdown("**Fine-Kinney Risk Skalası**")
-            # Standart İSG Fine-Kinney Katsayıları
             fk_ihtimal_secim = st.selectbox("İhtimal (İ)", [
                 (0.2, "0.2 - Pratik Olarak İmkânsız"),
                 (0.5, "0.5 - Zayıf İhtimal"),
@@ -984,17 +981,24 @@ else:
             st.markdown(st.session_state[cache_key])
             st.markdown("---")
             
-            pdf_data = rapor_pdf_olustur(st.session_state[cache_key])
+            pdf_data = rapor_pdf_olustur(st.session_state[cache_key], baslik=f"Resmi İSG Belgesi - {secilen_form}")
             st.download_button(
-                label="📄 PDF Olarak İndir",
+                label="📄 Resmi PDF Belgesi Olarak İndir",
                 data=pdf_data,
-                file_name=f"{secilen_form.replace(' ', '_').lower()}.pdf",
+                file_name=f"{secilen_form.replace(' ', '_').lower()}_{datetime.now().strftime('%Y%m%d')}.pdf",
                 mime="application/pdf",
                 use_container_width=True,
                 key=f"download_pdf_{secilen_form.replace(' ', '_').lower()}"
             )
 
-    # TAB 8: GÖREV & KULLANICI YÖNETİMİ
+    # Yeni Tab 8: İSG AKADEMİ & OYUNLAR (tab_operations'dan hemen önceye koyabilirsin)
+    with tab_games:
+        if games_module:
+            games_module.render_games_tab()
+        else:
+            st.error("Oyun modülü yüklenemedi. games_module.py dosyasını kontrol edin.")
+            
+    # TAB 9: GÖREV & KULLANICI YÖNETİMİ
     with tab_operations:
         st.subheader("📡 Canlı Operasyonel Görev Takip Panosu & Kullanıcı Yönetimi")
         sub_t1, sub_t2 = st.tabs(["📋 Canlı DÖF İş Emri Panosu", "👥 Kullanıcı Hesap Yönetimi"])
