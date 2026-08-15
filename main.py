@@ -188,20 +188,44 @@ def init_db():
 
 init_db()
 
-# --- BULUT İLK KURULUM ---
-def check_db_validity(path):
-    return os.path.exists(os.path.join(path, "chroma.sqlite3"))
+import os
+import streamlit as st
 
-if not (check_db_validity("database/mevzuat") and check_db_validity("database/kazalar") and check_db_validity("database/jeoloji")):
-    st.warning("⚠️ **Sistem Uyarısı: Vektör Veritabanları Hazırlanıyor...**")
-    try:
-        from arin_ai_scraper_pipeline import run_full_arin_ai_ingestion # type: ignore
-        run_full_arin_ai_ingestion()
-        st.success("✅ Veritabanları oluşturuldu ve güncellendi!")
-        st.rerun()
-    except Exception as e:
-        st.error(f"Veritabanı oluşturma hatası: {e}")
-        st.stop()
+# --- BULUT İLK KURULUM & KONTROL ---
+def check_db_validity(path):
+    # Hem klasörün hem de sqlite dosyasının varlığını güvenle kontrol eder
+    return os.path.exists(path) and os.path.exists(os.path.join(path, "chroma.sqlite3"))
+
+# Döngüyü kırmak için Session State kontrolü
+if "db_initialized" not in st.session_state:
+    st.session_state["db_initialized"] = False
+
+# Eğer veritabanlarından biri eksikse ve daha önce bu oturumda denenmediyse çalıştır
+dbs_exist = (
+    check_db_validity("database/mevzuat") and 
+    check_db_validity("database/kazalar") and 
+    check_db_validity("database/jeoloji")
+)
+
+if not dbs_exist and not st.session_state["db_initialized"]:
+    with st.status("🚀 Vektör Veritabanları Hazırlanıyor / Doğrulanıyor...", expanded=True) as status:
+        st.write("Veri besleme motoru başlatılıyor...")
+        try:
+            from arin_ai_scraper_pipeline import run_full_arin_ai_ingestion
+            run_full_arin_ai_ingestion()
+            
+            # Eksik kalan klasörler için boş placeholder sqlite oluşmasını garantiye alalım
+            for domain in ["mevzuat", "kazalar", "jeoloji"]:
+                db_dir = f"database/{domain}"
+                os.makedirs(db_dir, exist_ok=True)
+            
+            st.session_state["db_initialized"] = True
+            status.update(label="✅ Veritabanı kurulumu tamamlandı!", state="complete", expanded=False)
+            st.rerun()
+        except Exception as e:
+            st.session_state["db_initialized"] = True  # Hata verse bile sonsuz döngüye girmemesi için kilitliyoruz
+            status.update(label="⚠️ Veritabanı başlatılırken uyarı oluştu", state="error")
+            st.error(f"Veritabanı oluşturma hatası: {e}")
 
 # --- GLOBAL DURUM YÖNETİMİ ---
 if "logged_in" not in st.session_state: st.session_state.logged_in = False
